@@ -1,7 +1,7 @@
 package controllers
 
-import actors.MeetingSupervisorActor.CreateMeeting
-import actors.{MeetingSupervisorActor, UserActor}
+import actors.MeetingManagerActor.CreateMeeting
+import actors.{MeetingManagerActor, UserActor}
 import akka.actor.ActorSystem
 import com.google.inject.Inject
 import models.Meeting
@@ -25,7 +25,7 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
     )(MeetingFormData.apply)(MeetingFormData.unapply)
   )
 
-  val meetingSupervisor = system.actorOf(MeetingSupervisorActor.props())
+  val meetingManager = system.actorOf(MeetingManagerActor.props())
 
 
   def index = Action {
@@ -39,14 +39,14 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
       },
       meetingFormData => {
         val meeting = Meeting(meetingFormData)
-        meetingSupervisor ! CreateMeeting(meeting)
+        meetingManager ! CreateMeeting(meeting)
         Redirect(routes.Application.m(meeting.id))
       }
     )
   }
 
   def m(meetingId: String) = WebSocket.acceptWithActor[String, String] { request => out =>
-    UserActor.props(out)
+    UserActor.props(meetingManager, meetingId, out)
   }
 
 }
