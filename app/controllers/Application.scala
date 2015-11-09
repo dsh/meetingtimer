@@ -1,8 +1,10 @@
 package controllers
 
+import actors.UserActor
 import com.google.inject.Inject
 import models.Meeting
 import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.Play.current
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
@@ -38,5 +40,8 @@ class Application @Inject() (val messagesApi: MessagesApi) extends Controller wi
     )
   }
 
-  def m(meetingId: String) = TODO
+  def m(meetingId: String) = WebSocket.acceptWithActor[String, String] { request => out =>
+    UserActor.props(out)
+  }
+
 }
