@@ -7,9 +7,9 @@
 
     @form(action = routes.Application.start()) {
         @inputText(meetingForm("name"))
-        @inputText(meetingForm("start_time"))
+        @inputText(meetingForm("startTime"))
         @inputText(meetingForm("participants"))
-        @inputText(meetingForm("hourly_rate"))
+        @inputText(meetingForm("hourlyRate"))
         <input type="submit" value="Start Meeting">
     }
 }

@@ -1,6 +1,7 @@
 package controllers
 
 import com.google.inject.Inject
+import models.Meeting
 import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.mvc._
 import play.api.data._
@@ -13,9 +14,9 @@ class Application @Inject() (val messagesApi: MessagesApi) extends Controller wi
   val meetingForm = Form(
     mapping(
       "name" -> nonEmptyText,
-      "start_time" -> number(min=0),
+      "startTime" -> number(min=0),
       "participants" -> number(min=1),
-      "hourly_rate" -> number(min=0)
+      "hourlyRate" -> number(min=0)
     )(MeetingFormData.apply)(MeetingFormData.unapply)
   )
 
@@ -28,17 +29,12 @@ class Application @Inject() (val messagesApi: MessagesApi) extends Controller wi
   def start = Action { implicit request =>
     meetingForm.bindFromRequest.fold(
       formWithErrors => {
-        // binding failure, you retrieve the form containing errors:
         BadRequest(views.html.index(formWithErrors))
       },
-      userData => {
-        /* binding success, you get the actual value. */
-        // val newUser = models.User(userData.name, userData.age)
-        // val id = models.User.create(newUser)
-        val meetingId = "abc123"
-        Redirect(routes.Application.m(meetingId))
+      meetingFormData => {
+        val meeting = Meeting(meetingFormData)
+        Redirect(routes.Application.m(meeting.id))
       }
-
     )
   }
 
