@@ -4,7 +4,7 @@ import akka.actor._
 import models.Meeting
 
 object MeetingActor {
-  def props(name: String): Props = Props(classOf[MeetingActor], name)
+  def props(meeting: Meeting): Props = Props(classOf[MeetingActor], meeting)
 
   trait MeetingMessage
   case class JoinMeeting() extends MeetingMessage
@@ -15,6 +15,8 @@ class MeetingActor(meeting: Meeting) extends Actor with ActorLogging {
   import actors.MeetingActor._
   import actors.UserActor._
 
+  // To cluster I would use a pub/sub and make each meeting a "topic".
+  // Users would subscribe to the meeting topic for updates.
   var users = Set[ActorRef]()
 
   def receive = {
