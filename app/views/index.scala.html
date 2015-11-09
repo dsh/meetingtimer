@@ -1,7 +1,14 @@
-@(message: String)
+@(meetingForm: Form[MeetingData])(implicit messages: Messages)
 
-@main("Welcome to Play") {
+@import helper._
 
-    @play20.welcome(message)
+@main("Start a meeting") {
 
+    @form(action = routes.Application.start()) {
+        @inputText(meetingForm("name"))
+        @inputText(meetingForm("start_time"))
+        @inputText(meetingForm("participants"))
+        @inputText(meetingForm("hourly_rate"))
+        <input type="submit" value="Start Meeting">
+    }
 }

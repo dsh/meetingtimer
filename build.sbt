@@ -8,4 +8,7 @@ scalaVersion := "2.11.7"
 
 libraryDependencies ++= Seq( jdbc , cache , ws   , specs2 % Test )
 
-unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )  
+unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )
+
+// Allow DI in controllers
+routesGenerator := InjectedRoutesGenerator
