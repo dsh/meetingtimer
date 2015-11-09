@@ -5,8 +5,7 @@ import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-
-case class MeetingData(name: String, start_time: Int, participants: Int, hourly_rate: Int)
+import views.formdata.MeetingFormData
 
 
 class Application @Inject() (val messagesApi: MessagesApi) extends Controller with I18nSupport {
@@ -17,7 +16,7 @@ class Application @Inject() (val messagesApi: MessagesApi) extends Controller wi
       "start_time" -> number(min=0),
       "participants" -> number(min=1),
       "hourly_rate" -> number(min=0)
-    )(MeetingData.apply)(MeetingData.unapply)
+    )(MeetingFormData.apply)(MeetingFormData.unapply)
   )
 
 
