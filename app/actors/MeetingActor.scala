@@ -2,6 +2,7 @@ package actors
 
 import akka.actor._
 import models.Meeting
+import play.api.libs.json._
 
 object MeetingActor {
   def props(meeting: Meeting): Props = Props(classOf[MeetingActor], meeting)
@@ -9,6 +10,17 @@ object MeetingActor {
   trait MeetingMessage
   case class JoinMeeting() extends MeetingMessage
   case class StopMeeting() extends MeetingMessage
+
+
+  // convert meeting messages from JSON that are received from the client
+  implicit object MeetingMessageFormat extends Format[MeetingMessage] {
+    def writes(msg: MeetingMessage) = JsNull
+    def reads(json: JsValue) = (json \ "command").asOpt[String] match {
+      case Some("join") => JsSuccess(JoinMeeting())
+      case Some("stop") => JsSuccess(StopMeeting())
+      case _ => JsError()
+    }
+  }
 }
 class MeetingActor(meeting: Meeting) extends Actor with ActorLogging {
 

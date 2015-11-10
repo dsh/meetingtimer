@@ -2,6 +2,7 @@ package actors
 
 import akka.actor._
 import models.Meeting
+import play.api.libs.json.{JsError, JsValue, Json, Format}
 
 
 object UserActor {
@@ -13,6 +14,27 @@ object UserActor {
   case class Stopped(timeElapsed: Int) extends UserMessage
 
   case class UserRegistered(meetingActorRef: ActorRef)
+
+  // Convert user messages to JSON to send to the client
+  implicit object UserMessageFormat extends Format[UserMessage] {
+    def writes(msg: UserMessage) = msg match {
+      case Joined(meeting) => Json.obj(
+        "event" -> "joined",
+        "meeting" -> Json.obj(
+          "id" -> meeting.id,
+          "name" -> meeting.name,
+          "startTime" -> meeting.startTime,
+          "participants" -> meeting.participants,
+          "hourlyRate" -> meeting.hourlyRate
+        )
+      )
+      case Stopped(timeElapsed) => Json.obj(
+        "event" -> "stopped",
+        "timeElapsed" -> timeElapsed
+      )
+    }
+    def reads(json: JsValue) = JsError()
+  }
 }
 
 class UserActor(meetingManagerRef: ActorRef, meetingId: String, out: ActorRef) extends Actor with ActorLogging {

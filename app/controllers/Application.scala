@@ -1,16 +1,21 @@
 package controllers
 
+import actors.MeetingActor._
 import actors.MeetingManagerActor.CreateMeeting
+import actors.UserActor.UserMessage
 import actors.{MeetingManagerActor, UserActor}
 import akka.actor.ActorSystem
 import com.google.inject.Inject
 import models.Meeting
-import play.api.i18n.{MessagesApi, I18nSupport}
 import play.api.Play.current
-import play.api.mvc._
-import play.api.data._
 import play.api.data.Forms._
+import play.api.data._
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.WebSocket.FrameFormatter
+import play.api.mvc._
 import views.formdata.MeetingFormData
+
+
 
 
 class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
@@ -45,7 +50,10 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
     )
   }
 
-  def m(meetingId: String) = WebSocket.acceptWithActor[String, String] { request => out =>
+  implicit val inEventFrameFormatter = FrameFormatter.jsonFrame[MeetingMessage]
+  implicit val outEventFrameFormatter = FrameFormatter.jsonFrame[UserMessage]
+
+  def m(meetingId: String) = WebSocket.acceptWithActor[MeetingMessage, UserMessage] { request => out =>
     // @todo abort if invalid meetingId
     UserActor.props(meetingManager, meetingId, out)
   }
