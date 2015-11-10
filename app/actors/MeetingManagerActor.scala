@@ -25,7 +25,8 @@ class MeetingManagerActor extends Actor with ActorLogging {
       context watch meetingActor
     case RegisterUser(meetingId, user) =>
       // @todo RegisterUser could be received before the CreateMeeting. Need a retry.
-      meetings.get(meetingId).foreach( sender ! UserRegistered(_) )
+      meetings.get(meetingId).foreach ( sender ! UserRegistered(_) )
+    // @todo can we extract the meetingId from meetingActor.meeting.id ?
     case Terminated(meetingActor) => meetings retain { (_, m) => m != meetingActor }
 
   }

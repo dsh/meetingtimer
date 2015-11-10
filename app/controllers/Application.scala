@@ -46,6 +46,7 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
   }
 
   def m(meetingId: String) = WebSocket.acceptWithActor[String, String] { request => out =>
+    // @todo abort if invalid meetingId
     UserActor.props(meetingManager, meetingId, out)
   }
 

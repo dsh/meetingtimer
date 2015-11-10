@@ -25,13 +25,15 @@ class UserActor(meetingManagerRef: ActorRef, meetingId: String, out: ActorRef) e
   override def preStart() = meetingManagerRef ! RegisterUser(meetingId, self)
 
   def receive = {
-    case UserRegistered(ref) => meetingRef = Some(ref)
+    case UserRegistered(ref) => {
+      meetingRef = Some(ref)
+      ref ! JoinMeeting
+    }
     // @todo if message is received before we finish registering we should queue these messages
     case msg: MeetingMessage => meetingRef.foreach ( _ ! msg )
     case msg: UserMessage =>
       out ! msg
       msg match {
-        // @todo or should this send an EOF?
         case Stopped(_) => context stop self
       }
   }
