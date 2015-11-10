@@ -1,6 +1,7 @@
 package actors
 
 import akka.actor._
+import akka.event.LoggingReceive
 import models.Meeting
 import play.api.libs.json._
 
@@ -37,18 +38,19 @@ class MeetingActor(meeting: Meeting) extends Actor with ActorLogging {
   // @todo is Int fine or do we need long?
   def computeTimeElapsed(): Int = (System.currentTimeMillis / 1000).toInt - meeting.startTime
 
-  def receive = {
+  def receive = LoggingReceive {
     case JoinMeeting() =>
       users += sender
       context watch sender
       sender ! Joined(meeting)
     case StopMeeting() =>
-      users foreach { _ ! Stopped(computeTimeElapsed()) }
-      context stop self
+      val timeElapsed = computeTimeElapsed()
+      users foreach { _ ! Stopped(timeElapsed) }
+      self ! PoisonPill
     case Terminated(user) =>
       users -= user
       // @todo Leave the meeting running until a timeout elapsed so users can reconnect.
       if (users.size == 0)
-        context stop self
+        self ! PoisonPill
   }
 }

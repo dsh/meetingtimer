@@ -2,6 +2,7 @@ package actors
 
 import actors.UserActor.UserRegistered
 import akka.actor._
+import akka.event.LoggingReceive
 import models.Meeting
 
 object MeetingManagerActor {
@@ -18,7 +19,7 @@ class MeetingManagerActor extends Actor with ActorLogging {
 
   val meetings = scala.collection.mutable.Map[String, ActorRef]()
 
-  def receive = {
+  def receive = LoggingReceive {
     case CreateMeeting(meeting) =>
       // Not safe for concurrent map
       val meetingActor = meetings.getOrElseUpdate(meeting.id, context.actorOf(MeetingActor.props(meeting)))

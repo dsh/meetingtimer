@@ -1,6 +1,7 @@
 package actors
 
 import akka.actor._
+import akka.event.LoggingReceive
 import models.Meeting
 import play.api.libs.json.{JsError, JsValue, Json, Format}
 
@@ -46,7 +47,7 @@ class UserActor(meetingManagerRef: ActorRef, meetingId: String, out: ActorRef) e
 
   override def preStart() = meetingManagerRef ! RegisterUser(meetingId, self)
 
-  def receive = {
+  def receive = LoggingReceive {
     case UserRegistered(ref) => {
       meetingRef = Some(ref)
       ref ! JoinMeeting
@@ -56,7 +57,8 @@ class UserActor(meetingManagerRef: ActorRef, meetingId: String, out: ActorRef) e
     case msg: UserMessage =>
       out ! msg
       msg match {
-        case Stopped(_) => context stop self
+        case Stopped(_) => self ! PoisonPill
+        case _ => ()
       }
   }
 }

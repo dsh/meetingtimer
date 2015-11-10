@@ -14,6 +14,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.WebSocket.FrameFormatter
 import play.api.mvc._
 import views.formdata.MeetingFormData
+import play.api.Logger
 
 
 
@@ -44,6 +45,7 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
       },
       meetingFormData => {
         val meeting = Meeting(meetingFormData)
+        Logger.info(s"Starting MeetingActor for meeting $meeting.id")
         meetingManager ! CreateMeeting(meeting)
         Redirect(routes.Application.m(meeting.id))
       }
@@ -55,6 +57,7 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
 
   def m(meetingId: String) = WebSocket.acceptWithActor[MeetingMessage, UserMessage] { request => out =>
     // @todo abort if invalid meetingId
+    Logger.info(s"Starting UserActor for meeting $meetingId")
     UserActor.props(meetingManager, meetingId, out)
   }
 
