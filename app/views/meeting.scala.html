@@ -4,8 +4,9 @@
 
 @scripts = {
     <script type="text/javascript">
-      var meetingId = "@meetingId";
+      var websSocketUrl = "@routes.Application.meetingSocket(meetingId)";
     </script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/meeting.js")"><</script>
 }
 
 @main("Meeting", scripts) {
