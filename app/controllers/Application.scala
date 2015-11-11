@@ -52,10 +52,14 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
     )
   }
 
+  def m(meetingId: String) = Action {
+    Ok(views.html.meeting(meetingId))
+  }
+
   implicit val inEventFrameFormatter = FrameFormatter.jsonFrame[MeetingMessage]
   implicit val outEventFrameFormatter = FrameFormatter.jsonFrame[UserMessage]
 
-  def m(meetingId: String) = WebSocket.acceptWithActor[MeetingMessage, UserMessage] { request => out =>
+  def meetingSocket(meetingId: String) = WebSocket.acceptWithActor[MeetingMessage, UserMessage] { request => out =>
     // @todo abort if invalid meetingId
     Logger.info(s"Starting UserActor for meeting $meetingId")
     UserActor.props(meetingManager, meetingId, out)
