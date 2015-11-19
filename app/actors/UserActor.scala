@@ -17,7 +17,7 @@ object UserActor {
   case class UserRegistered(meetingActorRef: ActorRef)
 
   // Convert user messages to JSON to send to the client
-  implicit object UserMessageFormat extends Format[UserMessage] {
+  implicit object UserMessageJsonFormat extends Format[UserMessage] {
     def writes(msg: UserMessage) = msg match {
       case Joined(meeting) => Json.obj(
         "event" -> "joined",

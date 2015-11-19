@@ -5,11 +5,4 @@
 
 @main("Start a meeting") {
 
-    @form(action = routes.Application.start()) {
-        @inputText(meetingForm("name"))
-        @inputText(meetingForm("startTime"))
-        @inputText(meetingForm("participants"))
-        @inputText(meetingForm("hourlyRate"))
-        <input type="submit" value="Start Meeting">
-    }
 }

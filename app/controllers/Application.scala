@@ -2,7 +2,7 @@ package controllers
 
 import actors.MeetingActor._
 import actors.MeetingManagerActor.CreateMeeting
-import actors.UserActor.UserMessage
+import actors.UserActor.{UserMessageJsonFormat, Joined, UserMessage}
 import actors.{MeetingManagerActor, UserActor}
 import akka.actor.ActorSystem
 import com.google.inject.Inject
@@ -47,7 +47,7 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
         val meeting = Meeting(meetingFormData)
         Logger.info(s"Starting MeetingActor for meeting $meeting.id")
         meetingManager ! CreateMeeting(meeting)
-        Redirect(routes.Application.m(meeting.id))
+        Ok(UserMessageJsonFormat.writes(Joined(meeting)))
       }
     )
   }
