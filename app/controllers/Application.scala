@@ -2,7 +2,7 @@ package controllers
 
 import actors.MeetingActor._
 import actors.MeetingManagerActor.CreateMeeting
-import actors.UserActor.{UserMessageJsonFormat, Joined, UserMessage}
+import actors.UserActor.{UserMessageJsonFormat, UserMessage}
 import actors.{MeetingManagerActor, UserActor}
 import akka.actor.ActorSystem
 import com.google.inject.Inject
@@ -11,6 +11,7 @@ import play.api.Play.current
 import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.JsString
 import play.api.mvc.WebSocket.FrameFormatter
 import play.api.mvc._
 import views.formdata.MeetingFormData
@@ -47,7 +48,7 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
         val meeting = Meeting(meetingFormData)
         Logger.info(s"Starting MeetingActor for meeting $meeting.id")
         meetingManager ! CreateMeeting(meeting)
-        Ok(UserMessageJsonFormat.writes(Joined(meeting)))
+        Ok(JsString(meeting.id))
       }
     )
   }
