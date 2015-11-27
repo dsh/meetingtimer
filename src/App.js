@@ -1,3 +1,8 @@
+// 'use strict';
+
+// import React from 'react'
+// import ReactDOM from 'react-dom'
+
 var MeetingCost = React.createClass({
   render: function () {
     return (
@@ -121,7 +126,7 @@ var MeetingApp = React.createClass({
 });
 
 
-React.render(
+ReactDOM.render(
   <MeetingApp />,
   document.getElementById("application")
 );
