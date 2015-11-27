@@ -7,13 +7,10 @@
         <title>@title</title>
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
-        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.fullPath("jquery", "jquery.min.js"))'></script>
-        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.fullPath("react", "react.js"))'></script>
-        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.fullPath("react-dom", "react-dom.js"))'></script>
         @scripts
     </head>
     <body>
         <div id="application">@content</div>
     </body>
-    <script src="@routes.Assets.versioned("javascripts/App.js")"></script>
+    <script src="/assets/js/all.js"></script>
 </html>

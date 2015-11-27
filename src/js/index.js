@@ -1,7 +1,28 @@
-// 'use strict';
+import 'babel-core/polyfill'
+import React from 'react'
+import ReactDOM from 'react-dom'
+import Router, {Route} from 'react-router'
+import { Provider } from 'react-redux'
+import MeetingApp from './containers/MeetingApp'
+import configureStore from './store/configureStore'
 
-// import React from 'react'
-// import ReactDOM from 'react-dom'
+const store = configureStore();
+
+const routes = <Route component={MeetingApp}>
+  <Route path="/m" component={MeetingContainer} />
+  <Route path="/" component={NewMeetingContainer} />
+</Route>;
+
+
+
+ReactDOM.render(
+  <Provider store={store}>
+    <Router>{routes}</Router>
+  </Provider>,
+  document.getElementById("application")
+)
+
+
 
 var MeetingCost = React.createClass({
   render: function () {
@@ -126,7 +147,3 @@ var MeetingApp = React.createClass({
 });
 
 
-ReactDOM.render(
-  <MeetingApp />,
-  document.getElementById("application")
-);
