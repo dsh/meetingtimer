@@ -1,7 +1,6 @@
 // import 'babel-core/polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {reducer as formReducer} from 'redux-form'
 import Router, {Route} from 'react-router'
 import {createStore, combineReducers} from 'redux'
 import { Provider } from 'react-redux'
@@ -9,18 +8,12 @@ import MeetingApp from './containers/MeetingApp'
 import { NewMeetingContainer } from './containers/NewMeeting'
 import { MeetingContainer } from './containers/Meeting'
 
-// import configureStore from './store/configureStore'
+import configureStore from './store/configureStore'
 
 
 
-const reducers = {
-  // ... your other reducers here ...
-  form: formReducer // redux-form
-}
-const reducer = combineReducers(reducers);
-const store = createStore(reducer);
+const store = configureStore();
 
-// <Route path="/m" component={MeetingContainer} />
 
 
 const routes = <Route component={MeetingApp}>

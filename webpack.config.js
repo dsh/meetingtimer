@@ -1,21 +1,27 @@
-var path = require('path');
+var path = require("path");
 
 module.exports = {
   devtool: "source-map",
-  entry: "./src/js/index.js",
+  entry: [
+    "babel-polyfill",
+    "./src/js/index.js"
+  ],
   target: "web",
   output: {
-    path: path.join(__dirname, './public/js'),
+    path: path.join(__dirname, "./public/js"),
     filename: 'all.js'
   },
   module: {
     loaders: [
       {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
         loader: "babel",
+        include: [
+          path.resolve(__dirname, "src/js")
+        ],
+        test: /\.jsx?$/,
         query: {
-          presets: ["react", "es2015"]
+          plugins: ["transform-runtime"],
+          presets: ["es2015", "stage-0", "react"]
         }
       }
     ]
