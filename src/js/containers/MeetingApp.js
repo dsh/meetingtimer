@@ -1,15 +1,12 @@
-import React, { Component, PropTypes } from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+import React, { Component } from 'react'
 
-
-class MeetingApp extends Component {
+export default class MeetingApp extends Component {
   render() {
-    const { todos, actions } = this.props
     return (
       <div>
-        <Header addTodo={actions.addTodo} />
-        <MainSection todos={todos} actions={actions} />
+        <div>Header</div>
+        {this.props.children}
+        <div>Footer</div>
       </div>
     )
   }

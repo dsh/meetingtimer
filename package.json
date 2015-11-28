@@ -12,11 +12,13 @@
     "webpack": "^1.12.9"
   },
   "dependencies": {
+    "history": "^1.13.1",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
     "react-redux": "^4.0.0",
     "react-router": "^1.0.0",
     "redux": "^3.0.4",
-    "redux-actions": "^0.8.0"
+    "redux-actions": "^0.8.0",
+    "redux-form": "^3.0.12"
   }
 }

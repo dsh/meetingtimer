@@ -1,18 +1,29 @@
-import 'babel-core/polyfill'
+// import 'babel-core/polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
+import {reducer as formReducer} from 'redux-form'
 import Router, {Route} from 'react-router'
+import {createStore, combineReducers} from 'redux'
 import { Provider } from 'react-redux'
 import MeetingApp from './containers/MeetingApp'
-import configureStore from './store/configureStore'
+import { NewMeeting } from './containers/NewMeeting'
+// import configureStore from './store/configureStore'
 
-const store = configureStore();
+
+
+const reducers = {
+  // ... your other reducers here ...
+  form: formReducer // redux-form
+}
+const reducer = combineReducers(reducers);
+const store = createStore(reducer);
+
+// <Route path="/m" component={MeetingContainer} />
+
 
 const routes = <Route component={MeetingApp}>
-  <Route path="/m" component={MeetingContainer} />
-  <Route path="/" component={NewMeetingContainer} />
+  <Route path="/" component={NewMeeting} />
 </Route>;
-
 
 
 ReactDOM.render(
@@ -20,10 +31,10 @@ ReactDOM.render(
     <Router>{routes}</Router>
   </Provider>,
   document.getElementById("application")
-)
+);
 
 
-
+/*
 var MeetingCost = React.createClass({
   render: function () {
     return (
@@ -145,5 +156,6 @@ var MeetingApp = React.createClass({
     </div>
   );}
 });
+*/
 
 

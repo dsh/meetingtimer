@@ -1,3 +1,0 @@
-export const JOIN_MEETING = "JOIN_MEETING"
-export const STOP_MEETING = "STOP_MEETING"
-export const START_MEETING = "START_MEETING"
