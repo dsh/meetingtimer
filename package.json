@@ -19,6 +19,7 @@
     "react-router": "^1.0.0",
     "redux": "^3.0.4",
     "redux-actions": "^0.8.0",
-    "redux-form": "^3.0.12"
+    "redux-form": "^3.0.12",
+    "redux-router": "^0.1.0"
   }
 }
