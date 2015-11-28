@@ -6,7 +6,7 @@ import Router, {Route} from 'react-router'
 import {createStore, combineReducers} from 'redux'
 import { Provider } from 'react-redux'
 import MeetingApp from './containers/MeetingApp'
-import { NewMeeting } from './containers/NewMeeting'
+import { NewMeetingContainer } from './containers/NewMeeting'
 // import configureStore from './store/configureStore'
 
 
@@ -22,7 +22,7 @@ const store = createStore(reducer);
 
 
 const routes = <Route component={MeetingApp}>
-  <Route path="/" component={NewMeeting} />
+  <Route path="/" component={NewMeetingContainer} />
 </Route>;
 
 

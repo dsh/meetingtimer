@@ -1,21 +1,17 @@
-import React from 'react';
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import JoinMeeting from '../components/JoinMeeting'
+import { joinMeeting } from '../actions/NewMeeting'
 
-export const NewMeeting = React.createClass({
-
-  render: function() {
+class NewMeeting extends Component {
+  render() {
+    const { dispatch } = this.props;
     return (
       <div>
-        <JoinMeeting {...this.props} />
+        <JoinMeeting onSubmit={data => dispatch(joinMeeting(data))} />
       </div>
     )
   }
-});
-
-function mapStateToProps(state) {
-  console.log(state);
-  return  {};
 }
 
-export const NewMeetingContainer = connect(mapStateToProps)(NewMeeting);
+export const NewMeetingContainer = connect()(NewMeeting);
