@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import { createAction } from 'redux-actions';
-import Router from 'react-router'
+import { updatePath } from 'redux-simple-router'
 
 
 export const JOIN_MEETING = "JOIN_MEETING";
@@ -14,7 +14,7 @@ const start = createAction(START_MEETING, meeting => meeting);
 export function joinMeeting(meetingId) {
   return dispatch => {
     dispatch(join(meetingId));
-    Router.history.pushState(null, "/m/" + meetingId)
+    dispatch(updatePath("/m/" + meetingId));
   }
 }
 

@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
 import {reducer as formReducer} from 'redux-form'
+import { routeReducer } from 'redux-simple-router'
 
 /* import {
   SELECT_REDDIT, INVALIDATE_REDDIT,
@@ -11,7 +12,8 @@ const myReducer = (state = {}, action) => state;
 
 const rootReducer = combineReducers({
   myReducer,
-  form: formReducer
+  form: formReducer,
+  routing: routeReducer
 });
 
 export default rootReducer;
