@@ -39,6 +39,11 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
     Ok(views.html.index(meetingForm))
   }
 
+  def m(meetingId: String) = Action {
+    Ok(views.html.index(meetingForm))
+  }
+
+
   def start = Action { implicit request =>
     meetingForm.bindFromRequest.fold(
       formWithErrors => {
@@ -51,10 +56,6 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
         Ok(JsString(meeting.id))
       }
     )
-  }
-
-  def m(meetingId: String) = Action {
-    Ok(views.html.meeting(meetingId))
   }
 
   implicit val inEventFrameFormatter = FrameFormatter.jsonFrame[MeetingMessage]

@@ -17,14 +17,14 @@ class Meeting extends Component {
   };
 
   handleMessage = event => {
-    console.log(event);
     const data = JSON.parse(event.data);
+    console.log(data);
     switch (data.event) {
       case "joined":
-        joinedMeeting(data.meeting);
+        this.props.dispatch(joinedMeeting(data.meeting));
         break;
       case "stopped":
-        stoppedMeeting(data.timeElapsed);
+        this.props.dispatch(stoppedMeeting(data.timeElapsed));
         break;
     }
   };
@@ -42,6 +42,7 @@ class Meeting extends Component {
     }
   }
   render() {
+    console.log(this.props);
     return (
       <div>
         Meeting {this.props.params.meetingId}
@@ -62,7 +63,8 @@ class Meeting extends Component {
 }
 
 function mapStateToProps(state) {
-  return state.meeting;
+  console.log(state);
+  return {meeting: state.meeting };
 }
 
 export const MeetingContainer = connect(mapStateToProps)(Meeting);

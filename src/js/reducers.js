@@ -1,17 +1,27 @@
 import { combineReducers } from 'redux'
 import {reducer as formReducer} from 'redux-form'
 import { routeReducer } from 'redux-simple-router'
+import {JOINED_MEETING, STOPPED_MEETING} from './actions/Meeting'
 
-/* import {
-  SELECT_REDDIT, INVALIDATE_REDDIT,
-  REQUEST_POSTS, RECEIVE_POSTS
-} from './actions'
-*/
+export const defaultMeetingState = {
+  id: null,
+  name: null,
+  startTime: null,
+  participants: null,
+  hourlyRate: null
+};
+function meeting(state = defaultMeetingState, action) {
+  switch (action.type) {
+    case JOINED_MEETING:
+      return action.payload;
+    default:
+      return state;
+  }
 
-const myReducer = (state = {}, action) => state;
+}
 
 const rootReducer = combineReducers({
-  myReducer,
+  meeting,
   form: formReducer,
   routing: routeReducer
 });

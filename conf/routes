@@ -4,8 +4,8 @@
 
 # Home page
 GET     /                           controllers.Application.index
+GET     /m/:meetingId               controllers.Application.m(meetingId)
 POST    /start                      controllers.Application.start
-GET     /m/:meetingId               controllers.Application.m(meetingId: String)
 GET     /meeting-socket/:meetingId  controllers.Application.meetingSocket(meetingId: String)
 
 # Map static resources from the /public folder to the /assets URL path
