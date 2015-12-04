@@ -14,7 +14,6 @@ import { MeetingContainer } from './containers/Meeting'
 import configureStore from './store/configureStore'
 
 
-
 const store = configureStore();
 const history = createBrowserHistory();
 
