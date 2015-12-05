@@ -67,7 +67,6 @@ class Meeting extends Component {
         <table>
           <tbody>
             <tr><td>meeting.id</td><td>{this.props.meeting.id}</td></tr>
-            <tr><td>started</td><td>{this.props.started}</td></tr>
             <tr><td>name</td><td>{this.props.meeting.name}</td></tr>
             <tr><td>startTime</td><td>{this.props.meeting.startTime}</td></tr>
             <tr><td>participants</td><td>{this.props.meeting.participants}</td></tr>

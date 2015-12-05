@@ -36,7 +36,14 @@ export function joinedMeeting(meeting) {
     dispatch(joined(meeting));
   }
 }
-export const stoppedMeeting = createAction(STOPPED_MEETING, timeElapsed => timeElapsed);
+
+const stopped = createAction(STOPPED_MEETING, timeElapsed => timeElapsed);
+export const stoppedMeeting = function(timeElapsed) {
+  return dispatch => {
+    stopTimer();
+    dispatch(stopped(timeElapsed));
+  }
+}
 
 const stop = createAction(STOP_MEETING);
 export function stopMeeting() {
