@@ -35,19 +35,10 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
   val meetingManager = system.actorOf(MeetingManagerActor.props())
 
 
-  def index = Action {
-    Ok(views.html.index(meetingForm))
-  }
-
-  def m(meetingId: String) = Action {
-    Ok(views.html.index(meetingForm))
-  }
-
-
   def start = Action { implicit request =>
     meetingForm.bindFromRequest.fold(
       formWithErrors => {
-        BadRequest(views.html.index(formWithErrors))
+        ???
       },
       meetingFormData => {
         val meeting = Meeting(meetingFormData)
