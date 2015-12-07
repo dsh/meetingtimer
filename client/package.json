@@ -29,5 +29,9 @@
     "redux-router": "^0.1.0",
     "redux-simple-router": "0.0.10",
     "redux-thunk": "^1.0.0"
+  },
+  "scripts": {
+    "watch": "webpack --progress --profile --colors --watch",
+    "build": "webpack --progress --profile --colors"
   }
 }

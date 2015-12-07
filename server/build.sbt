@@ -1,3 +1,5 @@
+import com.typesafe.sbt.packager.archetypes.ServerLoader
+
 name := "meetingtimer"
 
 version := "0.1"
@@ -10,9 +12,12 @@ packageSummary in Linux := "meetingtimer.io"
 
 packageDescription := "Distributed meeting timer and cost calculator"
 
+serverLoading in Debian := ServerLoader.SystemV
+
+
 scalaVersion := "2.11.7"
 
-libraryDependencies ++= Seq( jdbc , cache , ws , specs2 % Test )
+libraryDependencies ++= Seq( jdbc , cache , ws , filters,  specs2 % Test )
 
 unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )
 

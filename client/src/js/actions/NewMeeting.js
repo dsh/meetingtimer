@@ -22,7 +22,7 @@ function startMeetingRequest(meeting) {
   return dispatch => {
     dispatch(start(meeting));
     // @todo see https://github.com/github/fetch to add error handling
-    return fetch('/start', {
+    return fetch('http://' + location.hostname + ':9000/start', {
       method: 'post',
       headers: {
         'Accept': 'application/json',

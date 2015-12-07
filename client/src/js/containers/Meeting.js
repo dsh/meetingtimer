@@ -39,7 +39,7 @@ class Meeting extends Component {
     // @todo need error and close hanlders
     // @todo need retry open when closed unexpectedly
     var websSocketUrl = "/meeting-socket/" + this.props.params.meetingId;
-    this.ws = new WebSocket("ws://" + location.hostname + ':' + location.port + websSocketUrl);
+    this.ws = new WebSocket("ws://" + location.hostname + ':9000' + websSocketUrl);
     this.ws.onmessage = this.handleMessage;
     this.ws.onopen = () => this.send("join");
   }
