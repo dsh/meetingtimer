@@ -9,21 +9,17 @@ module.exports = {
   target: "web",
   output: {
     path: path.join(__dirname, "./public/js"),
-    filename: 'all.js'
+    filename: "all.js",
+    publicPath: "/js/"
   },
   module: {
     loaders: [
       {
-        loader: "babel",
+        loaders: ["react-hot", "babel"],
         include: [
           path.resolve(__dirname, "src/js")
         ],
-        test: /\.jsx?$/,
-        query: {
-          plugins: ["transform-runtime"],
-          presets: ["es2015", "stage-0", "react"]
-        }
-      }
+        test: /\.jsx?$/}
     ]
   }
-}
+};
