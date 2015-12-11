@@ -46,6 +46,6 @@
   },
   "scripts": {
     "build": "webpack --progress --profile --colors",
-    "start": "webpack-dev-server --hot --inline --content-base public/"
+    "start": "webpack-dev-server --hot --inline  --history-api-fallback --content-base public/"
   }
 }

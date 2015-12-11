@@ -15,8 +15,8 @@ function meeting(state = defaultMeetingState, action) {
   switch (action.type) {
     case JOINED_MEETING:
       return Object.assign({},
-        action.payload,
-        {timeElapsed: timeElapsed(action.payload.startTime)}
+        action.payload.meeting,
+        {timeElapsed: timeElapsed(action.payload.meeting.startTime)}
       );
     case MEETING_TICK:
       return Object.assign({}, state, {timeElapsed: action.payload});
@@ -35,7 +35,7 @@ function ui(state = defaultUiState, action) {
 
   switch (action.type) {
     case JOINED_MEETING:
-      return Object.assign({}, state, {inProgress: true});
+      return Object.assign({}, state, {inProgress: action.payload.stopTime === null});
     case STOP_MEETING:
       return Object.assign({}, state, {stopping: true});
     case STOPPED_MEETING:

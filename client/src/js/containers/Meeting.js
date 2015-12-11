@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { joinedMeeting, stoppedMeeting, stopMeeting, closeMeeting } from '../actions/Meeting'
+import { JOINED_MEETING, STOPPED_MEETING, joinedMeeting, stoppedMeeting, stopMeeting, closeMeeting } from '../actions/Meeting'
+import { createAction } from 'redux-actions';
+
 
 class Meeting extends Component {
 
@@ -22,14 +24,17 @@ class Meeting extends Component {
     this.ws.send(JSON.stringify({"command": command}));
   };
 
+  // @todo use redux-action handleActions https://github.com/acdlite/redux-actions
   handleMessage = event => {
     const data = JSON.parse(event.data);
-    switch (data.event) {
-      case "joined":
-        this.props.dispatch(joinedMeeting(data.meeting));
+    // @todo No switch, just dispatch directly. the events from the server are already FSA format.
+    // But then how to have the actionCreator side effects?
+    switch (data.type) {
+      case JOINED_MEETING:
+        this.props.dispatch(joinedMeeting(data.payload));
         break;
-      case "stopped":
-        this.props.dispatch(stoppedMeeting(data.timeElapsed));
+      case STOPPED_MEETING:
+        this.props.dispatch(stoppedMeeting(data.payload));
         break;
     }
   };
@@ -63,7 +68,6 @@ class Meeting extends Component {
       , 2);
     return (
       <div>
-        Meeting {this.props.params.meetingId}
         <table>
           <tbody>
             <tr><td>meeting.id</td><td>{this.props.meeting.id}</td></tr>

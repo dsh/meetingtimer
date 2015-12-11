@@ -3,15 +3,18 @@ package actors
 import akka.actor._
 import akka.event.LoggingReceive
 import models.Meeting
+import play.api.Logger
 import play.api.libs.json._
+
+import scala.concurrent.duration._
+
 
 object MeetingActor {
   def props(meeting: Meeting): Props = Props(classOf[MeetingActor], meeting)
 
-  trait MeetingMessage
+  sealed trait MeetingMessage
   case class JoinMeeting() extends MeetingMessage
   case class StopMeeting() extends MeetingMessage
-
 
   // convert meeting messages from JSON that are received from the client
   implicit object MeetingMessageFormat extends Format[MeetingMessage] {
@@ -25,32 +28,38 @@ object MeetingActor {
 }
 class MeetingActor(meeting: Meeting) extends Actor with ActorLogging {
 
+
   import actors.MeetingActor._
   import actors.UserActor._
 
   // To cluster I would use a pub/sub and make each meeting a "topic".
   // Users would subscribe to the meeting topic for updates.
   var users = Set[ActorRef]()
+  var stopTime: Option[Int] = None
 
-  // @todo Add a timeout so that if a meeting runs too long we automatically kill it.
+  // @todo need a heartbeat from clients to this from triggering.
+  context.setReceiveTimeout(4 hours)
 
   // @todo need to inject this so we can unit test\
-  // @todo is Int fine or do we need long?
-  def computeTimeElapsed(): Int = (System.currentTimeMillis / 1000).toInt - meeting.startTime
+  def getNow = (System.currentTimeMillis / 1000).toInt
 
   def receive = LoggingReceive {
     case JoinMeeting() =>
+      Logger.info("Join Meeting")
       users += sender
       context watch sender
-      sender ! Joined(meeting)
+      sender ! Joined(meeting, stopTime)
     case StopMeeting() =>
-      val timeElapsed = computeTimeElapsed()
-      users foreach { _ ! Stopped(timeElapsed) }
-      self ! PoisonPill
+      Logger.info("Stop Meeting")
+      val now = getNow
+      // If meeting was scheduled for the future and we stop before the meeting actually started,
+      // set the stop time to the start time.
+      val stopTimeActual = meeting.startTime max now
+      stopTime = Some(stopTimeActual)
+      users foreach { _ ! Stopped(meeting.startTime - stopTimeActual) }
     case Terminated(user) =>
       users -= user
-      // @todo Leave the meeting running until a timeout elapsed so users can reconnect.
-      if (users.size == 0)
-        self ! PoisonPill
+    case ReceiveTimeout =>
+      self ! PoisonPill
   }
 }

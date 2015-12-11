@@ -27,13 +27,16 @@ function stopTimer() {
 const meetingTick = createAction(MEETING_TICK, timeElapsed => timeElapsed);
 
 
-const joined = createAction(JOINED_MEETING, meeting => meeting);
-export function joinedMeeting(meeting) {
+const joined = createAction(JOINED_MEETING, payload => payload );
+export function joinedMeeting(payload) {
   return dispatch => {
-    interval = setInterval(function() {
-      dispatch(meetingTick(timeElapsed(meeting.startTime)));
-    }, 1000);
-    dispatch(joined(meeting));
+    // no stop time means the meeting is ongoing. Start the ticks.
+    if (payload.stopTime === null) {
+      interval = setInterval(function () {
+        dispatch(meetingTick(timeElapsed(payload.meeting.startTime)));
+      }, 1000);
+    }
+    dispatch(joined(payload));
   }
 }
 
