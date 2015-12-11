@@ -19,8 +19,10 @@
   "dependencies": {
     "babel-polyfill": "^6.2.0",
     "babel-runtime": "^6.2.0",
+    "frozen-moment": "^0.3.0",
     "history": "^1.13.1",
     "isomorphic-fetch": "^2.2.0",
+    "moment": "^2.10.6",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
     "react-redux": "^4.0.0",
@@ -33,8 +35,14 @@
     "redux-thunk": "^1.0.0"
   },
   "babel": {
-    "plugins": ["transform-runtime"],
-    "presets": ["es2015", "stage-0", "react"]
+    "plugins": [
+      "transform-runtime"
+    ],
+    "presets": [
+      "es2015",
+      "stage-0",
+      "react"
+    ]
   },
   "scripts": {
     "build": "webpack --progress --profile --colors",

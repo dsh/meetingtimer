@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import {reduxForm} from 'redux-form'
+import MeetingTime from './MeetingTime'
+
 export const fields = ['name', 'startTime', 'participants', 'hourlyRate'];
 
 
@@ -13,16 +15,20 @@ class StartMeeting extends Component {
     return (
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="meeting_name">Name:</label> <input id="meeting_name" type="text" {...name} />
+          <label htmlFor="meeting_name">Name:</label>
+          <input id="meeting_name" type="text" {...name} />
         </div>
         <div>
-          <label htmlFor="meeting_startTime">Start Time:</label> <input id="meeting_startTime" type="text" {...startTime} />
+          <label htmlFor="meeting_startTime">Start Time:</label>
+          <MeetingTime id="meeting_startTime" type="text" startTime={startTime} />
         </div>
         <div>
-          <label htmlFor="meeting_participants">Participants:</label> <input id="meeting_participants" type="text" {...participants} />
+          <label htmlFor="meeting_participants">Participants:</label>
+          <input id="meeting_participants" type="text" {...participants} />
         </div>
         <div>
-          <label htmlFor="meeting_hourlyRate">Hourly Rate:</label> <input id="meeting_hourlyRate" type="text" {...hourlyRate} />
+          <label htmlFor="meeting_hourlyRate">Hourly Rate:</label>
+          <input id="meeting_hourlyRate" type="text" {...hourlyRate} />
         </div>
         <button onClick={handleSubmit}>Start</button>
       </form>

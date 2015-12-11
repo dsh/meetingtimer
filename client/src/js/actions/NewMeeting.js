@@ -1,6 +1,9 @@
 import fetch from 'isomorphic-fetch'
-import { createAction } from 'redux-actions';
+import { createAction } from 'redux-actions'
 import { updatePath } from 'redux-simple-router'
+
+var moment = require('moment'); // no es6 import
+require('frozen-moment');
 
 
 export const JOIN_MEETING = "JOIN_MEETING";
@@ -35,8 +38,41 @@ function startMeetingRequest(meeting) {
   }
 }
 
-export function startMeeting(meeting) {
-  return (dispatch, getState) => {
-    return dispatch(startMeetingRequest(meeting))
+/**
+ * Takes validated but unparsed data from the start meeting form.
+ */
+export function startMeeting(meetingData) {
+  function meetingDataToMeeting(meetingData) {
+    // We only require user to give us a time. If it appears to be in the past few hours we'll use a date
+    // in the past. This allows us to start a meeting timer for a meeting already in progress.
+    function convertPastTime(timeString) {
+      const now = moment().freeze();
+      const hoursToLookBack = 8;
+      // anything less than this will be considered the future
+      const futureThreshold = now.subtract(hoursToLookBack, 'hours');
+      // anything greater than this will be considered the past
+      const pastThreshold = now.add(24 - hoursToLookBack, 'hours');
+
+      const timeFormats = ["h:m a", "h:ma", "H:m"];
+      let time = moment(timeString, timeFormats);
+      if (time.isBefore(futureThreshold)) {
+        return time.add(1, 'day');
+      }
+      if (time.isAfter(pastThreshold)) {
+        return time.subtract(1, 'day');
+      }
+      return time;
+    }
+    console.log(convertPastTime(meetingData.startTime).format("X"));
+    return Object.assign(
+      {},
+      meetingData,
+      {startTime: convertPastTime(meetingData.startTime).format("X")}
+    );
+
+  }
+
+  return dispatch => {
+    return dispatch(startMeetingRequest(meetingDataToMeeting(meetingData)));
   }
 }
