@@ -18,18 +18,17 @@ object UserActor {
 
   case class UserRegistered(meetingActorRef: ActorRef)
 
+
+  /*
+  implicit val joinedFmt = Json.writes[Joined]
+  implicit val stoppedFmt = Json.writes[Stopped]
+  */
+
   // Convert user messages to JSON to send to the client
   implicit object UserMessageJsonFormat extends Format[UserMessage] {
     def meetingToJson(theType: String, meeting: Meeting): JsObject = Json.obj(
       "type" -> theType,
-      "payload" -> Json.obj(
-        "id" -> meeting.id,
-        "name" -> meeting.name,
-        "startTime" -> meeting.startTime,
-        "participants" -> meeting.participants,
-        "hourlyRate" -> meeting.hourlyRate,
-        "stopTime" -> JsNull // stopTime.map { n => JsNumber(n) }.getOrElse(null)
-      )
+      "payload" -> meeting
     )
     def writes(msg: UserMessage) = msg match {
       case Joined(meeting) => meetingToJson("JOINED_MEETING", meeting)

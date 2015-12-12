@@ -41,7 +41,7 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
         ???
       },
       meetingFormData => {
-        val meeting = Meeting(meetingFormData)
+        val meeting = Meeting.fromFormData(meetingFormData)
         Logger.info(s"Starting MeetingActor for meeting $meeting.id")
         meetingManager ! CreateMeeting(meeting)
         Ok(JsString(meeting.id))

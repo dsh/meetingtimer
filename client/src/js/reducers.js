@@ -22,7 +22,8 @@ function meeting(state = defaultMeetingState, action) {
     case MEETING_TICK:
       return Object.assign({}, state, {timeElapsed: action.payload});
     case STOPPED_MEETING:
-      return Object.assign({}, state, {timeElapsed: action.payload.stopTime - action.payload.startTime});
+      // stopTime can be null if meeting never started. Don't allow negative times.
+      return Object.assign({}, state, {timeElapsed: Math.max(0, action.payload.stopTime - action.payload.startTime)});
     default:
       return state;
   }
