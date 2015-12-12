@@ -17,6 +17,7 @@ object MeetingManagerActor {
 class MeetingManagerActor extends Actor with ActorLogging {
   import actors.MeetingManagerActor._
 
+  // @todo switch to using become
   val meetings = scala.collection.mutable.Map[String, ActorRef]()
 
   def receive = LoggingReceive {

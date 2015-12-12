@@ -6,18 +6,16 @@ var moment = require('moment'); // no es6 import
 require('frozen-moment');
 
 
-export const JOIN_MEETING = "JOIN_MEETING";
 export const START_MEETING = "START_MEETING";
 export const START_MEETING_REQUEST = "START_MEETING_REQUEST";
 
-const join = createAction(JOIN_MEETING, meetingId => meetingId);
+
 const start = createAction(START_MEETING, meeting => meeting);
 
 
-export function joinMeeting(meetingId) {
+export function joinMeeting(meeting) {
   return dispatch => {
-    dispatch(join(meetingId));
-    dispatch(updatePath("/m/" + meetingId));
+    dispatch(updatePath("/m/" + meeting.id));
   }
 }
 
@@ -34,7 +32,7 @@ function startMeetingRequest(meeting) {
       body: JSON.stringify(meeting)
     })
       .then(req => req.json())
-      .then(meetingId => dispatch(joinMeeting(meetingId)))
+      .then(meeting => dispatch(joinMeeting(meeting)))
   }
 }
 

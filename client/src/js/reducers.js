@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 import {reducer as formReducer} from 'redux-form'
 import { routeReducer } from 'redux-simple-router'
+import {JOIN_MEETING} from './actions/NewMeeting'
 import {JOINED_MEETING, STOPPED_MEETING, STOP_MEETING, MEETING_TICK, timeElapsed} from './actions/Meeting'
 
 export const defaultMeetingState = {
@@ -14,6 +15,7 @@ export const defaultMeetingState = {
 };
 function meeting(state = defaultMeetingState, action) {
   switch (action.type) {
+    case JOIN_MEETING:
     case JOINED_MEETING:
       return Object.assign({},
         action.payload,
@@ -30,14 +32,17 @@ function meeting(state = defaultMeetingState, action) {
 }
 
 export const defaultUiState = {
+  joining: false,
   inProgress: true,
   stopping: false
 };
 function ui(state = defaultUiState, action) {
 
   switch (action.type) {
+    case JOIN_MEETING:
+      return Object.assign({}, state, {joining: true});
     case JOINED_MEETING:
-      return Object.assign({}, state, {inProgress: action.payload.stopTime === null});
+      return Object.assign({}, state, {joining: false, inProgress: action.payload.stopTime === null});
     case STOP_MEETING:
       return Object.assign({}, state, {stopping: true});
     case STOPPED_MEETING:

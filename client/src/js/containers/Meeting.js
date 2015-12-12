@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { JOINED_MEETING, STOPPED_MEETING, joinedMeeting, stoppedMeeting, stopMeeting, closeMeeting } from '../actions/Meeting'
+import { STOP_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, joinedMeeting, stoppedMeeting, joinMeeting, stopMeeting, closeMeeting } from '../actions/Meeting'
 import { createAction } from 'redux-actions';
 
 
@@ -13,15 +13,17 @@ class Meeting extends Component {
 
 
   handleStopMeeting = () => {
-    this.send("stop");
+    this.send(STOP_MEETING);
     this.props.dispatch(stopMeeting());
   };
 
-  send = command => {
+  // the entire websocket might be better in the middlewhare inside the Meeting actions?
+  send = type => {
     if (!this.ws) {
       return;
     }
-    this.ws.send(JSON.stringify({"command": command}));
+    // @todo use createAction?
+    this.ws.send(JSON.stringify(createAction(type)()));
   };
 
   // @todo use redux-action handleActions https://github.com/acdlite/redux-actions
@@ -46,7 +48,10 @@ class Meeting extends Component {
     var websSocketUrl = "/meeting-socket/" + this.props.params.meetingId;
     this.ws = new WebSocket("ws://" + location.hostname + ':9000' + websSocketUrl);
     this.ws.onmessage = this.handleMessage;
-    this.ws.onopen = () => this.send("join");
+    this.ws.onopen = () => {
+      this.send(JOIN_MEETING);
+      this.props.dispatch(joinMeeting());
+    }
   }
   componentWillUnmount() {
     if (this.ws) {

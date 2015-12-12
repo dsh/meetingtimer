@@ -2,11 +2,11 @@ import { createAction } from 'redux-actions';
 
 export const JOINED_MEETING = "JOINED_MEETING";
 export const STOPPED_MEETING = "STOPPED_MEETING";
+export const JOIN_MEETING = "JOIN_MEETING";
 export const STOP_MEETING = "STOP_MEETING";
 export const MEETING_TICK = "MEETING_TICK";
 // close == stopping or navigating away from a meeting
 export const CLOSE_MEETING = "CLOSE_MEETING";
-
 
 export function timeElapsed(startTime) {
   // @todo does this handle time zones correctly?
@@ -48,6 +48,8 @@ export const stoppedMeeting = function(meeting) {
     dispatch(stopped(meeting));
   }
 }
+
+export const joinMeeting = createAction(JOIN_MEETING);
 
 const stop = createAction(STOP_MEETING);
 export function stopMeeting() {

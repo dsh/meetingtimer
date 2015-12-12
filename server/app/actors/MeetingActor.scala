@@ -18,10 +18,12 @@ object MeetingActor {
 
   // convert meeting messages from JSON that are received from the client
   implicit object MeetingMessageFormat extends Format[MeetingMessage] {
+    // We never write meeting messages to the client. We need this implemented, though, so
+    // we can create the frame formatters for WebSocket.acceptWithActor.
     def writes(msg: MeetingMessage) = JsNull
-    def reads(json: JsValue) = (json \ "command").asOpt[String] match {
-      case Some("join") => JsSuccess(JoinMeeting())
-      case Some("stop") => JsSuccess(StopMeeting())
+    def reads(json: JsValue) = (json \ "type").asOpt[String] match {
+      case Some("JOIN_MEETING") => JsSuccess(JoinMeeting())
+      case Some("STOP_MEETING") => JsSuccess(StopMeeting())
       case _ => JsError()
     }
   }
@@ -31,7 +33,7 @@ class MeetingActor(initialMeeting: Meeting) extends Actor with ActorLogging {
   import actors.MeetingActor._
   import actors.UserActor._
 
-  // @todo need a heartbeat from clients to this from triggering.
+  // @todo need a heartbeat from clients to stop this from triggering.
   context.setReceiveTimeout(4 hours)
 
 

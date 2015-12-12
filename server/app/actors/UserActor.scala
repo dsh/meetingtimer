@@ -19,11 +19,6 @@ object UserActor {
   case class UserRegistered(meetingActorRef: ActorRef)
 
 
-  /*
-  implicit val joinedFmt = Json.writes[Joined]
-  implicit val stoppedFmt = Json.writes[Stopped]
-  */
-
   // Convert user messages to JSON to send to the client
   implicit object UserMessageJsonFormat extends Format[UserMessage] {
     def meetingToJson(theType: String, meeting: Meeting): JsObject = Json.obj(
@@ -34,32 +29,38 @@ object UserActor {
       case Joined(meeting) => meetingToJson("JOINED_MEETING", meeting)
       case Stopped(meeting) => meetingToJson("STOPPED_MEETING", meeting)
     }
+    // We never read user messages from the client. We need this implemented, though, so
+    // we can create the frame formatters for WebSocket.acceptWithActor.
     def reads(json: JsValue) = JsError()
   }
 }
 
-class UserActor(meetingManagerRef: ActorRef, meetingId: String, out: ActorRef) extends Actor with ActorLogging {
+class UserActor(meetingManagerRef: ActorRef, meetingId: String, out: ActorRef) extends Actor
+  with ActorLogging
+  with Stash {
   import actors.UserActor._
   import actors.MeetingActor._
   import actors.MeetingManagerActor.RegisterUser
-
-  var meetingRef: Option[ActorRef] = None
 
   override def preStart() = meetingManagerRef ! RegisterUser(meetingId, self)
 
   // @todo make the timeout configurable
   context.setReceiveTimeout(4 hours)
 
-
   def receive = LoggingReceive {
-    case UserRegistered(ref) => {
-      meetingRef = Some(ref)
-      ref ! JoinMeeting
+    case UserRegistered(meetingRef) => {
+      context become normalReceive(meetingRef)
+      unstashAll()
     }
-    // @todo if message is received before we finish registering we should queue these messages
+    case ReceiveTimeout => self ! PoisonPill
+    case _ => stash()
+  }
+
+
+  def normalReceive(meetingRef: ActorRef) = LoggingReceive {
     case msg: MeetingMessage => {
       Logger.info(s"User meeting message $msg")
-      meetingRef.foreach ( _ ! msg )
+      meetingRef ! msg
     }
     case msg: UserMessage =>
       out ! msg
@@ -67,7 +68,6 @@ class UserActor(meetingManagerRef: ActorRef, meetingId: String, out: ActorRef) e
         case Stopped(_) => self ! PoisonPill
         case _ => ()
       }
-    case ReceiveTimeout =>
-      self ! PoisonPill
+    case ReceiveTimeout => self ! PoisonPill
   }
 }
