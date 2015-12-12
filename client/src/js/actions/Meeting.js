@@ -16,7 +16,10 @@ export function timeElapsed(startTime) {
 
 // this seems very ugly
 var interval;
-function startTimer(startTime) {
+function startTimer(dispatch, startTime) {
+  interval = setInterval(function () {
+    dispatch(meetingTick(timeElapsed(startTime)));
+  }, 1000);
 }
 function stopTimer() {
   if (interval) {
@@ -27,24 +30,22 @@ function stopTimer() {
 const meetingTick = createAction(MEETING_TICK, timeElapsed => timeElapsed);
 
 
-const joined = createAction(JOINED_MEETING, payload => payload );
-export function joinedMeeting(payload) {
+const joined = createAction(JOINED_MEETING, meeting => meeting );
+export function joinedMeeting(meeting) {
   return dispatch => {
     // no stop time means the meeting is ongoing. Start the ticks.
-    if (payload.stopTime === null) {
-      interval = setInterval(function () {
-        dispatch(meetingTick(timeElapsed(payload.meeting.startTime)));
-      }, 1000);
+    if (meeting.stopTime === null) {
+      startTimer(dispatch, meeting.startTime)
     }
-    dispatch(joined(payload));
+    dispatch(joined(meeting));
   }
 }
 
-const stopped = createAction(STOPPED_MEETING, timeElapsed => timeElapsed);
-export const stoppedMeeting = function(timeElapsed) {
+const stopped = createAction(STOPPED_MEETING, meeting => meeting);
+export const stoppedMeeting = function(meeting) {
   return dispatch => {
     stopTimer();
-    dispatch(stopped(timeElapsed));
+    dispatch(stopped(meeting));
   }
 }
 

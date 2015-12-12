@@ -9,19 +9,20 @@ export const defaultMeetingState = {
   startTime: null,
   participants: null,
   hourlyRate: null,
+  stopTime: null,
   timeElapsed: 0
 };
 function meeting(state = defaultMeetingState, action) {
   switch (action.type) {
     case JOINED_MEETING:
       return Object.assign({},
-        action.payload.meeting,
-        {timeElapsed: timeElapsed(action.payload.meeting.startTime)}
+        action.payload,
+        {timeElapsed: timeElapsed(action.payload.startTime)}
       );
     case MEETING_TICK:
       return Object.assign({}, state, {timeElapsed: action.payload});
     case STOPPED_MEETING:
-      return Object.assign({}, state, {timeElapsed: action.payload});
+      return Object.assign({}, state, {timeElapsed: action.payload.stopTime - action.payload.startTime});
     default:
       return state;
   }

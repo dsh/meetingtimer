@@ -63,7 +63,6 @@ export function startMeeting(meetingData) {
       }
       return time;
     }
-    console.log(convertPastTime(meetingData.startTime).format("X"));
     return Object.assign(
       {},
       meetingData,

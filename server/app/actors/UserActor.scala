@@ -13,31 +13,27 @@ object UserActor {
     Props(new UserActor(meetingManagerRef, meetingId, out))
 
   sealed trait UserMessage
-  case class Joined(meeting: Meeting, stopTime: Option[Int]) extends UserMessage
-  case class Stopped(timeElapsed: Int) extends UserMessage
+  case class Joined(meeting: Meeting) extends UserMessage
+  case class Stopped(meeting: Meeting) extends UserMessage
 
   case class UserRegistered(meetingActorRef: ActorRef)
 
   // Convert user messages to JSON to send to the client
   implicit object UserMessageJsonFormat extends Format[UserMessage] {
+    def meetingToJson(theType: String, meeting: Meeting): JsObject = Json.obj(
+      "type" -> theType,
+      "payload" -> Json.obj(
+        "id" -> meeting.id,
+        "name" -> meeting.name,
+        "startTime" -> meeting.startTime,
+        "participants" -> meeting.participants,
+        "hourlyRate" -> meeting.hourlyRate,
+        "stopTime" -> JsNull // stopTime.map { n => JsNumber(n) }.getOrElse(null)
+      )
+    )
     def writes(msg: UserMessage) = msg match {
-      case Joined(meeting, stopTime) => Json.obj(
-        "type" -> "JOINED_MEETING",
-        "payload" -> Json.obj(
-          "meeting" -> Json.obj(
-            "id" -> meeting.id,
-            "name" -> meeting.name,
-            "startTime" -> meeting.startTime,
-            "participants" -> meeting.participants,
-            "hourlyRate" -> meeting.hourlyRate
-          ),
-          "stopTime" -> JsNull // stopTime.map { n => JsNumber(n) }.getOrElse(null)
-        )
-      )
-      case Stopped(timeElapsed) => Json.obj(
-        "type" -> "STOPPED_MEETING",
-        "payload" -> timeElapsed
-      )
+      case Joined(meeting) => meetingToJson("JOINED_MEETING", meeting)
+      case Stopped(meeting) => meetingToJson("STOPPED_MEETING", meeting)
     }
     def reads(json: JsValue) = JsError()
   }
