@@ -9,6 +9,9 @@ require('frozen-moment');
 export const START_MEETING = "START_MEETING";
 export const START_MEETING_REQUEST = "START_MEETING_REQUEST";
 
+// @todo this should be in a consts file or something
+export const validTimeFormats = ["h:m a", "h:ma", "H:m"];
+
 
 const start = createAction(START_MEETING, meeting => meeting);
 
@@ -51,8 +54,7 @@ export function startMeeting(meetingData) {
       // anything greater than this will be considered the past
       const pastThreshold = now.add(24 - hoursToLookBack, 'hours');
 
-      const timeFormats = ["h:m a", "h:ma", "H:m"];
-      let time = moment(timeString, timeFormats);
+      let time = moment(timeString, validTimeFormats);
       if (time.isBefore(futureThreshold)) {
         return time.add(1, 'day');
       }
