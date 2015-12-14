@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-fetch'
 import { createAction } from 'redux-actions'
 import { updatePath } from 'redux-simple-router'
-
+var _ = require('lodash');
 var moment = require('moment'); // no es6 import
 require('frozen-moment');
 
@@ -16,9 +16,9 @@ export const validTimeFormats = ["h:m a", "h:ma", "H:m"];
 const start = createAction(START_MEETING, meeting => meeting);
 
 
-export function joinMeeting(meeting) {
+export function joinMeeting(meetingId) {
   return dispatch => {
-    dispatch(updatePath("/m/" + meeting.id));
+    dispatch(updatePath("/m/" + _.trim(meetingId).toUpperCase()));
   }
 }
 
@@ -35,7 +35,7 @@ function startMeetingRequest(meeting) {
       body: JSON.stringify(meeting)
     })
       .then(req => req.json())
-      .then(meeting => dispatch(joinMeeting(meeting)))
+      .then(meeting => dispatch(joinMeeting(meeting.id)))
   }
 }
 

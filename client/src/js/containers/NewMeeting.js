@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import Router from 'react-router'
 import JoinMeeting from '../components/JoinMeeting'
 import StartMeeting from '../components/StartMeeting'
 import {joinMeeting, startMeeting} from '../actions/NewMeeting'

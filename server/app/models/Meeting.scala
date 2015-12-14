@@ -24,7 +24,7 @@ case class Meeting(
 object Meeting {
   // We only want lower case characters, and we want to exclude characters that can be confused for each other
   // like the digit 1 and lower case L
-  val SkipChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0o1li".toSet
+  val SkipChars = "abcdefghijklmnopqrstuvwxyz0O1LI".toSet
   def genMeetingId = scala.util.Random.alphanumeric.filter( !SkipChars.contains(_) ).take(8).mkString
   def fromFormData(d: MeetingFormData) =
     apply(genMeetingId, d.name, d.startTime, d.participants, d.hourlyRate)

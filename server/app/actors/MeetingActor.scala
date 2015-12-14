@@ -61,6 +61,7 @@ class MeetingActor(initialMeeting: Meeting) extends Actor with ActorLogging {
 
   def stopped(meeting: Meeting): Receive = LoggingReceive {
     case JoinMeeting() =>
+      Logger.info("Join Meeting while stopped")
       sender ! Stopped(meeting)
     case ReceiveTimeout =>
       self ! PoisonPill

@@ -41,20 +41,20 @@ StartMeeting.propTypes =  {
 
 const validate = values => {
   const m = _.mapValues(values, _.trim);
-  var requiredErrors = _.chain(m).pick(_.isEmpty).mapValues(v => "Required").value();
+  var requiredErrors = _.chain(m).pick(_.isEmpty).mapValues(v => "Required.").value();
   var errors = {};
   if (!/^[0-9]+$/.test(m.participants) || Number(m.participants) <= 0) {
-    errors.participants = "Must be a positive integer";
+    errors.participants = "Must be a positive integer.";
   }
   if (!/^[0-9]+(\.[0-9]+)?$/.test(m.hourlyRate) || Number(m.hourlyRate) <= 0) {
-    errors.hourlyRate = "Must be a positive number";
+    errors.hourlyRate = "Must be a positive number.";
   }
   if (!moment(m.startTime, validTimeFormats).isValid()) {
-    errors.startTime = "Start time invalid";
+    errors.startTime = "Start time invalid.";
   }
   // Missing required errors take precedence
   return Object.assign({}, errors, requiredErrors);
-}
+};
 
 export default reduxForm({
   form: 'start_meeting',

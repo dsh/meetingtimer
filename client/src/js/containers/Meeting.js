@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { STOP_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, joinedMeeting, stoppedMeeting, joinMeeting, stopMeeting, closeMeeting } from '../actions/Meeting'
+import { STOP_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, joinedMeeting, stoppedMeeting,
+  joinMeeting, stopMeeting, closeMeeting, startNewMeeting } from '../actions/Meeting'
 import { createAction } from 'redux-actions';
+import { Link } from 'react-router'
 
 
 class Meeting extends Component {
@@ -86,6 +88,9 @@ class Meeting extends Component {
         </table>
         { this.props.ui.inProgress && ! this.props.ui.stopping &&
           <button onClick={this.handleStopMeeting}>Stop</button>
+        }
+        { ! this.props.ui.inProgress && ! this.props.ui.stopping &&
+          <Link to="/">start a new meeting</Link>
         }
       </div>
     )

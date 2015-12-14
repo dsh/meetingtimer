@@ -59,6 +59,7 @@ export function stopMeeting() {
   }
 }
 
+
 // @todo don't manually call .. subscribe to UI state changes?
 const close = createAction(CLOSE_MEETING);
 export function closeMeeting() {
