@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import Cost from '../components/Cost'
 import { connect } from 'react-redux'
 import { STOP_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, joinedMeeting, stoppedMeeting,
   joinMeeting, stopMeeting, closeMeeting, startNewMeeting } from '../actions/Meeting'
@@ -83,7 +84,7 @@ class Meeting extends Component {
             <tr><td>participants</td><td>{this.props.meeting.participants}</td></tr>
             <tr><td>hourlyRate</td><td>{this.props.meeting.hourlyRate}</td></tr>
             <tr><td>timeElapsed</td><td>{this.props.meeting.timeElapsed}</td></tr>
-            <tr><td>Cost</td><td>{cost}</td></tr>
+            <tr><td>Cost</td><td><Cost cost={cost} /></td></tr>
           </tbody>
         </table>
         { this.props.ui.inProgress && ! this.props.ui.stopping &&
