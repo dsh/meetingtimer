@@ -11,7 +11,7 @@ export const CLOSE_MEETING = "CLOSE_MEETING";
 export function timeElapsed(startTime) {
   // @todo does this handle time zones correctly?
   // if start time is in the future, timeElapsed is 0
-  return Math.max(0, Math.round(new Date().getTime() / 1000) - startTime);
+  return Math.max(0, (new Date().getTime()/1000) - startTime);
 }
 
 // this seems very ugly
@@ -19,6 +19,7 @@ var interval;
 function startTimer(dispatch, startTime) {
   interval = setInterval(function () {
     dispatch(meetingTick(timeElapsed(startTime)));
+    // @todo make tick length configurable
   }, 1000);
 }
 function stopTimer() {

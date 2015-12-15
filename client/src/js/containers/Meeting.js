@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import Cost from '../components/Cost'
+import TimeElapsed from '../components/TimeElapsed'
 import { connect } from 'react-redux'
 import { STOP_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, joinedMeeting, stoppedMeeting,
   joinMeeting, stopMeeting, closeMeeting, startNewMeeting } from '../actions/Meeting'
@@ -65,15 +66,10 @@ class Meeting extends Component {
     this.props.dispatch(closeMeeting());
   }
   render() {
-    // from http://www.jacklmoore.com/notes/rounding-in-javascript/
-    function round(value, decimals) {
-      return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
-    }
-    var cost = round(
+    var cost =
       this.props.meeting.participants
       * this.props.meeting.timeElapsed / (60*60)
-      * this.props.meeting.hourlyRate
-      , 2);
+      * this.props.meeting.hourlyRate;
     return (
       <div>
         <table>
@@ -83,7 +79,7 @@ class Meeting extends Component {
             <tr><td>startTime</td><td>{this.props.meeting.startTime}</td></tr>
             <tr><td>participants</td><td>{this.props.meeting.participants}</td></tr>
             <tr><td>hourlyRate</td><td>{this.props.meeting.hourlyRate}</td></tr>
-            <tr><td>timeElapsed</td><td>{this.props.meeting.timeElapsed}</td></tr>
+            <tr><td>timeElapsed</td><td><TimeElapsed seconds={this.props.meeting.timeElapsed} /></td></tr>
             <tr><td>Cost</td><td><Cost cost={cost} /></td></tr>
           </tbody>
         </table>
