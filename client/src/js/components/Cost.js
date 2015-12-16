@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import BlockLetters from './BlockLetters'
 var _ = require('lodash');
 
 export default class Cost extends Component {
@@ -22,9 +23,10 @@ export default class Cost extends Component {
       _.padLeft(String(whole), 6, "0").split(""),
       iteratee,
       [0, ""])[1];
+    const formattedCost = "$" + formattedWhole + "." + fraction;
     return (
-      <div>
-        ${formattedWhole}.{fraction}
+      <div className="cost">
+        <BlockLetters letters={formattedCost} />
       </div>
     );
   }

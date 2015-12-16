@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-var moment = require('moment');
+import BlockLetters from './BlockLetters'
 
 export default class TimeElapsed extends Component {
   render() {
@@ -13,7 +13,7 @@ export default class TimeElapsed extends Component {
     const time = _.padLeft(h, 2, "0") + ":" + _.padLeft(m, 2, "0") + ":" + _.padLeft(s.toFixed(1), 4, "0");
     return (
       <div className="timeElapsed">
-        {time}
+        <BlockLetters letters={time} />
       </div>
     );
   }
