@@ -1,3 +1,3 @@
 package views.formdata
 
-case class MeetingFormData(name: String, startTime: Int, participants: Int, hourlyRate: Int)
+case class MeetingFormData(name: String, startTime: Double, participants: Int, hourlyRate: Double)

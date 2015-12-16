@@ -16,6 +16,9 @@ import play.api.libs.json.Json
 import play.api.mvc.WebSocket.FrameFormatter
 import play.api.mvc._
 import views.formdata.MeetingFormData
+import play.api.data.format.Formats._
+import play.api.data.validation.Constraints._
+
 
 
 
@@ -27,9 +30,9 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
   val meetingForm = Form(
     mapping(
       "name" -> nonEmptyText,
-      "startTime" -> number(min=0),
+      "startTime" -> of[Double].verifying(min(0.0, strict=true)),
       "participants" -> number(min=1),
-      "hourlyRate" -> number(min=0)
+      "hourlyRate" -> of[Double].verifying(min(0.0, strict=true))
     )(MeetingFormData.apply)(MeetingFormData.unapply)
   )
 

@@ -8,15 +8,15 @@ import views.formdata.MeetingFormData
 case class Meeting(
   id: String,
   name: String,
-  startTime: Int,
+  startTime: Double,
   participants: Int,
-  hourlyRate: Int,
-  stopTime: Option[Int] = None
+  hourlyRate: Double,
+  stopTime: Option[Double] = None
 ) {
   def stop = {
     // If meeting was scheduled for the future and we stop before the meeting actually started,
     // set the stop time to the start time.
-    val newStopTime = startTime max (System.currentTimeMillis / 1000).toInt
+    val newStopTime = startTime max (System.currentTimeMillis / 1000d)
     this.copy(stopTime = Some(newStopTime))
   }
 }
@@ -31,9 +31,9 @@ object Meeting {
   implicit val meetingWrites: Writes[Meeting] = (
     (JsPath \ "id" ).write[String] and
     (JsPath \ "name").write[String] and
-    (JsPath \ "startTime").write[Int] and
+    (JsPath \ "startTime").write[Double] and
     (JsPath \ "participants").write[Int] and
-    (JsPath \ "hourlyRate").write[Int] and
-    (JsPath \ "stopTime").write[Option[Int]]
+    (JsPath \ "hourlyRate").write[Double] and
+    (JsPath \ "stopTime").write[Option[Double]]
   )(unlift(Meeting.unapply))
 }
