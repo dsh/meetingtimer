@@ -7,6 +7,7 @@ import { STOP_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, joinedMeet
 import { createAction } from 'redux-actions';
 import { Link } from 'react-router'
 
+require('./Meeting.less');
 
 class Meeting extends Component {
 
@@ -79,25 +80,27 @@ class Meeting extends Component {
       this.props.meeting.participants
       * this.props.meeting.timeElapsed / (60*60)
       * this.props.meeting.hourlyRate;
+    // @todo ShareMeeting to different component
+    // @todo url builder for the meeting link. We use it in navigate, too.
     return (
-      <div>
-        <table>
-          <tbody>
-            <tr><td>meeting.id</td><td>{this.props.meeting.id}</td></tr>
-            <tr><td>name</td><td>{this.props.meeting.name}</td></tr>
-            <tr><td>startTime</td><td>{this.props.meeting.startTime}</td></tr>
-            <tr><td>participants</td><td>{this.props.meeting.participants}</td></tr>
-            <tr><td>hourlyRate</td><td>{this.props.meeting.hourlyRate}</td></tr>
-            <tr><td>timeElapsed</td><td><TimeElapsed seconds={this.props.meeting.timeElapsed} /></td></tr>
-            <tr><td>Cost</td><td><Cost cost={cost} /></td></tr>
-          </tbody>
-        </table>
-        { this.props.ui.inProgress && ! this.props.ui.stopping &&
-          <button onClick={this.handleStopMeeting}>Stop</button>
-        }
-        { ! this.props.ui.inProgress && ! this.props.ui.stopping &&
-          startNew
-        }
+      <div className="meeting-container">
+        <div className="meeting-info">
+          <div className="meeting-name">{this.props.meeting.name}</div>
+          <TimeElapsed seconds={this.props.meeting.timeElapsed} />
+          <Cost cost={cost} />
+          <div className="meeting-controls">
+            { this.props.ui.inProgress && ! this.props.ui.stopping &&
+              <button onClick={this.handleStopMeeting}>Stop</button>
+            }
+            { ! this.props.ui.inProgress && ! this.props.ui.stopping &&
+              startNew
+            }
+          </div>
+        </div>
+        <div className="share-meeting">
+          Meeting ID: <span className="meeting-id">{this.props.meeting.id}</span><br />
+          or share this link <Link className="meeting-link" to="/m/{this.props.meeting.id}">https://meetingtimer.io/m/{this.props.meeting.id}</Link> [copy]
+        </div>
       </div>
     )
   }

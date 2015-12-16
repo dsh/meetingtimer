@@ -19,7 +19,12 @@ module.exports = {
         include: [
           path.resolve(__dirname, "src/js")
         ],
-        test: /\.jsx?$/}
+        test: /\.jsx?$/
+      },
+      {
+        test: /\.less$/,
+        loader: "style!css!autoprefixer!less"
+      }
     ]
   }
 };

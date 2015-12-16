@@ -20,7 +20,7 @@ export default class Cost extends Component {
     // 2. Reduce over array, adding commas.
     // 3. Extract just the string (ignore pos)
     const formattedWhole = _.reduceRight(
-      _.padLeft(String(whole), 6, "0").split(""),
+      _.padLeft(String(whole), 5, "0").split(""),
       iteratee,
       [0, ""])[1];
     const formattedCost = "$" + formattedWhole + "." + fraction;

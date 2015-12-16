@@ -20,7 +20,7 @@ function startTimer(dispatch, startTime) {
   interval = setInterval(function () {
     dispatch(meetingTick(timeElapsed(startTime)));
     // @todo make tick length configurable
-  }, 1000);
+  }, 100);
 }
 function stopTimer() {
   if (interval) {

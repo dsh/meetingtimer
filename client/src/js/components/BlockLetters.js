@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 var _ = require('lodash');
+require('./BlockLetters.less')
 
 class BlockLetter extends Component {
   render() {
@@ -31,7 +32,7 @@ export default class BlockLetters extends Component {
     const { letters } = this.props;
     const blockLetters = _.map(letters.split(""), (l, k) => <BlockLetter key={k} letter={l} />);
     return (
-      <span className="block-letters">{blockLetters}</span>
+      <div className="block-letters">{blockLetters}</div>
     );
   }
 }
