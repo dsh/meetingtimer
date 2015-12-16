@@ -3,7 +3,7 @@ import Cost from '../components/Cost'
 import TimeElapsed from '../components/TimeElapsed'
 import { connect } from 'react-redux'
 import { STOP_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, joinedMeeting, stoppedMeeting,
-  joinMeeting, stopMeeting, closeMeeting, startNewMeeting } from '../actions/Meeting'
+  joinMeeting, stopMeeting, closeMeeting } from '../actions/Meeting'
 import { createAction } from 'redux-actions';
 import { Link } from 'react-router'
 
@@ -66,7 +66,16 @@ class Meeting extends Component {
     this.props.dispatch(closeMeeting());
   }
   render() {
-    var cost =
+    const startNew = <Link to="/">start a new meeting</Link>;
+    if (this.props.ui.joining) {
+      return (
+        <div>
+          <div className="joining">Joining meeting...</div>
+          {startNew}
+        </div>
+      );
+    }
+    const cost =
       this.props.meeting.participants
       * this.props.meeting.timeElapsed / (60*60)
       * this.props.meeting.hourlyRate;
@@ -87,7 +96,7 @@ class Meeting extends Component {
           <button onClick={this.handleStopMeeting}>Stop</button>
         }
         { ! this.props.ui.inProgress && ! this.props.ui.stopping &&
-          <Link to="/">start a new meeting</Link>
+          startNew
         }
       </div>
     )
