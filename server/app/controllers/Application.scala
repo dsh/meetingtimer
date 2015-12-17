@@ -32,7 +32,7 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
       "name" -> nonEmptyText,
       "startTime" -> of[Double].verifying(min(0.0, strict=true)),
       "participants" -> number(min=1),
-      "hourlyRate" -> of[Double].verifying(min(0.0, strict=true))
+      "hourlyRate" -> bigDecimal
     )(MeetingFormData.apply)(MeetingFormData.unapply)
   )
 

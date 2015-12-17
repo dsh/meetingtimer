@@ -10,7 +10,7 @@ case class Meeting(
   name: String,
   startTime: Double,
   participants: Int,
-  hourlyRate: Double,
+  hourlyRate: BigDecimal,
   stopTime: Option[Double] = None
 ) {
   def stop = {
@@ -33,7 +33,7 @@ object Meeting {
     (JsPath \ "name").write[String] and
     (JsPath \ "startTime").write[Double] and
     (JsPath \ "participants").write[Int] and
-    (JsPath \ "hourlyRate").write[Double] and
+    (JsPath \ "hourlyRate").write[BigDecimal] and
     (JsPath \ "stopTime").write[Option[Double]]
   )(unlift(Meeting.unapply))
 }

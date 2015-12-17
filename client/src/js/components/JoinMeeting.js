@@ -13,10 +13,12 @@ class JoinMeeting extends Component {
       handleSubmit
       } = this.props;
     return (
-      <form onSubmit={handleSubmit}>
-        <Input id="meeting_id" label="Meeting ID" type="text" field={meetingId} />
-        <button onClick={handleSubmit}>Join</button>
-      </form>
+      <div className="join-meeting">
+        <form onSubmit={handleSubmit}>
+          <input className="meeting-id" placeholder="meeting id" type="text" {...meetingId} />
+          <button onClick={handleSubmit}>Join</button>
+        </form>
+      </div>
     )
   }
 }

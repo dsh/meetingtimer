@@ -4,6 +4,7 @@ import MeetingTime from './MeetingTime'
 import Input from './Input'
 import InputError from './InputError'
 import {validTimeFormats} from '../actions/NewMeeting'
+require('./StartMeeting.less');
 
 var _ = require('lodash');
 var moment = require('moment'); // no es6 import
@@ -19,17 +20,28 @@ class StartMeeting extends Component {
       handleSubmit
       } = this.props;
     return (
-      <form onSubmit={handleSubmit}>
-        <Input id="meeting_name" label="Name" type="text" field={name} />
-        <div>
-          <label htmlFor="meeting_startTime">Start Time:</label>
-          <MeetingTime id="meeting_startTime"  startTime={startTime} />
-          <InputError field={startTime} />
+      <div className="start-meeting">
+        <div className="start-meeting-header">
+          Start a Meeting
         </div>
-        <Input id="meeting_participants" label="Participants" type="text" field={participants} />
-        <Input id="meeting_hourlyRate" label="Hourly Rate" type="text" field={hourlyRate} />
-        <button onClick={handleSubmit}>Start</button>
-      </form>
+        <form onSubmit={handleSubmit}>
+          <div className="start-meeting-name">
+            <input id="meeting_name" placeholder="Daily Status Report" type="text" {...name} />
+          </div>
+          <div className="start-meeting-details">
+            <span>starting at</span>
+            <MeetingTime id="meeting_startTime" startTime={startTime} />
+            <span>with</span>
+            <input id="meeting_participants" placeholder="6" type="number" {...participants} />
+            <span>people at $</span>
+            <input id="meeting_hourlyRate" placeholder="50" type="number" {...hourlyRate} />
+            <span>per hour.</span>
+          </div>
+          <div className="start-meeting-button">
+            <button onClick={handleSubmit}>Start</button>
+          </div>
+        </form>
+      </div>
     )
   }
 }

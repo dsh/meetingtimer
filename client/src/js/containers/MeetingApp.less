@@ -1,0 +1,60 @@
+div {
+  font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+button {
+  background: #30b05d;
+  border: none;
+  border-radius: 5px;
+  color: #ffffff;
+  font-size: 18px;
+  padding: 10px 20px;
+  text-decoration: none;
+}
+.nav-bar {
+  border-bottom: 1px solid #ccc;
+  font-size: 20px;
+  padding: 10pt 20pt;
+
+  // @todo clearfix hack, move to mixin with hoisting https://gist.github.com/geddski/2416187
+  zoom: 1;
+  &:before, &:after { content: "\0020"; display: block; height: 0; overflow: hidden; }
+  &:after { clear: both; }
+}
+.nav-link-list {
+  float: left;
+  a {
+    margin-right: 15px;
+  }
+}
+.nav-site-name {
+  font-family: "Trebuchet MS","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Tahoma,sans-serif;
+  font-size: 24px;
+  font-style: italic;
+  margin-right: 30px !important;
+}
+
+.nav-join-meeting {
+  float: right;
+  height: 45px;
+  .meeting-id {
+    font-size: 15px;
+    padding: 12px;
+    width: 120px;
+  }
+  button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    height: 43px;
+  }
+  div {
+    display: inline-block;
+    margin-left: 10px;
+  }
+}
+.meeting-id {
+  font-family: "Lucida Console","Lucida Sans Typewriter",monaco,"Bitstream Vera Sans Mono",monospace
+}

@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import JoinMeeting from '../components/JoinMeeting'
 import StartMeeting from '../components/StartMeeting'
-import {navigateToMeeting, startMeeting} from '../actions/NewMeeting'
+import {startMeeting} from '../actions/NewMeeting'
+require("./NewMeeting.less");
 
 class NewMeeting extends Component {
 
@@ -11,14 +11,14 @@ class NewMeeting extends Component {
     super(props);
   }
 
-  handleJoinMeeting = formData => this.props.dispatch(navigateToMeeting(formData.meetingId));
   handleStartMeeting = formData => this.props.dispatch(startMeeting(formData));
 
   render() {
     return (
-      <div>
-        <JoinMeeting onSubmit={this.handleJoinMeeting} />
-        <br /><br />
+      <div className="new-meeting">
+        <div className="tag-line">
+          Witty Tagline Goes Here
+        </div>
         <StartMeeting onSubmit={this.handleStartMeeting} />
       </div>
     )
