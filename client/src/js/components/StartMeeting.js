@@ -11,6 +11,10 @@ var moment = require('moment'); // no es6 import
 
 export const fields = ['name', 'startTime', 'participants', 'hourlyRate'];
 
+// find current time rounded to nearest half hour
+const halfHour = 30 * 60 * 1000;
+const nowRounded = moment(Math.round(new Date() / halfHour) * halfHour).format("h:mm A");
+
 
 class StartMeeting extends Component {
 
@@ -68,8 +72,15 @@ const validate = values => {
   return Object.assign({}, errors, requiredErrors);
 };
 
-export default reduxForm({
-  form: 'start_meeting',
-  fields,
-  validate
-})(StartMeeting);
+export default reduxForm(
+  {
+    form: 'start_meeting',
+    fields,
+    validate
+  },
+  state => ({
+    initialValues: {
+      startTime: nowRounded
+    }
+  })
+)(StartMeeting);
