@@ -7,7 +7,7 @@ export default class MeetingTime extends Component {
       } = this.props;
     return (
       <span>
-        <input type="time" id={id} {...startTime} />
+        <input type="text" id={id} {...startTime} />
       </span>
     );
   }

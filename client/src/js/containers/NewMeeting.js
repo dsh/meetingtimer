@@ -6,11 +6,6 @@ require("./NewMeeting.less");
 
 class NewMeeting extends Component {
 
-  // @todo temporary workaround https://phabricator.babeljs.io/T6656
-  constructor(props) {
-    super(props);
-  }
-
   handleStartMeeting = formData => this.props.dispatch(startMeeting(formData));
 
   render() {

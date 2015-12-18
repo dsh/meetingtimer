@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-var _ = require('lodash');
+var map = require('lodash/collection/map');
 require('./BlockLetters.less')
 
 class BlockLetter extends Component {
@@ -30,7 +30,7 @@ BlockLetter.propTypes =  {
 export default class BlockLetters extends Component {
   render() {
     const { letters } = this.props;
-    const blockLetters = _.map(letters.split(""), (l, k) => <BlockLetter key={k} letter={l} />);
+    const blockLetters = map(letters.split(""), (l, k) => <BlockLetter key={k} letter={l} />);
     return (
       <div className="block-letters">{blockLetters}</div>
     );

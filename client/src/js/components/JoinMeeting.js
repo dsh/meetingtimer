@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import {reduxForm} from 'redux-form'
 import Input from './Input'
-var _ = require('lodash');
+var trim = require('lodash/string/trim');
 
 export const fields = ['meetingId'];
 
@@ -29,7 +29,7 @@ JoinMeeting.propTypes =  {
 };
 
 const validate = values => {
-  const meetingId = _.trim(values.meetingId);
+  const meetingId = trim(values.meetingId);
   var errors = {};
   if ( ! /^[0-9a-z]{8}/i.test(meetingId) ) {
     errors.meetingId = "Valid meeting ID required.";

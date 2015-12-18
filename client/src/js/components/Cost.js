@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import BlockLetters from './BlockLetters'
-var _ = require('lodash');
+var reduceRight = require('lodash/collection/reduceRight');
+var padLeft = require('lodash/string/padLeft');
 
 export default class Cost extends Component {
   render() {
@@ -19,8 +20,8 @@ export default class Cost extends Component {
     // 1. Convert whole value into array of chars.
     // 2. Reduce over array, adding commas.
     // 3. Extract just the string (ignore pos)
-    const formattedWhole = _.reduceRight(
-      _.padLeft(String(whole), 5, "0").split(""),
+    const formattedWhole = reduceRight(
+      padLeft(String(whole), 5, "0").split(""),
       iteratee,
       [0, ""])[1];
     const formattedCost = "$" + formattedWhole + "." + fraction;

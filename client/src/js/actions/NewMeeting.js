@@ -2,7 +2,7 @@ import fetch from 'isomorphic-fetch'
 import { createAction } from 'redux-actions'
 import { updatePath } from 'redux-simple-router'
 import { joinMeeting } from './Meeting'
-var _ = require('lodash');
+var trim = require('lodash/string/trim');
 var moment = require('moment'); // no es6 import
 require('frozen-moment');
 
@@ -19,7 +19,7 @@ const start = createAction(START_MEETING, meeting => meeting);
 export function navigateToMeeting(meetingId) {
   return dispatch => {
     dispatch(joinMeeting());
-    dispatch(updatePath("/m/" + _.trim(meetingId).toUpperCase()));
+    dispatch(updatePath("/m/" + trim(meetingId).toUpperCase()));
   }
 }
 

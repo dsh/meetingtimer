@@ -7,10 +7,6 @@ require('./MeetingApp.less');
 
 
 export default class MeetingApp extends Component {
-  // @todo temporary workaround https://phabricator.babeljs.io/T6656
-  constructor(props) {
-    super(props);
-  }
 
   handleJoinMeeting = formData => this.props.dispatch(navigateToMeeting(formData.meetingId));
 

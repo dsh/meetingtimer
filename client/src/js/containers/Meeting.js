@@ -14,12 +14,6 @@ require('./Meeting.less');
 
 class Meeting extends Component {
 
-  // @todo temporary workaround https://phabricator.babeljs.io/T6656
-  constructor(props) {
-    super(props);
-  }
-
-
   handleStopMeeting = () => {
     this.send(STOP_MEETING);
     this.props.dispatch(stopMeeting());
