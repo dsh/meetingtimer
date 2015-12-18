@@ -1,11 +1,14 @@
 import React, { Component, PropTypes } from 'react'
 import Cost from '../components/Cost'
 import TimeElapsed from '../components/TimeElapsed'
+import CopyToClipboard from 'react-copy-to-clipboard'
+
 import { connect } from 'react-redux'
 import { STOP_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, joinedMeeting, stoppedMeeting,
   joinMeeting, stopMeeting, closeMeeting } from '../actions/Meeting'
 import { createAction } from 'redux-actions';
 import { Link } from 'react-router'
+
 
 require('./Meeting.less');
 
@@ -82,6 +85,8 @@ class Meeting extends Component {
       * this.props.meeting.hourlyRate;
     // @todo ShareMeeting to different component
     // @todo url builder for the meeting link. We use it in navigate, too.
+    const meetingPath = "/m/" + this.props.meeting.id;
+    const meetingUrl = "http://meetingtimer.io" + meetingPath;
     return (
       <div className="meeting-container">
         <div className="meeting-info">
@@ -99,7 +104,10 @@ class Meeting extends Component {
         </div>
         <div className="share-meeting">
           Meeting ID: <span className="meeting-id">{this.props.meeting.id}</span><br />
-          or share this link <Link className="meeting-link" to="/m/{this.props.meeting.id}">https://meetingtimer.io/m/{this.props.meeting.id}</Link> [copy]
+          <Link className="meeting-link" to={meetingPath}>{meetingUrl}</Link>&nbsp;
+          <CopyToClipboard text={meetingUrl}>
+            <span className="copy-to-clipboard">&#x279f;</span>
+          </CopyToClipboard>
         </div>
       </div>
     )
