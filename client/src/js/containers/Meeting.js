@@ -21,6 +21,7 @@ class Meeting extends Component {
         { !this.props.meeting.stopTime && <MeetingSocket meetingId={this.props.params.meetingId} /> }
         { this.props.meeting.startTime &&
           !this.props.meeting.stopTime &&
+          !this.props.ui.stopping &&
           <TimeTicker startTime={this.props.meeting.startTime} />
         }
         { this.props.ui.joining && <JoiningMeeting /> }
