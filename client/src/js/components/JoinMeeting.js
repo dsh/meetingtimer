@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react'
 import {reduxForm} from 'redux-form'
-import Input from './Input'
 var trim = require('lodash/string/trim');
 
 export const fields = ['meetingId'];
