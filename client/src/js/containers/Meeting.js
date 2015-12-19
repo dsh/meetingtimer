@@ -2,14 +2,12 @@ import React, { Component, PropTypes } from 'react'
 import Cost from '../components/Cost'
 import TimeElapsed from '../components/TimeElapsed'
 import CopyToClipboard from 'react-copy-to-clipboard'
-
 import { connect } from 'react-redux'
 import { STOP_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, joinedMeeting, stoppedMeeting,
   joinMeeting, stopMeeting, closeMeeting } from '../actions/Meeting'
 import { createAction } from 'redux-actions';
 import { Link } from 'react-router'
-
-
+const moment = require('moment');
 require('./Meeting.less');
 
 class Meeting extends Component {
@@ -64,11 +62,11 @@ class Meeting extends Component {
     this.props.dispatch(closeMeeting());
   }
   render() {
-    const startNew = <Link to="/">start a new meeting</Link>;
+    const startNew = <Link className="btn" to="/">start a new meeting</Link>;
     if (this.props.ui.joining) {
       return (
-        <div>
-          <div className="joining">Joining meeting...</div>
+        <div className="joining-meeting-container">
+          <div className="joining-meeting">Joining meeting...</div>
           {startNew}
         </div>
       );
@@ -81,10 +79,29 @@ class Meeting extends Component {
     // @todo url builder for the meeting link. We use it in navigate, too.
     const meetingPath = "/m/" + this.props.meeting.id;
     const meetingUrl = "http://meetingtimer.io" + meetingPath;
+
+    console.log(this.props.meeting);
+    var meetingTime = "";
+    if (!this.props.ui.inProgress) {
+      if (this.props.meeting.endTime) {
+        meetingTime = "Meeting ended at " + moment(this.props.meeting.endTime * 1000).format("h:mm A") + ".";
+      }
+    } else {
+      const now = moment();
+      const startTime = moment(this.props.meeting.startTime * 1000);
+      const startTimeFormatted = startTime.format("h:mm A");
+      if (startTime.isBefore(now)) {
+        meetingTime = "Meeting starting at " + startTimeFormatted + ".";
+      }
+      else {
+        meetingTime = "Meeting started at " + startTimeFormatted + ".";
+      }
+    }
     return (
       <div className="meeting-container">
         <div className="meeting-info">
           <div className="meeting-name">{this.props.meeting.name}</div>
+          <div className="meeting-time">{meetingTime}</div>
           <TimeElapsed seconds={this.props.meeting.timeElapsed} />
           <Cost cost={cost} />
           <div className="meeting-controls">
