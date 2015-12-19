@@ -13,7 +13,6 @@ class MeetingAppComponent extends Component {
 
   render() {
     var join = '';
-    console.log(this.props.ui);
     if (!this.props.ui.inProgress) {
       join = (
         <div className="nav-join-meeting">

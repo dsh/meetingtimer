@@ -83,18 +83,18 @@ class Meeting extends Component {
     console.log(this.props.meeting);
     var meetingTime = "";
     if (!this.props.ui.inProgress) {
-      if (this.props.meeting.endTime) {
-        meetingTime = "Meeting ended at " + moment(this.props.meeting.endTime * 1000).format("h:mm A") + ".";
+      if (this.props.meeting.stopTime) {
+        meetingTime = "Meeting ended at " + moment(this.props.meeting.stopTime * 1000).format("h:mm A") + ".";
       }
     } else {
       const now = moment();
       const startTime = moment(this.props.meeting.startTime * 1000);
       const startTimeFormatted = startTime.format("h:mm A");
       if (startTime.isBefore(now)) {
-        meetingTime = "Meeting starting at " + startTimeFormatted + ".";
+        meetingTime = "Meeting started at " + startTimeFormatted + ".";
       }
       else {
-        meetingTime = "Meeting started at " + startTimeFormatted + ".";
+        meetingTime = "Meeting starting at " + startTimeFormatted + ".";
       }
     }
     return (

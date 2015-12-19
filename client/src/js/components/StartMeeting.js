@@ -27,7 +27,6 @@ class StartMeeting extends Component {
       handleSubmit,
       submitFailed
       } = this.props;
-    console.log(this.props);
     const errors = filter(this.props.fields, f => (submitFailed && f.invalid && f.touched))
       .map(f => <div key={f.name} className="error">{f.error}</div>);
     return (
