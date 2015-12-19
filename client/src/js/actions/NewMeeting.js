@@ -67,7 +67,7 @@ export function startMeeting(meetingData) {
     return Object.assign(
       {},
       meetingData,
-      {startTime: convertPastTime(meetingData.startTime).format("X")}
+      {startTime: Number(convertPastTime(meetingData.startTime).format("X"))}
     );
 
   }

@@ -14,20 +14,15 @@ class Meeting extends Component {
     this.props.dispatch(stopMeeting());
   };
 
+
   render() {
-    console.log(this.props);
+    const { meeting, ui } = this.props;
     return (
       <div>
-        { !this.props.meeting.stopTime && <MeetingSocket meetingId={this.props.params.meetingId} /> }
-        { this.props.meeting.startTime &&
-          !this.props.meeting.stopTime &&
-          !this.props.ui.stopping &&
-          <TimeTicker startTime={this.props.meeting.startTime} />
-        }
-        { this.props.ui.joining && <JoiningMeeting /> }
-        { !this.props.ui.joining &&
-          <MeetingView onStopMeeting={this.handleStopMeeting} meeting={this.props.meeting} ui={this.props.ui} />
-        }
+        { !meeting.stopTime && <MeetingSocket meetingId={this.props.params.meetingId} stopping={ui.stopping} /> }
+        { meeting.startTime && !meeting.stopTime && !ui.stopping && <TimeTicker startTime={meeting.startTime} /> }
+        { ui.joining && <JoiningMeeting /> }
+        { !ui.joining && <MeetingView onStopMeeting={this.handleStopMeeting} meeting={meeting} ui={ui} /> }
       </div>
     );
   }

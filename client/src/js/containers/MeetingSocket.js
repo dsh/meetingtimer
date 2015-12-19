@@ -11,7 +11,6 @@ class MeetingSocketComponent extends Component {
     if (!this.ws) {
       return;
     }
-    // @todo use createAction?
     this.ws.send(JSON.stringify(createAction(type)()));
   };
 
@@ -44,6 +43,16 @@ class MeetingSocketComponent extends Component {
       this.props.dispatch(joinMeeting());
     }
   }
+
+  // @TODO LOOK FOR stopping change
+  // @todo move to RxJs for this... http://stackoverflow.com/a/31312139/895588
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps);
+    if (!this.props.stopping && nextProps.stopping) {
+      this.send(STOP_MEETING);
+    }
+  }
+
   componentWillUnmount() {
     if (this.ws) {
       // @todo do I need to wait to receive the STOPPED message before closing, so I have the
@@ -57,7 +66,9 @@ class MeetingSocketComponent extends Component {
 }
 
 MeetingSocketComponent.propTypes =  {
-  meetingId: PropTypes.string.isRequired
+  meetingId: PropTypes.string.isRequired,
+  // @todo needed for compomentWillReceiveProps ... I don't like this at all
+  stopping: PropTypes.bool.isRequired
 };
 
 
