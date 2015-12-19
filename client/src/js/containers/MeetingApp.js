@@ -42,4 +42,5 @@ function mapStateToProps(state) {
     ui: state.ui
   };
 }
-export const MeetingApp = connect(mapStateToProps)(MeetingAppComponent);
+const MeetingApp = connect(mapStateToProps)(MeetingAppComponent);
+export default MeetingApp;

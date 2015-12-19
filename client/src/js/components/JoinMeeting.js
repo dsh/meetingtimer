@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import {reduxForm} from 'redux-form'
 var trim = require('lodash/string/trim');
 
-export const fields = ['meetingId'];
+const fields = ['meetingId'];
 
 class JoinMeeting extends Component {
 

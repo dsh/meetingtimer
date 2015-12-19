@@ -20,4 +20,5 @@ class NewMeeting extends Component {
   }
 }
 
-export const NewMeetingContainer = connect()(NewMeeting);
+const NewMeetingContainer = connect()(NewMeeting);
+export default NewMeetingContainer;

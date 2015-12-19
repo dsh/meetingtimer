@@ -11,7 +11,7 @@ export default class TimeElapsed extends Component {
     const s = secondsLessHours - m * 60;
     const time = padLeft(h, 2, "0") + ":" + padLeft(m, 2, "0") + ":" + padLeft(s.toFixed(1), 4, "0");
     return (
-      <div className="timeElapsed">
+      <div className="time-elapsed">
         <BlockLetters letters={time} />
       </div>
     );

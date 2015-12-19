@@ -1,8 +1,11 @@
 import { combineReducers } from 'redux'
 import {reducer as formReducer} from 'redux-form'
 import { routeReducer } from 'redux-simple-router'
-import {JOIN_MEETING} from './actions/NewMeeting'
-import {JOINED_MEETING, STOPPED_MEETING, STOP_MEETING, MEETING_TICK, CLOSE_MEETING, timeElapsed} from './actions/Meeting'
+import { START_MEETING } from './actions/NewMeeting'
+import { JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, STOP_MEETING, MEETING_TICK } from './actions/Meeting'
+// @todo I don't like this utility function inside a component
+import { timeElapsed } from './containers/TimeTicker'
+
 
 export const defaultMeetingState = {
   id: null,
@@ -14,7 +17,9 @@ export const defaultMeetingState = {
   timeElapsed: 0
 };
 function meeting(state = defaultMeetingState, action) {
+  console.log(action);
   switch (action.type) {
+    case START_MEETING:
     case JOINED_MEETING:
       return Object.assign({},
         action.payload,
@@ -25,8 +30,6 @@ function meeting(state = defaultMeetingState, action) {
     case STOPPED_MEETING:
       // stopTime can be null if meeting never started. Don't allow negative times.
       return Object.assign({}, action.payload, {timeElapsed: Math.max(0, action.payload.stopTime - action.payload.startTime)});
-    case CLOSE_MEETING:
-      return defaultMeetingState;
     default:
       return state;
   }
@@ -40,6 +43,7 @@ export const defaultUiState = {
 function ui(state = defaultUiState, action) {
 
   switch (action.type) {
+    case START_MEETING:
     case JOIN_MEETING:
       return Object.assign({}, state, {joining: true, inProgress: false});
     case JOINED_MEETING:
@@ -48,8 +52,6 @@ function ui(state = defaultUiState, action) {
       return Object.assign({}, state, {stopping: true});
     case STOPPED_MEETING:
       return Object.assign({}, state, {inProgress: false, stopping: false});
-    case CLOSE_MEETING:
-      return Object.assign({}, state, {inProgress: false});
     default:
       return state;
   }

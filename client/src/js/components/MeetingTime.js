@@ -5,6 +5,7 @@ export default class MeetingTime extends Component {
     const {
       id, startTime
       } = this.props;
+    // @todo if mobile browser use type=time
     return (
       <span>
         <input type="text" id={id} {...startTime} />

@@ -12,7 +12,7 @@ const moment = require('moment');
 require('./StartMeeting.less');
 
 
-export const fields = ['name', 'startTime', 'participants', 'hourlyRate'];
+const fields = ['name', 'startTime', 'participants', 'hourlyRate'];
 
 // find current time rounded to nearest half hour
 const halfHour = 30 * 60 * 1000;
