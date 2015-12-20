@@ -9,6 +9,7 @@ import { syncReduxAndRouter } from 'redux-simple-router'
 import MeetingApp from './containers/MeetingApp'
 import NewMeetingContainer from './containers/NewMeeting'
 import MeetingContainer from './containers/Meeting'
+import About from './components/About'
 import configureStore from './store/configureStore'
 
 
@@ -23,6 +24,8 @@ ReactDOM.render(
       <Route component={MeetingApp}>
         <Route path="/" component={NewMeetingContainer} />
         <Route path="/m/:meetingId" component={MeetingContainer} />
+        <Route path="/about" component={About} />
+
       </Route>
     </Router>
   </Provider>,

@@ -27,7 +27,7 @@ class MeetingAppComponent extends Component {
           <div className="nav-link-list">
             <Link className="nav-site-name" to="/">meetingtimer.io</Link>
             <Link className="nav-link" to="/about">about</Link>
-            <a className="nav-link" href="https://github.com/dsh/meetingtimer">github</a>
+            <a className="nav-link" target="_blank" href="https://github.com/dsh/meetingtimer">github</a>
           </div>
           {join}
         </div>
