@@ -17,7 +17,6 @@ export const defaultMeetingState = {
   timeElapsed: 0
 };
 function meeting(state = defaultMeetingState, action) {
-  console.log(action);
   switch (action.type) {
     case START_MEETING:
     case JOINED_MEETING:

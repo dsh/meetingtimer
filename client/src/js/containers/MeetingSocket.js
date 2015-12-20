@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { createAction } from 'redux-actions'
 import { STOP_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING,
   joinedMeeting, joinMeeting, stoppedMeeting } from '../actions/Meeting'
-
+import ReconnectingWebSocket from '../lib/reconnecting-websocket'
 const HEARTBEAT = 'HEARTBEAT';
 const heartbeatIntervalMs = 60 * 1000;
 
@@ -13,7 +13,7 @@ class MeetingSocketComponent extends Component {
     if (!this.ws) {
       return;
     }
-    this.ws.send(JSON.stringify(createAction(type)()));
+    this.ws.send(createAction(type)());
   };
 
 
@@ -33,18 +33,31 @@ class MeetingSocketComponent extends Component {
     }
   };
 
-  componentWillMount() {
+  stopHeartbeat = () => {
+    if (this.heartbeatInterval) {
+      clearInterval(this.heartbeatInterval);
+      this.heartbeatInterval = null;
+    }
+  };
+
+  startHeartbeat = () => {
+    this.heartbeatInterval = setInterval(() => this.send(HEARTBEAT), heartbeatIntervalMs);
+  };
+
+    componentWillMount() {
     // @todo need error and close hanlders
     // @todo need retry open when closed unexpectedly
     const websSocketUrl = "/meeting-socket/" + this.props.meetingId;
-    this.ws = new WebSocket("ws://" + location.hostname + ':9000' + websSocketUrl);
+    this.ws = new ReconnectingWebSocket("ws://" + location.hostname + ':9000' + websSocketUrl);
     this.ws.onmessage = this.handleMessage;
     this.ws.onopen = () => {
+      console.log("open");
       this.send(JOIN_MEETING);
       // @todo do I need to dispatch this?
       this.props.dispatch(joinMeeting());
-      this.heartbeatInterval = setInterval(() => this.send(HEARTBEAT), heartbeatIntervalMs);
-    }
+      this.startHeartbeat();
+    };
+    this.ws.onclose = this.stopHeartbeat;
   }
 
   // @TODO LOOK FOR stopping change
@@ -56,18 +69,14 @@ class MeetingSocketComponent extends Component {
   }
 
   componentWillUnmount() {
-    if (this.heartbeatInterval) {
-      clearInterval(this.heartbeatInterval);
-    }
-    if (this.ws) {
-      // @todo do I need to wait to receive the STOPPED message before closing, so I have the
-      // actual stop time from the server?
+    this.stopHeartbeat();
+    if (this.ws && this.ws.readyState <= 1) {
       this.ws.close();
     }
   }
 
   // @todo can I render nothing?
-  render = () => <div className="meeting-scoket"></div>
+  render = () => <div></div>
 }
 
 MeetingSocketComponent.propTypes =  {
