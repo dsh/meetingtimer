@@ -15,6 +15,8 @@ object MeetingActor {
   sealed trait MeetingMessage
   case class JoinMeeting() extends MeetingMessage
   case class StopMeeting() extends MeetingMessage
+  case class Heartbeat() extends MeetingMessage
+
 
   // convert meeting messages from JSON that are received from the client
   implicit object MeetingMessageFormat extends Format[MeetingMessage] {
@@ -24,6 +26,7 @@ object MeetingActor {
     def reads(json: JsValue) = (json \ "type").asOpt[String] match {
       case Some("JOIN_MEETING") => JsSuccess(JoinMeeting())
       case Some("STOP_MEETING") => JsSuccess(StopMeeting())
+      case Some("HEARTBEAT") => JsSuccess(Heartbeat())
       case _ => JsError()
     }
   }

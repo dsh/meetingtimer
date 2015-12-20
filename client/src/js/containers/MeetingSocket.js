@@ -4,6 +4,8 @@ import { createAction } from 'redux-actions'
 import { STOP_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING,
   joinedMeeting, joinMeeting, stoppedMeeting } from '../actions/Meeting'
 
+const HEARTBEAT = 'HEARTBEAT';
+const heartbeatIntervalMs = 60 * 1000;
 
 class MeetingSocketComponent extends Component {
 
@@ -41,19 +43,22 @@ class MeetingSocketComponent extends Component {
       this.send(JOIN_MEETING);
       // @todo do I need to dispatch this?
       this.props.dispatch(joinMeeting());
+      this.heartbeatInterval = setInterval(() => this.send(HEARTBEAT), heartbeatIntervalMs);
     }
   }
 
   // @TODO LOOK FOR stopping change
   // @todo move to RxJs for this... http://stackoverflow.com/a/31312139/895588
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps);
     if (!this.props.stopping && nextProps.stopping) {
       this.send(STOP_MEETING);
     }
   }
 
   componentWillUnmount() {
+    if (this.heartbeatInterval) {
+      clearInterval(this.heartbeatInterval);
+    }
     if (this.ws) {
       // @todo do I need to wait to receive the STOPPED message before closing, so I have the
       // actual stop time from the server?

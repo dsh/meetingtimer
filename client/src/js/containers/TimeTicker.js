@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { createAction } from 'redux-actions';
 import { meetingTick } from '../actions/Meeting'
 
+const tickIntervalMs = 100;
+
 export function timeElapsed(startTime) {
   // @todo does this handle time zones correctly?
   // if start time is in the future, timeElapsed is 0
@@ -17,7 +19,7 @@ class TimeTickerComponent extends Component {
 
   componentWillMount() {
     // @todo make th einterval configurable
-    this.interval = setInterval(this.tick, 2000);
+    this.interval = setInterval(this.tick, tickIntervalMs);
   }
 
   componentWillUnmount() {
