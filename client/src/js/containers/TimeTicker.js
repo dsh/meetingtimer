@@ -1,15 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { createAction } from 'redux-actions';
-import { meetingTick } from '../actions/Meeting'
-
-const tickIntervalMs = 100;
-
-export function timeElapsed(startTime) {
-  // @todo does this handle time zones correctly?
-  // if start time is in the future, timeElapsed is 0
-  return Math.max(0, (new Date().getTime()/1000) - startTime);
-}
+import { meetingTick } from '../actions'
+import { tickIntervalMs } from '../constants'
+import timeElapsed from '../lib/timeElapsed'
 
 class TimeTickerComponent extends Component {
 
@@ -18,7 +12,6 @@ class TimeTickerComponent extends Component {
   };
 
   componentWillMount() {
-    // @todo make th einterval configurable
     this.interval = setInterval(this.tick, tickIntervalMs);
   }
 

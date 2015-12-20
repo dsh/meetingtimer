@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { stopMeeting } from '../actions/Meeting'
+import { stopMeeting } from '../actions'
 import MeetingSocket from './MeetingSocket'
 import TimeTicker from './TimeTicker'
 import MeetingView from '../components/MeetingView'

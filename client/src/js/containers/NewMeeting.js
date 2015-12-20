@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import StartMeeting from '../components/StartMeeting'
-import {startMeeting} from '../actions/NewMeeting'
+import {startMeeting} from '../actions'
 require("./NewMeeting.less");
 
 class NewMeeting extends Component {

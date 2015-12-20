@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import JoinMeeting from '../components/JoinMeeting'
-import {navigateToMeeting} from '../actions/NewMeeting'
+import {navigateToMeeting} from '../actions'
 import { Link } from 'react-router'
 require('../../stylesheets/reset.css');
 require('./MeetingApp.less');

@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { createAction } from 'redux-actions'
+import { heartbeatIntervalMs } from '../constants'
 import { STOP_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING,
-  joinedMeeting, joinMeeting, stoppedMeeting } from '../actions/Meeting'
+  joinedMeeting, joinMeeting, stoppedMeeting } from '../actions'
 import ReconnectingWebSocket from '../lib/reconnecting-websocket'
 const HEARTBEAT = 'HEARTBEAT';
-const heartbeatIntervalMs = 60 * 1000;
 
 class MeetingSocketComponent extends Component {
 

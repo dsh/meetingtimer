@@ -37,7 +37,7 @@ export default class MeetingView extends Component {
       }
     }
      return (
-      <div className="meeting-container">
+      <div className="meeting-wrapper">
         <div className="meeting-info">
           <div className="meeting-name">{meeting.name}</div>
           <div className="meeting-time">{meetingTime}</div>

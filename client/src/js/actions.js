@@ -1,20 +1,26 @@
+import { createAction } from 'redux-actions';
 import fetch from 'isomorphic-fetch'
-import { createAction } from 'redux-actions'
 import { updatePath } from 'redux-simple-router'
-import { joinMeeting } from './Meeting'
+import { validTimeFormats } from './constants'
 var trim = require('lodash/string/trim');
 var moment = require('moment'); // no es6 import
 require('frozen-moment');
 
-
+export const JOINED_MEETING = "JOINED_MEETING";
+export const STOPPED_MEETING = "STOPPED_MEETING";
+export const JOIN_MEETING = "JOIN_MEETING";
+export const STOP_MEETING = "STOP_MEETING";
+export const MEETING_TICK = "MEETING_TICK";
 export const START_MEETING = "START_MEETING";
 export const START_MEETING_REQUEST = "START_MEETING_REQUEST";
 
-// @todo this should be in a consts file or something
-export const validTimeFormats = ["h:m a", "h:ma", "H:m"];
 
+export const joinedMeeting = createAction(JOINED_MEETING, meeting => meeting );
+export const stoppedMeeting = createAction(STOPPED_MEETING, meeting => meeting);
+export const joinMeeting = createAction(JOIN_MEETING);
+export const stopMeeting = createAction(STOP_MEETING);
+export const meetingTick = createAction(MEETING_TICK, timeElapsed => timeElapsed);
 
-const start = createAction(START_MEETING, meeting => meeting);
 
 export function navigateToMeeting(meetingId) {
   return dispatch => {
@@ -23,6 +29,7 @@ export function navigateToMeeting(meetingId) {
   }
 }
 
+const start = createAction(START_MEETING, meeting => meeting);
 function startMeetingRequest(meeting) {
   return dispatch => {
     dispatch(start(meeting));

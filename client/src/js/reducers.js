@@ -1,10 +1,8 @@
 import { combineReducers } from 'redux'
 import {reducer as formReducer} from 'redux-form'
 import { routeReducer } from 'redux-simple-router'
-import { START_MEETING } from './actions/NewMeeting'
-import { JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, STOP_MEETING, MEETING_TICK } from './actions/Meeting'
-// @todo I don't like this utility function inside a component
-import { timeElapsed } from './containers/TimeTicker'
+import { START_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, STOP_MEETING, MEETING_TICK } from './actions'
+import timeElapsed from './lib/timeElapsed'
 
 
 export const defaultMeetingState = {

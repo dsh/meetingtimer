@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import {reduxForm} from 'redux-form'
 import MeetingTime from './MeetingTime'
-import {validTimeFormats} from '../actions/NewMeeting'
+import {validTimeFormats} from '../constants.js'
 const mapValues = require('lodash/object/mapValues');
 const trim = require('lodash/string/trim');
 const isEmpty = require('lodash/lang/isEmpty');
