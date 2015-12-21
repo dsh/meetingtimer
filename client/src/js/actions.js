@@ -13,6 +13,7 @@ export const STOP_MEETING = "STOP_MEETING";
 export const MEETING_TICK = "MEETING_TICK";
 export const START_MEETING = "START_MEETING";
 export const START_MEETING_REQUEST = "START_MEETING_REQUEST";
+export const ERROR = "ERROR";
 
 
 export const joinedMeeting = createAction(JOINED_MEETING, meeting => meeting );
@@ -20,6 +21,7 @@ export const stoppedMeeting = createAction(STOPPED_MEETING, meeting => meeting);
 export const joinMeeting = createAction(JOIN_MEETING);
 export const stopMeeting = createAction(STOP_MEETING);
 export const meetingTick = createAction(MEETING_TICK, timeElapsed => timeElapsed);
+export const errorAction  = createAction(ERROR, error => error);
 
 
 export function navigateToMeeting(meetingId) {
@@ -32,8 +34,18 @@ export function navigateToMeeting(meetingId) {
 const start = createAction(START_MEETING, meeting => meeting);
 function startMeetingRequest(meeting) {
   return dispatch => {
+    // from https://github.com/github/fetch
+    function checkStatus(response) {
+      if (response.status >= 200 && response.status < 300) {
+        return response;
+      } else {
+        var error = new Error(response.statusText);
+        error.response = response;
+        throw error;
+      }
+    }
+
     dispatch(start(meeting));
-    // @todo see https://github.com/github/fetch to add error handling
     return fetch('http://' + location.hostname + ':9000/start', {
       method: 'post',
       headers: {
@@ -42,8 +54,11 @@ function startMeetingRequest(meeting) {
       },
       body: JSON.stringify(meeting)
     })
+      .then(checkStatus)
       .then(req => req.json())
       .then(meeting => dispatch(navigateToMeeting(meeting.id)))
+      // @todo add error handling
+      .catch(error => dispatch(errorAction(error)));
   }
 }
 

@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import {reduxForm} from 'redux-form'
-var trim = require('lodash/string/trim');
+import AlertBox from './AlertBox'
+const trim = require('lodash/string/trim');
 
 const fields = ['meetingId'];
 
@@ -9,7 +10,8 @@ class JoinMeeting extends Component {
   render() {
     const {
       fields: {meetingId},
-      handleSubmit
+      handleSubmit,
+      submitFailed
       } = this.props;
     return (
       <div className="join-meeting">
@@ -17,6 +19,7 @@ class JoinMeeting extends Component {
           <input className="meeting-id" placeholder="meeting id" type="text" {...meetingId} />
           <button onClick={handleSubmit}>Join</button>
         </form>
+        { submitFailed && meetingId.invalid && <AlertBox type="error" message={meetingId.error} /> }
       </div>
     )
   }

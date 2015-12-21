@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
 import {reducer as formReducer} from 'redux-form'
 import { routeReducer } from 'redux-simple-router'
-import { START_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, STOP_MEETING, MEETING_TICK } from './actions'
+import { START_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, STOP_MEETING, MEETING_TICK, ERROR } from './actions'
 import timeElapsed from './lib/timeElapsed'
 
 
@@ -35,7 +35,8 @@ function meeting(state = defaultMeetingState, action) {
 export const defaultUiState = {
   joining: true,
   inProgress: false,
-  stopping: false
+  stopping: false,
+  error: null
 };
 function ui(state = defaultUiState, action) {
 
@@ -49,6 +50,8 @@ function ui(state = defaultUiState, action) {
       return Object.assign({}, state, {stopping: true});
     case STOPPED_MEETING:
       return Object.assign({}, state, {inProgress: false, stopping: false});
+    case ERROR:
+      return Object.assign({}, state, {error: action.payload});
     default:
       return state;
   }

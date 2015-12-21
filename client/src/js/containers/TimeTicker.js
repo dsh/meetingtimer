@@ -21,7 +21,6 @@ class TimeTickerComponent extends Component {
     }
   }
 
-  // @todo can I render nothing?
   render = () => <div></div>;
 }
 

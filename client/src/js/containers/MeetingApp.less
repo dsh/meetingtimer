@@ -4,6 +4,12 @@ div {
 // Hide placeholder text on focus
 input:focus::placeholder { color:transparent; }
 
+input:focus {
+  outline: none;
+  border: 1px solid #30b05d;
+  box-shadow: 0 0 3px rgba(0, 224, 79, 1);
+}
+
 a {
   text-decoration: none;
   &:visited {
@@ -20,10 +26,12 @@ button, .btn, a.btn {
   text-decoration: none;
   display: inline-block;
 }
-button:hover, .btn:hover {
-  background: #59bf7d;
+button:hover, a.btn:hover, a.btn:focus, button:focus  {
+  background: #00e04f;
+  outline: 0;
 }
 .nav-bar {
+  background-color: #f8f8f8;
   border-bottom: 1px solid #ccc;
   font-size: 20px;
   height: 70px;
@@ -51,20 +59,32 @@ button:hover, .btn:hover {
   float: right;
   height: 45px;
   .meeting-id {
+    border: 1px solid #ccc;
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
     font-size: 15px;
     padding: 12px;
     width: 120px;
+    height: 42px;
+    margin-top: -1px;
   }
   button {
-    border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-    height: 43px;
+    border-top-left-radius: 0;
+    height: 42px;
   }
   div {
-    display: inline-block;
+    float: left;
     margin-left: 10px;
+  }
+  .join-text {
+    line-height: 42px;
+  }
+  .alert-box {
+    margin-right: 0;
   }
 }
 .meeting-id {
   font-family: "Lucida Console","Lucida Sans Typewriter",monaco,"Bitstream Vera Sans Mono",monospace
 }
+

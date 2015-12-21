@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import JoinMeeting from '../components/JoinMeeting'
 import {navigateToMeeting} from '../actions'
 import { Link } from 'react-router'
+import AlertBox from '../components/AlertBox'
+import {errorAction} from '../actions'
 require('../../stylesheets/reset.css');
 require('./MeetingApp.less');
 
@@ -11,12 +13,15 @@ class MeetingAppComponent extends Component {
 
   handleJoinMeeting = formData => this.props.dispatch(navigateToMeeting(formData.meetingId));
 
+  handleCloseError = () => this.props.dispatch(errorAction(""));
+
   render() {
+    const { ui } = this.props;
     var join = '';
-    if (!this.props.ui.inProgress) {
+    if (!ui.inProgress) {
       join = (
         <div className="nav-join-meeting">
-          <span className="join-text">Join a meeting in progress</span>
+          <div className="join-text">Join a meeting in progress</div>
           <JoinMeeting onSubmit={this.handleJoinMeeting} />
         </div>
       );
@@ -31,6 +36,7 @@ class MeetingAppComponent extends Component {
           </div>
           {join}
         </div>
+        {ui.error && <AlertBox type="error" message={ui.error} onClose={this.handleCloseError} />}
         {this.props.children}
       </div>
     )

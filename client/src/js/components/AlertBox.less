@@ -1,0 +1,35 @@
+// from http://www.cssportal.com/blog/css-notification-boxes/
+.alert-box {
+  border-radius: 10px;
+  color:#555;
+  font-size: 14px;
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid #000;
+  span.alert-type {
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+  &.error {
+    background-color: #ffecec;
+    border-color: #f5aca6;
+  }
+  &.success {
+    background-color :#e9ffd9;
+    border-color: #a6ca8a;
+  }
+  &.warning {
+    background-color: #fff8c4;
+    border-color: #f2c779;
+  }
+  &.notice {
+    background-color: #e3f7fc;
+    border-color: #8ed9f6;
+  }
+  .btn-close {
+    float: right;
+    font-weight: bold;
+    padding: 0 5px 0 20px;
+    cursor: pointer;
+  }
+}

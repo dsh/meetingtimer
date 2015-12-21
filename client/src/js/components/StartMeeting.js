@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import {reduxForm} from 'redux-form'
 import MeetingTime from './MeetingTime'
+import AlertBox from './AlertBox'
 import {validTimeFormats} from '../constants.js'
 const mapValues = require('lodash/object/mapValues');
 const trim = require('lodash/string/trim');
@@ -28,7 +29,7 @@ class StartMeeting extends Component {
       submitFailed
       } = this.props;
     const errors = filter(this.props.fields, f => (submitFailed && f.invalid && f.touched))
-      .map(f => <div key={f.name} className="error">{f.error}</div>);
+      .map(f => <AlertBox key={f.name} type="error" message={f.error} />);
     return (
       <div className="start-meeting">
         <div className="start-meeting-header">

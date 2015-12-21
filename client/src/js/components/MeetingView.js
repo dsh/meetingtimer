@@ -61,8 +61,6 @@ export default class MeetingView extends Component {
 }
 
 MeetingView.propTypes =  {
-  // @todo specify the shape of these object using .shape
-  // http://stackoverflow.com/questions/26923042/how-do-you-validate-the-proptypes-of-a-nested-object-in-reactjs
   meeting: PropTypes.object.isRequired,
   ui: PropTypes.object.isRequired,
   onStopMeeting: PropTypes.func.isRequired
