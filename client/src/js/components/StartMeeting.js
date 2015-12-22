@@ -15,10 +15,6 @@ require('./StartMeeting.less');
 
 const fields = ['name', 'startTime', 'participants', 'hourlyRate'];
 
-// find current time rounded to nearest half hour
-const halfHour = 30 * 60 * 1000;
-const nowRounded = moment(Math.round(new Date() / halfHour) * halfHour).format("h:mm A");
-
 
 class StartMeeting extends Component {
 
@@ -87,9 +83,13 @@ export default reduxForm(
     fields,
     validate
   },
-  state => ({
-    initialValues: {
-      startTime: nowRounded
-    }
-  })
+  state => {
+    const roundInterval = 15 * 60 * 1000;
+    return {
+      initialValues: {
+        // find current time rounded to nearest 15 minutes
+        startTime: moment(Math.round(new Date() / roundInterval) * roundInterval).format("h:mm A")
+      }
+    };
+  }
 )(StartMeeting);

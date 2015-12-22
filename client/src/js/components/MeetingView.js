@@ -25,6 +25,9 @@ export default class MeetingView extends Component {
       if (meeting.stopTime) {
         meetingTime = "Meeting ended at " + moment(meeting.stopTime * 1000).format("h:mm A") + ".";
       }
+      else {
+        meetingTime = "Stopping meeting...";
+      }
     } else {
       const now = moment();
       const startTime = moment(meeting.startTime * 1000);
@@ -45,7 +48,7 @@ export default class MeetingView extends Component {
           <Cost cost={cost}/>
           <div className="meeting-controls">
             { ui.inProgress && !ui.stopping && <button onClick={this.props.onStopMeeting}>Stop</button> }
-            { !ui.inProgress && !ui.stopping && <StartNewMeetingLink /> }
+            { !ui.inProgress && <StartNewMeetingLink /> }
           </div>
         </div>
         <div className="share-meeting">

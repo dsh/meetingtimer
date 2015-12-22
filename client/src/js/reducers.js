@@ -43,13 +43,13 @@ function ui(state = defaultUiState, action) {
   switch (action.type) {
     case START_MEETING:
     case JOIN_MEETING:
-      return Object.assign({}, state, {joining: true, inProgress: false});
+      return Object.assign({}, state, {joining: true, inProgress: false, stopping: false});
     case JOINED_MEETING:
-      return Object.assign({}, state, {joining: false, inProgress: action.payload.stopTime === null});
+      return Object.assign({}, state, {joining: false, inProgress: action.payload.stopTime === null, stopping: false });
     case STOP_MEETING:
-      return Object.assign({}, state, {stopping: true});
+      return Object.assign({}, state, {joining: false, inProgress: false, stopping: true});
     case STOPPED_MEETING:
-      return Object.assign({}, state, {inProgress: false, stopping: false});
+      return Object.assign({}, state, {joining: false, inProgress: false, stopping: false});
     case ERROR:
       return Object.assign({}, state, {error: action.payload});
     default:
