@@ -9,11 +9,6 @@ import JoiningMeeting from '../components/JoiningMeeting'
 
 class Meeting extends Component {
 
-  // @todo probably use matchDispatchToProps in connect() https://github.com/rackt/react-redux/blob/master/docs/api.md
-  handleStopMeeting = () => {
-    this.props.dispatch(stopMeeting());
-  };
-
 
   render() {
     const { meeting, ui } = this.props;
@@ -22,7 +17,7 @@ class Meeting extends Component {
         { !meeting.stopTime && <MeetingSocket meetingId={this.props.params.meetingId} stopping={ui.stopping} /> }
         { meeting.startTime && !meeting.stopTime && !ui.stopping && <TimeTicker startTime={meeting.startTime} /> }
         { ui.joining && <JoiningMeeting /> }
-        { !ui.joining && <MeetingView onStopMeeting={this.handleStopMeeting} meeting={meeting} ui={ui} /> }
+        { !ui.joining && <MeetingView onStopMeeting={this.props.handleStopMeeting} meeting={meeting} ui={ui} /> }
       </div>
     );
   }
@@ -34,5 +29,8 @@ function mapStateToProps(state) {
     ui: state.ui
   };
 }
-const MeetingContainer = connect(mapStateToProps)(Meeting);
+const mapDispatchToProps = {
+  handleStopMeeting: stopMeeting
+};
+const MeetingContainer = connect(mapStateToProps, mapDispatchToProps)(Meeting);
 export default MeetingContainer;

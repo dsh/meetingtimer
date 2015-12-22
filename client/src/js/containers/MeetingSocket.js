@@ -44,14 +44,13 @@ class MeetingSocketComponent extends Component {
     this.heartbeatInterval = setInterval(() => this.send(HEARTBEAT), heartbeatIntervalMs);
   };
 
-    componentWillMount() {
+  componentWillMount() {
     // @todo need error and close hanlders
     // @todo need retry open when closed unexpectedly
     const websSocketUrl = "/meeting-socket/" + this.props.meetingId;
     this.ws = new ReconnectingWebSocket("ws://" + location.hostname + ':9000' + websSocketUrl);
     this.ws.onmessage = this.handleMessage;
     this.ws.onopen = () => {
-      console.log("open");
       this.send(JOIN_MEETING);
       // @todo do I need to dispatch this?
       this.props.dispatch(joinMeeting());

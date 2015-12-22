@@ -4,6 +4,7 @@ import TimeElapsed from './TimeElapsed'
 import StartNewMeetingLink from './StartNewMeetingLink'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { Link } from 'react-router'
+import { meetingtimerBase } from '../constants'
 const moment = require('moment');
 require('./MeetingView.less');
 
@@ -16,10 +17,8 @@ export default class MeetingView extends Component {
       meeting.participants
       * meeting.timeElapsed / (60 * 60)
       * meeting.hourlyRate;
-    // @todo ShareMeeting to different component
-    // @todo url builder for the meeting link. We use it in navigate, too.
     const meetingPath = "/m/" + meeting.id;
-    const meetingUrl = "http://meetingtimer.io" + meetingPath;
+    const meetingUrl = meetingtimerBase + meetingPath;
     var meetingTime = "";
     if (!ui.inProgress) {
       if (meeting.stopTime) {

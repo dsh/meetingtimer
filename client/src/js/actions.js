@@ -57,7 +57,6 @@ function startMeetingRequest(meeting) {
       .then(checkStatus)
       .then(req => req.json())
       .then(meeting => dispatch(navigateToMeeting(meeting.id)))
-      // @todo add error handling
       .catch(error => dispatch(errorAction(error)));
   }
 }
