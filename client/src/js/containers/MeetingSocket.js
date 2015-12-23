@@ -17,12 +17,8 @@ class MeetingSocketComponent extends Component {
   };
 
 
-  // @todo use redux-action handleActions https://github.com/acdlite/redux-actions
-  // or matchDispatchToProps in connect()? https://github.com/rackt/react-redux/blob/master/docs/api.md
   handleMessage = event => {
     const data = JSON.parse(event.data);
-    // @todo No switch, just dispatch directly. the events from the server are already FSA format.
-    // But then how to have the actionCreator side effects?
     switch (data.type) {
       case JOINED_MEETING:
         this.props.dispatch(joinedMeeting(data.payload));
@@ -45,22 +41,17 @@ class MeetingSocketComponent extends Component {
   };
 
   componentWillMount() {
-    // @todo need error and close hanlders
-    // @todo need retry open when closed unexpectedly
     const websSocketUrl = "/meeting-socket/" + this.props.meetingId;
     this.ws = new ReconnectingWebSocket("ws://" + location.hostname + ':9000' + websSocketUrl);
     this.ws.onmessage = this.handleMessage;
     this.ws.onopen = () => {
       this.send(JOIN_MEETING);
-      // @todo do I need to dispatch this?
       this.props.dispatch(joinMeeting());
       this.startHeartbeat();
     };
     this.ws.onclose = this.stopHeartbeat;
   }
 
-  // @TODO LOOK FOR stopping change
-  // @todo move to RxJs for this... http://stackoverflow.com/a/31312139/895588
   componentWillReceiveProps(nextProps) {
     if (!this.props.stopping && nextProps.stopping) {
       this.send(STOP_MEETING);
@@ -74,13 +65,11 @@ class MeetingSocketComponent extends Component {
     }
   }
 
-  // @todo can I render nothing?
   render = () => <div></div>
 }
 
 MeetingSocketComponent.propTypes =  {
   meetingId: PropTypes.string.isRequired,
-  // @todo needed for compomentWillReceiveProps ... I don't like this at all
   stopping: PropTypes.bool.isRequired
 };
 

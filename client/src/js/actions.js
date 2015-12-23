@@ -2,8 +2,9 @@ import { createAction } from 'redux-actions';
 import fetch from 'isomorphic-fetch'
 import { updatePath } from 'redux-simple-router'
 import { validTimeFormats } from './constants'
-var trim = require('lodash/string/trim');
-var moment = require('moment'); // no es6 import
+import normalizeMeeting from './lib/normalizeMeeting'
+const trim = require('lodash/string/trim');
+const moment = require('moment');
 require('frozen-moment');
 
 export const JOINED_MEETING = "JOINED_MEETING";
@@ -14,6 +15,7 @@ export const MEETING_TICK = "MEETING_TICK";
 export const START_MEETING = "START_MEETING";
 export const START_MEETING_REQUEST = "START_MEETING_REQUEST";
 export const ERROR = "ERROR";
+export const CLEAR_SUBMIT_ERROR = "CLEAR_SUBMIT_ERROR";
 
 
 export const joinedMeeting = createAction(JOINED_MEETING, meeting => meeting );
@@ -22,6 +24,7 @@ export const joinMeeting = createAction(JOIN_MEETING);
 export const stopMeeting = createAction(STOP_MEETING);
 export const meetingTick = createAction(MEETING_TICK, timeElapsed => timeElapsed);
 export const errorAction  = createAction(ERROR, error => error);
+export const clearSubmitError = createAction(CLEAR_SUBMIT_ERROR);
 
 
 export function navigateToMeeting(meetingId) {
@@ -87,7 +90,7 @@ export function startMeeting(meetingData) {
     }
     return Object.assign(
       {},
-      meetingData,
+      normalizeMeeting(meetingData),
       {startTime: Number(convertPastTime(meetingData.startTime).format("X"))}
     );
 

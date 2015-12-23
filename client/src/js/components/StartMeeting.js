@@ -3,8 +3,7 @@ import {reduxForm} from 'redux-form'
 import MeetingTime from './MeetingTime'
 import AlertBox from './AlertBox'
 import {validTimeFormats} from '../constants.js'
-const mapValues = require('lodash/object/mapValues');
-const trim = require('lodash/string/trim');
+import normalizeMeeting from '../lib/normalizeMeeting'
 const isEmpty = require('lodash/lang/isEmpty');
 const filter = require('lodash/collection/filter');
 const map  = require('lodash/collection/map');
@@ -60,7 +59,7 @@ StartMeeting.propTypes =  {
 };
 
 const validate = values => {
-  const m = mapValues(values, trim);
+  const m = normalizeMeeting(values);
   var errors = {};
   if (isEmpty(m.name)) {
     errors.name = "Meeting name required.";

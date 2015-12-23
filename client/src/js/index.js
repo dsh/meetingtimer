@@ -10,10 +10,9 @@ import MeetingApp from './containers/MeetingApp'
 import NewMeetingContainer from './containers/NewMeeting'
 import MeetingContainer from './containers/Meeting'
 import About from './components/About'
-import configureStore from './store/configureStore'
+import store from './store'
 
 
-const store = configureStore();
 const history = createBrowserHistory();
 
 syncReduxAndRouter(history, store);
