@@ -1,5 +1,6 @@
 package controllers
 
+import java.util.UUID
 import actors.MeetingActor._
 import actors.MeetingManagerActor.CreateMeeting
 import actors.UserActor.{UserMessage, UserMessageJsonFormat}
@@ -11,17 +12,15 @@ import play.api.Logger
 import play.api.Play.current
 import play.api.data.Forms._
 import play.api.data._
+import play.api.data.format.Formats._
+import play.api.data.validation.Constraints._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.WebSocket.FrameFormatter
 import play.api.mvc._
 import views.formdata.MeetingFormData
-import play.api.data.format.Formats._
-import play.api.data.validation.Constraints._
-
-
-
-
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 
 class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
@@ -38,17 +37,41 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
 
   val meetingManager = system.actorOf(MeetingManagerActor.props())
 
+  /**
+    * Get the user's id from the session, or create one if none exists.
+    *
+    * @param session Session to check for userId
+    * @return userId
+    */
+  def getUserId(session: Session) = session.get("userId").getOrElse(UUID.randomUUID.toString)
 
-  def start = Action { implicit request =>
+
+  /**
+    * Adds userId to the request, generating one if needed, always saving it to the session (cookie).
+    *
+    * @param userId
+    * @param request
+    * @tparam A
+    */
+  class UserIdRequest[A](val userId: String, request: Request[A]) extends WrappedRequest[A](request)
+  object UserIdAction extends ActionBuilder[UserIdRequest]  {
+    def invokeBlock[A](request: Request[A], block: (UserIdRequest[A]) => Future[Result]) = {
+      Logger.info("invokeBlock")
+      val userId = getUserId(request.session)
+      block(new UserIdRequest[A](userId, request)).map(_.withSession("userId" -> userId))
+    }
+  }
+
+  def start = UserIdAction { implicit request =>
     meetingForm.bindFromRequest.fold(
       formWithErrors => {
         ???
       },
       meetingFormData => {
-        val meeting = Meeting.fromFormData(meetingFormData)
+        val meeting = Meeting.fromFormData(meetingFormData, request.userId)
         Logger.info(s"Starting MeetingActor for meeting $meeting.id")
         meetingManager ! CreateMeeting(meeting)
-        Ok(Json.toJson(meeting))
+        Ok(Json.toJson(meeting)).withSession("test" -> "foo")
       }
     )
   }
@@ -60,6 +83,11 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
     // @todo abort if invalid meetingId
     Logger.info(s"Starting UserActor for meeting $meetingId")
     UserActor.props(meetingManager, meetingId, out)
+  }
+
+
+  def test() = Action {
+    Ok(Json.toJson("hello")).withSession("test" -> "test")
   }
 
 }

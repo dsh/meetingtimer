@@ -87,7 +87,7 @@ export default reduxForm(
     return {
       initialValues: {
         // find current time rounded to nearest 15 minutes
-        startTime: moment(Math.round(new Date() / roundInterval) * roundInterval).format("h:mm A")
+        startTime: moment(Math.floor(new Date() / roundInterval) * roundInterval).format("h:mm A")
       }
     };
   }

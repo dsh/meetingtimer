@@ -3,6 +3,8 @@
 # ~~~~
 
 # Home page
+#GET     /
 POST    /start                      controllers.Application.start
 GET     /meeting-socket/:meetingId  controllers.Application.meetingSocket(meetingId: String)
 
+GET     /test                       controllers.Application.test
