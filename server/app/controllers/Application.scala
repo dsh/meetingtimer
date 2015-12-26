@@ -56,7 +56,6 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
   class UserIdRequest[A](val userId: String, request: Request[A]) extends WrappedRequest[A](request)
   object UserIdAction extends ActionBuilder[UserIdRequest]  {
     def invokeBlock[A](request: Request[A], block: (UserIdRequest[A]) => Future[Result]) = {
-      Logger.info("invokeBlock")
       val userId = getUserId(request.session)
       block(new UserIdRequest[A](userId, request)).map(_.withSession("userId" -> userId))
     }
@@ -71,7 +70,7 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
         val meeting = Meeting.fromFormData(meetingFormData, request.userId)
         Logger.info(s"Starting MeetingActor for meeting $meeting.id")
         meetingManager ! CreateMeeting(meeting)
-        Ok(Json.toJson(meeting)).withSession("test" -> "foo")
+        Ok(Json.toJson(meeting))
       }
     )
   }
@@ -82,12 +81,6 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
   def meetingSocket(meetingId: String) = WebSocket.acceptWithActor[MeetingMessage, UserMessage] { request => out =>
     // @todo abort if invalid meetingId
     Logger.info(s"Starting UserActor for meeting $meetingId")
-    UserActor.props(meetingManager, meetingId, out)
+    UserActor.props(meetingManager, meetingId, request.session.get("userId"), out)
   }
-
-
-  def test() = Action {
-    Ok(Json.toJson("hello")).withSession("test" -> "test")
-  }
-
 }

@@ -2,8 +2,8 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { createAction } from 'redux-actions'
 import { heartbeatIntervalMs } from '../constants'
-import { STOP_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING,
-  joinedMeeting, joinMeeting, stoppedMeeting } from '../actions'
+import { STOP_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, ERROR,
+  joinedMeeting, joinMeeting, stoppedMeeting, errorAction } from '../actions'
 import ReconnectingWebSocket from '../lib/reconnecting-websocket'
 const HEARTBEAT = 'HEARTBEAT';
 
@@ -26,6 +26,10 @@ class MeetingSocketComponent extends Component {
       case STOPPED_MEETING:
         this.props.dispatch(stoppedMeeting(data.payload));
         break;
+      case ERROR:
+        this.props.dispatch(errorAction(data.payload));
+        break;
+
     }
   };
 

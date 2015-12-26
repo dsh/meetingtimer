@@ -49,12 +49,14 @@ function startMeetingRequest(meeting) {
     }
 
     dispatch(start(meeting));
-    return fetch('http://' + location.hostname + ':9000/start', {
+    return fetch('http://' + location.hostname + ':' + location.port + '/start', {
       method: 'post',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
+      // need credentials because start will set the userId cookie for us
+      credentials: 'same-origin',
       body: JSON.stringify(meeting)
     })
       .then(checkStatus)

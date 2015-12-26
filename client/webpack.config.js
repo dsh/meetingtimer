@@ -30,5 +30,11 @@ module.exports = {
         loader: "style!css!autoprefixer"
       }
     ]
+  },
+  devServer: {
+    proxy: {
+      '/start': 'http://test.meetingtimer.io:9000',
+      '/meeting-socket/*': 'http://test.meetingtimer.io:9000'
+    }
   }
 };

@@ -1,7 +1,6 @@
 package models
 
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
 import views.formdata.MeetingFormData
 
 
@@ -29,14 +28,17 @@ object Meeting {
   def genMeetingId = scala.util.Random.alphanumeric.filter( !SkipChars.contains(_) ).take(8).mkString
   def fromFormData(d: MeetingFormData, owner: String) =
     apply(genMeetingId, d.name, d.startTime, d.participants, d.hourlyRate, None, owner)
-  implicit val meetingWrites: Writes[Meeting] = (
-    (JsPath \ "id" ).write[String] and
-    (JsPath \ "name").write[String] and
-    (JsPath \ "startTime").write[Double] and
-    (JsPath \ "participants").write[Int] and
-    (JsPath \ "hourlyRate").write[BigDecimal] and
-    (JsPath \ "stopTime").write[Option[Double]] and
-      // @todo !!! IMPORTANT !!! Do not send the Owner!! Otherwise they can spoof and stop a meeting.
-    (JsPath \ "owner").write[String]
-    )(unlift(Meeting.unapply))
+  implicit val meetingWrites = new Writes[Meeting] {
+    def writes(meeting: Meeting) = {
+      Json.obj(
+        "id" -> meeting.id,
+        "name" -> meeting.name,
+        "startTime" -> meeting.startTime,
+        "participants" -> meeting.participants,
+        "hourlyRate" -> meeting.hourlyRate,
+        "stopTime" -> meeting.stopTime
+      )
+    }
+  }
+
 }

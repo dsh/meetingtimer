@@ -31,13 +31,27 @@ const meeting = handleActions({
 
 const startOrJoinMeetingUi = (state, action) => ({...state, joining: true,  stopping: false, inProgress: false});
 const ui = handleActions({
-  START_MEETING:   startOrJoinMeetingUi,
-  JOIN_MEETING:    startOrJoinMeetingUi,
-  JOINED_MEETING:  (state, action) => ({...state, joining: false, stopping: false,
-                                                  inProgress: action.payload.stopTime === null}),
-  STOP_MEETING:    (state, action) => ({...state, joining: false, stopping: true,  inProgress: false}),
+  START_MEETING: startOrJoinMeetingUi,
+  JOIN_MEETING: startOrJoinMeetingUi,
+  JOINED_MEETING: (state, action) => ({
+    ...state, joining: false, stopping: false,
+    inProgress: action.payload.stopTime === null
+  }),
+  STOP_MEETING: (state, action) => ({...state, joining: false, stopping: true, inProgress: true}),
   STOPPED_MEETING: (state, action) => ({...state, joining: false, stopping: false, inProgress: false}),
-  ERROR:           (state, action) => ({...state, error: action.payload})
+  ERROR: (state, action) => {
+    const { actionType, message } = action.payload;
+    function actionTypeToUiState(at) {
+      switch (at) {
+        case STOP_MEETING:
+          return {stopping: false};
+        case JOIN_MEETING:
+          return {joining: false};
+      }
+      return {};
+    }
+    return {...state, ...actionTypeToUiState(actionType), error: message};
+  }
 },  {
   joining: true,
   inProgress: false,
