@@ -7,7 +7,7 @@ import actors.UserActor.{UserMessage, UserMessageJsonFormat}
 import actors.{MeetingManagerActor, UserActor}
 import akka.actor.ActorSystem
 import com.google.inject.Inject
-import models.Meeting
+import models.{Meeting, Meetings}
 import play.api.Logger
 import play.api.Play.current
 import play.api.data.Forms._
@@ -19,8 +19,8 @@ import play.api.libs.json.Json
 import play.api.mvc.WebSocket.FrameFormatter
 import play.api.mvc._
 import views.formdata.MeetingFormData
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 
 
 class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
@@ -61,16 +61,25 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
     }
   }
 
-  def start = UserIdAction { implicit request =>
+  def start = UserIdAction.async { implicit request =>
     meetingForm.bindFromRequest.fold(
       formWithErrors => {
-        ???
+        // @todo Return actionable error messages, not just this generic message.
+        Future.successful(BadRequest("Invalid meeting data."))
       },
       meetingFormData => {
         val meeting = Meeting.fromFormData(meetingFormData, request.userId)
         Logger.info(s"Starting MeetingActor for meeting $meeting.id")
-        meetingManager ! CreateMeeting(meeting)
-        Ok(Json.toJson(meeting))
+        Meetings.persist(meeting).map(_ => {
+          Logger.info("persist worked")
+          meetingManager ! CreateMeeting(meeting)
+          Ok(Json.toJson(meeting))
+        }).recover {
+          case ex: Exception => {
+            Logger.error(s"Error saving ${ex.getMessage}")
+            Forbidden(s"Error saving meeting. Please try again later.")
+          }
+        }
       }
     )
   }

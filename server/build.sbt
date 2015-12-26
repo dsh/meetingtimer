@@ -17,7 +17,14 @@ serverLoading in Debian := ServerLoader.SystemV
 
 scalaVersion := "2.11.7"
 
-libraryDependencies ++= Seq( jdbc , cache , ws , filters,  specs2 % Test )
+libraryDependencies ++= Seq(
+  ws,
+  filters,
+  specs2 % Test,
+  "mysql" % "mysql-connector-java" % "5.1.34",
+  "com.typesafe.play" %% "play-slick" % "1.1.1",
+  "com.typesafe.play" %% "play-slick-evolutions" % "1.1.1"
+)
 
 unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )
 

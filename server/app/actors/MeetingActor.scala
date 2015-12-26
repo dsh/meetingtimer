@@ -5,7 +5,6 @@ import akka.event.LoggingReceive
 import models.Meeting
 import play.api.Logger
 import play.api.libs.json._
-
 import scala.concurrent.duration._
 
 

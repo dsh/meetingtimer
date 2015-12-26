@@ -1,6 +1,10 @@
 package models
 
+import play.api.Play
+import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.json._
+import slick.driver.JdbcProfile
+import slick.driver.MySQLDriver.api._
 import views.formdata.MeetingFormData
 
 
@@ -41,4 +45,30 @@ object Meeting {
     }
   }
 
+}
+
+
+
+class MeetingTableDef(tag: Tag) extends Table[Meeting](tag, "meeting") {
+
+  def id = column[String]("id", O.PrimaryKey)
+  def name = column[String]("name")
+  def startTime = column[Double]("startTime")
+  def participants = column[Int]("participants")
+  def hourlyRate = column[BigDecimal]("hourlyRate")
+  def stopTime = column[Option[Double]]("stopTime")
+  def owner = column[String]("owner")
+
+  override def * =
+    (id, name, startTime, participants, hourlyRate, stopTime, owner) <> ((Meeting.apply _).tupled, Meeting.unapply)
+}
+
+
+
+object Meetings {
+
+  val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+  val meetings = TableQuery[MeetingTableDef]
+
+  def persist(meeting: Meeting) = dbConfig.db.run(meetings.insertOrUpdate(meeting))
 }
