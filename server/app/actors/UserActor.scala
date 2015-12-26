@@ -28,35 +28,24 @@ object UserActor {
   // Convert user messages to JSON to send to the client
   implicit object UserMessageJsonFormat extends Format[UserMessage] {
     // facebook standard action format
-    def fsa(theType: String, payload: Any): JsObject = {
-      val jsonPayload: JsValue = payload match {
-        // Error include the action type that triggered the error.
-        case e: Error => Json.obj(
-          "actionType" -> (e.meetingMessage match {
-            case JoinMeeting() => JoinMeetingActionType
-            case StopMeeting(_) => StopMeetingActionType
-            case _ => JsNull
-          }),
-          "message" -> e.message
-        )
-        case m: Meeting => Json.toJson(m)
-        case _ => JsNull
-      }
-      val error = payload match {
-        case Error => true
-        case _ => false
-      }
+    def fsa(theType: String, payload: JsValue, error: Boolean = false): JsObject = {
       Json.obj(
         "type" -> theType,
-        "payload" -> jsonPayload,
+        "payload" -> payload,
         "error" -> error
       )
     }
     def writes(msg: UserMessage) = msg match {
-      case Joined(meeting) => fsa(JoinedMeetingActionType, meeting)
-      case Stopped(meeting) => fsa(StoppedMeetingActionType, meeting)
-      case e: Error => fsa(ErrorActionType, e)
-
+      case Joined(meeting) => fsa(JoinedMeetingActionType, Json.toJson(meeting))
+      case Stopped(meeting) => fsa(StoppedMeetingActionType, Json.toJson(meeting))
+      case e: Error => fsa(ErrorActionType, Json.obj(
+        "actionType" -> (e.meetingMessage match {
+          case JoinMeeting() => JoinMeetingActionType
+          case StopMeeting(_) => StopMeetingActionType
+          case _ => JsNull
+        }),
+        "message" -> e.message
+      ), error = true)
     }
     // We never read user messages from the client. We need this implemented, though, so
     // we can create the frame formatters for WebSocket.acceptWithActor.

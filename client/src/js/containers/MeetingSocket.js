@@ -45,8 +45,10 @@ class MeetingSocketComponent extends Component {
   };
 
   componentWillMount() {
-    const websSocketUrl = "/meeting-socket/" + this.props.meetingId;
-    this.ws = new ReconnectingWebSocket("ws://" + location.hostname + ':9000' + websSocketUrl);
+    // Connect to web socket at port 9000 (Scala Play server port).
+    // This handles if the original connection is to https, will use the wss server.
+    const host = location.origin.replace(/^http/, "ws").replace(/:[\d]+$/, '') + ':9000';
+    this.ws = new ReconnectingWebSocket(host + "/meeting-socket/" + this.props.meetingId);
     this.ws.onmessage = this.handleMessage;
     this.ws.onopen = () => {
       this.send(JOIN_MEETING);

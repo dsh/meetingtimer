@@ -4,7 +4,6 @@ import TimeElapsed from './TimeElapsed'
 import StartNewMeetingLink from './StartNewMeetingLink'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { Link } from 'react-router'
-import { meetingtimerBase } from '../constants'
 const moment = require('moment');
 require('./MeetingView.less');
 
@@ -18,7 +17,7 @@ export default class MeetingView extends Component {
       * meeting.timeElapsed / (60 * 60)
       * meeting.hourlyRate;
     const meetingPath = "/m/" + meeting.id;
-    const meetingUrl = meetingtimerBase + meetingPath;
+    const meetingUrl = location.origin + meetingPath;
     var meetingTime = "";
     if (!ui.inProgress) {
       if (meeting.stopTime) {

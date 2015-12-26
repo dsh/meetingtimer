@@ -49,7 +49,7 @@ function startMeetingRequest(meeting) {
     }
 
     dispatch(start(meeting));
-    return fetch('http://' + location.hostname + ':' + location.port + '/start', {
+    return fetch(location.origin + '/start', {
       method: 'post',
       headers: {
         'Accept': 'application/json',
