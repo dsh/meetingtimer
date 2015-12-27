@@ -44,7 +44,7 @@ function startMeetingRequest(meeting) {
       } else {
         return response.text()
           .then(errorMessage => {
-            var error = new Error(errorMessage);
+            var error = new Error(errorMessage ? errorMessage : response.statusText);
             error.response = response;
             throw error;
           });

@@ -4,7 +4,7 @@ import { stopMeeting } from '../actions'
 import MeetingSocket from './MeetingSocket'
 import TimeTicker from './TimeTicker'
 import MeetingView from '../components/MeetingView'
-import JoiningMeeting from '../components/JoiningMeeting'
+import MeetingStatusMessage from '../components/MeetingStatusMessage'
 
 
 class Meeting extends Component {
@@ -16,7 +16,7 @@ class Meeting extends Component {
       <div>
         { !meeting.stopTime && <MeetingSocket meetingId={this.props.params.meetingId} stopping={ui.stopping} /> }
         { meeting.startTime && !meeting.stopTime && !ui.stopping && <TimeTicker startTime={meeting.startTime} /> }
-        { ui.joining && <JoiningMeeting /> }
+        { ui.joining && <MeetingStatusMessage message="Joining meeting..." showStartNew={true} /> }
         { !ui.joining && <MeetingView onStopMeeting={this.props.handleStopMeeting} meeting={meeting} ui={ui} /> }
       </div>
     );

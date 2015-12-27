@@ -29,19 +29,29 @@ const meeting = handleActions({
   timeElapsed: 0
 });
 
-const startOrJoinMeetingUi = (state, action) => ({...state, joining: true,  stopping: false, inProgress: false});
+const uiDefaultState = {
+  starting: false,
+  joining: true,
+  inProgress: false,
+  stopping: false,
+  error: null
+};
 const ui = handleActions({
-  START_MEETING: startOrJoinMeetingUi,
-  JOIN_MEETING: startOrJoinMeetingUi,
+  START_MEETING: (state, action) =>
+    ({...state, starting: true, joining: true,  stopping: false, inProgress: false, error: null}),
+  JOIN_MEETING: (state, action) =>
+    ({...state, starting: false, joining: true,  stopping: false, inProgress: false}),
   JOINED_MEETING: (state, action) => ({
-    ...state, joining: false, stopping: false,
+    ...state, starting: false, joining: false, stopping: false,
     inProgress: action.payload.stopTime === null,
     error: null
   }),
-  STOP_MEETING: (state, action) => ({...state, joining: false, stopping: true, inProgress: true}),
+  STOP_MEETING: (state, action) =>
+    ({...state, starting: false, joining: false, stopping: true, inProgress: true}),
   STOPPED_MEETING: (state, action) =>
-    ({...state, joining: false, stopping: false, inProgress: false, error: null}),
+    ({...state, starting: false, joining: false, stopping: false, inProgress: false, error: null}),
   ERROR: (state, action) => {
+    console.log(action);
     const { actionType, message } = action.payload;
     function actionTypeToUiState(at) {
       switch (at) {
@@ -50,16 +60,12 @@ const ui = handleActions({
         case JOIN_MEETING:
           return {joining: false};
       }
-      return {};
+      // Unkonwn error cause. Reset everything.
+      return uiDefaultState;
     }
     return {...state, ...actionTypeToUiState(actionType), error: message};
   }
-},  {
-  joining: true,
-  inProgress: false,
-  stopping: false,
-  error: null
-});
+}, uiDefaultState);
 
 const form = formReducer.normalize({
   join_meeting: {

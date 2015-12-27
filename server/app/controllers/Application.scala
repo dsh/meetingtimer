@@ -69,7 +69,7 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
       },
       meetingFormData => {
         val meeting = Meeting.fromFormData(meetingFormData, request.userId)
-        Logger.info(s"Starting MeetingActor for meeting $meeting.id")
+        Logger.info(s"Starting MeetingActor for meeting $meeting")
         Meetings.persist(meeting).map(_ => {
           if (meeting.stopTime.isEmpty) {
             meetingManager ! CreateMeeting(meeting)
@@ -77,8 +77,8 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
           Ok(Json.toJson(meeting))
         }).recover {
           case ex: Exception => {
-            Logger.error(s"Error saving ${ex.getMessage}")
-            Forbidden(s"Error saving meeting. Please try again later.")
+            Logger.error(s"Error saving meeting in start: ${ex.getMessage}")
+            Forbidden(s"Error starting meeting. Please try again later.")
           }
         }
       }
