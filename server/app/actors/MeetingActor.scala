@@ -2,11 +2,11 @@ package actors
 
 import akka.actor._
 import akka.event.LoggingReceive
-import models.Meeting
+import models.{Meetings, Meeting}
 import play.api.Logger
 import play.api.libs.json._
 import scala.concurrent.duration._
-
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object MeetingActor {
   def props(meeting: Meeting): Props = Props(classOf[MeetingActor], meeting)
@@ -42,47 +42,42 @@ class MeetingActor(initialMeeting: Meeting) extends Actor with ActorLogging {
 
   import actors.MeetingActor._
   import actors.UserActor._
+  import scala.util.{Success, Failure}
 
-  // @todo need a heartbeat from clients to stop this from triggering.
+  def sendStopped(m: Meeting, us: Set[ActorRef]) = us foreach { _ ! Stopped(m) }
+
   context.setReceiveTimeout(4 hours)
 
-
-  def started(meeting: Meeting, users: Set[ActorRef]): Receive = {
-    def sendStopped(m: Meeting, us: Set[ActorRef]) = us foreach { _ ! Stopped(m) }
-
-    LoggingReceive {
-      case JoinMeeting() =>
-        Logger.info("Join Meeting")
-        context watch sender
-        sender ! Joined(meeting)
-        context become started(meeting, users + sender)
-      case Terminated(user) =>
-        context become started(meeting, users - user)
-      case m: StopMeeting =>
-        Logger.info(s"Stop Meeting requested by ${m.userId}")
-        if (m.userId.map(_ == meeting.owner).getOrElse(false)) {
-          val stoppedMeeting = meeting.stop
-          sendStopped(stoppedMeeting, users)
-          context become stopped(stoppedMeeting)
-        } else {
-          // return error to user .. can't stop someone else's meeting
-          sender ! Error(m, "You do not have permission to stop this meeting.")
-        }
-      case ReceiveTimeout =>
-        sendStopped(meeting, users)
-        self ! PoisonPill
-    }
-  }
-
-  def stopped(meeting: Meeting): Receive = LoggingReceive {
+  def started(meeting: Meeting, users: Set[ActorRef]): Receive = LoggingReceive {
     case JoinMeeting() =>
-      Logger.info("Join Meeting while stopped")
-      sender ! Stopped(meeting)
+      Logger.info("Join Meeting")
+      context watch sender
+      sender ! Joined(meeting)
+      context become started(meeting, users + sender)
+    case Terminated(user) =>
+      context become started(meeting, users - user)
+    case stopMeeting: StopMeeting =>
+      Logger.info(s"Stop Meeting requested by ${stopMeeting.userId}")
+      if (stopMeeting.userId.contains(meeting.owner)) {
+        val stoppedMeeting = meeting.stop
+        val origin = sender // sender will be gone when future below returns
+        Meetings.persist(stoppedMeeting) onComplete {
+          case Success(_) =>
+            sendStopped(stoppedMeeting, users)
+            self ! PoisonPill
+          case Failure(ex) =>
+            origin ! Error(stopMeeting, ex.getMessage)
+        }
+      } else {
+        // return error to user .. can't stop someone else's meeting
+        sender ! Error(stopMeeting, "You do not have permission to stop this meeting.")
+      }
     case ReceiveTimeout =>
+      val stoppedMeeting = meeting.stop
+      Meetings.persist(stoppedMeeting)
+      sendStopped(stoppedMeeting, users)
       self ! PoisonPill
   }
 
-  // @todo become started or stopped depending on stopTime
-  // start with a user to send back the Joined message immediately?
   def receive = started(initialMeeting, Set.empty)
 }

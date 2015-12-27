@@ -71,8 +71,9 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
         val meeting = Meeting.fromFormData(meetingFormData, request.userId)
         Logger.info(s"Starting MeetingActor for meeting $meeting.id")
         Meetings.persist(meeting).map(_ => {
-          Logger.info("persist worked")
-          meetingManager ! CreateMeeting(meeting)
+          if (meeting.stopTime.isEmpty) {
+            meetingManager ! CreateMeeting(meeting)
+          }
           Ok(Json.toJson(meeting))
         }).recover {
           case ex: Exception => {
