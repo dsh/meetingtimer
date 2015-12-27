@@ -21,6 +21,7 @@ libraryDependencies ++= Seq(
   ws,
   filters,
   specs2 % Test,
+  evolutions,
   "mysql" % "mysql-connector-java" % "5.1.34",
   "com.typesafe.play" %% "play-slick" % "1.1.1",
   "com.typesafe.play" %% "play-slick-evolutions" % "1.1.1"

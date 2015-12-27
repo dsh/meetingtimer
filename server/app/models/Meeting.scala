@@ -49,7 +49,7 @@ object Meeting {
 
 
 
-class MeetingTableDef(tag: Tag) extends Table[Meeting](tag, "meeting") {
+class MeetingTableDef(tag: Tag) extends Table[Meeting](tag, "meetings") {
 
   def id = column[String]("id", O.PrimaryKey)
   def name = column[String]("name")
