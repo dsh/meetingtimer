@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { Link } from 'react-router'
 import StartNewMeetingLink from './StartNewMeetingLink'
 require('./MeetingStatusMessage.less');
+require('../../stylesheets/throbber.css');
 
 export default class MeetingStatusMessage extends Component {
   render() {
@@ -9,7 +10,8 @@ export default class MeetingStatusMessage extends Component {
     return (
       <div className="meeting-status-message-wrapper">
         <div className="meeting-status-message">{message}</div>
-        {showStartNew && <StartNewMeetingLink />}
+        <div className="throbber-loader"></div>
+        {showStartNew && <div className="button-wrapper"><StartNewMeetingLink /></div>}
       </div>
     );
   }
