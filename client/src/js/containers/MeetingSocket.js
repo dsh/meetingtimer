@@ -27,7 +27,8 @@ class MeetingSocketComponent extends Component {
         this.props.dispatch(stoppedMeeting(data.payload));
         break;
       case ERROR:
-        this.props.dispatch(errorAction(data.payload));
+        const {actionType, message} = data.payload;
+        this.props.dispatch(errorAction(message, actionType));
         break;
 
     }

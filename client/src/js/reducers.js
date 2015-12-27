@@ -3,7 +3,7 @@ import {reducer as formReducer} from 'redux-form'
 import {  handleActions } from 'redux-actions';
 import { routeReducer } from 'redux-simple-router'
 import { START_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, STOP_MEETING, MEETING_TICK, ERROR,
-  CLEAR_SUBMIT_ERROR } from './actions'
+  CLEAR_ERROR, CLEAR_SUBMIT_ERROR } from './actions'
 import timeElapsed from './lib/timeElapsed'
 const trim = require('lodash/string/trim');
 
@@ -60,11 +60,12 @@ const ui = handleActions({
         case JOIN_MEETING:
           return {joining: false};
       }
-      // Unkonwn error cause. Reset everything.
+      // Unknown error cause. Reset everything.
       return uiDefaultState;
     }
     return {...state, ...actionTypeToUiState(actionType), error: message};
-  }
+  },
+  CLEAR_ERROR: (state, action) => ({...state, error: null})
 }, uiDefaultState);
 
 const form = formReducer.normalize({

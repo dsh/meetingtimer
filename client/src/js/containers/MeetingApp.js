@@ -4,7 +4,7 @@ import JoinMeeting from '../components/JoinMeeting'
 import {navigateToMeeting} from '../actions'
 import { Link } from 'react-router'
 import AlertBox from '../components/AlertBox'
-import {errorAction} from '../actions'
+import {clearErrorAction} from '../actions'
 require('../../stylesheets/reset.css');
 require('./MeetingApp.less');
 
@@ -13,7 +13,7 @@ class MeetingAppComponent extends Component {
 
   handleJoinMeeting = formData => this.props.dispatch(navigateToMeeting(formData.meetingId));
 
-  handleCloseError = () => this.props.dispatch(errorAction(""));
+  handleCloseError = () => this.props.dispatch(clearErrorAction());
 
   render() {
     const { ui } = this.props;

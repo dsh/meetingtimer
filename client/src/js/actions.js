@@ -15,6 +15,7 @@ export const MEETING_TICK = "MEETING_TICK";
 export const START_MEETING = "START_MEETING";
 export const START_MEETING_REQUEST = "START_MEETING_REQUEST";
 export const ERROR = "ERROR";
+export const CLEAR_ERROR = "CLEAR_ERROR";
 export const CLEAR_SUBMIT_ERROR = "CLEAR_SUBMIT_ERROR";
 
 
@@ -23,7 +24,8 @@ export const stoppedMeeting = createAction(STOPPED_MEETING, meeting => meeting);
 export const joinMeeting = createAction(JOIN_MEETING);
 export const stopMeeting = createAction(STOP_MEETING);
 export const meetingTick = createAction(MEETING_TICK, timeElapsed => timeElapsed);
-export const errorAction  = createAction(ERROR, error => error);
+export const errorAction  = createAction(ERROR, (message, actionType) => ({actionType: actionType, message: message}));
+export const clearErrorAction  = createAction(CLEAR_ERROR);
 export const clearSubmitError = createAction(CLEAR_SUBMIT_ERROR);
 
 
@@ -65,7 +67,7 @@ function startMeetingRequest(meeting) {
       .then(checkStatus)
       .then(req => req.json())
       .then(meeting => dispatch(navigateToMeeting(meeting.id)))
-      .catch(error => dispatch(errorAction(error)));
+      .catch(error => dispatch(errorAction(error, START_MEETING)));
   }
 }
 
