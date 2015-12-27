@@ -12,8 +12,16 @@ const startOrJoinMeeting = (state, action) => ({
   timeElapsed: timeElapsed(action.payload.startTime)
 });
 const meeting = handleActions({
-  START_MEETING: startOrJoinMeeting,
-  JOINED_MEETING: startOrJoinMeeting,
+  START_MEETING: (state, action) =>
+    ({...state, ...action.payload, timeElapsed: timeElapsed(action.payload.startTime), isOwner: false}),
+  JOINED_MEETING: (state, action) => {
+    function isOwner(owner) {
+      const userId = document.cookie.replace(/.*userId=([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/, "$1");
+      return userId == owner;
+    }
+    const meeting = action.payload;
+    return {...state, ...meeting, timeElapsed: timeElapsed(meeting.startTime), isOwner: isOwner(meeting.owner)};
+  },
   MEETING_TICK: (state, action) => ({...state, timeElapsed: action.payload}),
   STOPPED_MEETING: (state, action) => ({
     ...action.payload,
@@ -26,7 +34,8 @@ const meeting = handleActions({
   participants: null,
   hourlyRate: null,
   stopTime: null,
-  timeElapsed: 0
+  timeElapsed: 0,
+  isOwner: false
 });
 
 const uiDefaultState = {

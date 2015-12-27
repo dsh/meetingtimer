@@ -16,9 +16,9 @@ class MeetingAppComponent extends Component {
   handleCloseError = () => this.props.dispatch(clearErrorAction());
 
   render() {
-    const { ui } = this.props;
+    const { ui, meeting: {isOwner} } = this.props;
     var join = '';
-    if (!ui.inProgress) {
+    if (!ui.inProgress || !isOwner) {
       join = (
         <div className="nav-join-meeting">
           <div className="join-text">Join a meeting in progress</div>
@@ -45,7 +45,8 @@ class MeetingAppComponent extends Component {
 
 function mapStateToProps(state) {
   return {
-    ui: state.ui
+    ui: state.ui,
+    meeting: state.meeting
   };
 }
 const MeetingApp = connect(mapStateToProps)(MeetingAppComponent);

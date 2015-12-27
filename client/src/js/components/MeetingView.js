@@ -37,6 +37,12 @@ export default class MeetingView extends Component {
         meetingTime = "Meeting starting at " + startTimeFormatted + ".";
       }
     }
+    var controls;
+    if (ui.inProgress && !ui.stopping && meeting.isOwner) {
+      controls = <button onClick={this.props.onStopMeeting}>Stop</button>;
+    } else {
+      controls = <StartNewMeetingLink />;
+    }
      return (
       <div className="meeting-wrapper">
         <div className="meeting-info">
@@ -45,8 +51,7 @@ export default class MeetingView extends Component {
           <TimeElapsed seconds={meeting.timeElapsed}/>
           <Cost cost={cost}/>
           <div className="meeting-controls">
-            { ui.inProgress && !ui.stopping && <button onClick={this.props.onStopMeeting}>Stop</button> }
-            { !ui.inProgress && <StartNewMeetingLink /> }
+            {controls}
           </div>
         </div>
         <div className="share-meeting">
