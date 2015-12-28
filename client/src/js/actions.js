@@ -26,7 +26,16 @@ export const stoppedMeeting = createAction(STOPPED_MEETING, meeting => meeting);
 export const joinMeeting = createAction(JOIN_MEETING);
 export const stopMeeting = createAction(STOP_MEETING);
 export const meetingTick = createAction(MEETING_TICK, timeElapsed => timeElapsed);
-export const errorAction  = createAction(ERROR, (message, actionType) => ({actionType: actionType, message: message}));
+export function errorAction(message, actionType) {
+  return dispatch => {
+    if (actionType == JOIN_MEETING) {
+      // errors on join meeting, navigate to home page.
+      // If we don't do this, the meeting socket continually tries to reload.
+      dispatch(updatePath('/'));
+    }
+    dispatch(createAction(ERROR)({actionType: actionType, message: message}));
+  }
+}
 export const clearErrorAction  = createAction(CLEAR_ERROR);
 export const clearSubmitError = createAction(CLEAR_SUBMIT_ERROR);
 // Changes the copy to clipboard text to "Copied!" for two seconds before returning it to it's original text.

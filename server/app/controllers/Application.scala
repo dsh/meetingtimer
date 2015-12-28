@@ -5,7 +5,7 @@ import actors.MeetingActor._
 import actors.MeetingManagerActor.CreateMeeting
 import actors.UserActor.{UserMessage, UserMessageJsonFormat}
 import actors.{MeetingManagerActor, UserActor}
-import akka.actor.ActorSystem
+import akka.actor.{ActorRef, ActorSystem}
 import com.google.inject.Inject
 import models.{Meeting, Meetings}
 import play.api.Logger
@@ -76,10 +76,9 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
           }
           Ok(Json.toJson(meeting))
         }).recover {
-          case ex: Exception => {
+          case ex: Exception =>
             Logger.error(s"Error saving meeting in start: ${ex.getMessage}")
             Forbidden(s"Error starting meeting. Please try again later.")
-          }
         }
       }
     )
@@ -88,9 +87,12 @@ class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
   implicit val inEventFrameFormatter = FrameFormatter.jsonFrame[MeetingMessage]
   implicit val outEventFrameFormatter = FrameFormatter.jsonFrame[UserMessage]
 
-  def meetingSocket(meetingId: String) = WebSocket.acceptWithActor[MeetingMessage, UserMessage] { request => out =>
-    // @todo abort if invalid meetingId
-    Logger.info(s"Starting UserActor for meeting $meetingId")
-    UserActor.props(meetingManager, meetingId, request.session.get("userId"), out)
+  def meetingSocket(meetingId: String) = WebSocket.tryAcceptWithActor[MeetingMessage, UserMessage] { request =>
+    Meetings.get(meetingId) map { meeting =>
+      Right((out: ActorRef) => {
+        Logger.info(s"Starting UserActor for meeting $meetingId")
+        UserActor.props(meetingManager, meeting, request.session.get("userId"), out)
+      })
+    }
   }
 }

@@ -68,4 +68,5 @@ object Meetings {
   val meetings = TableQuery[MeetingTableDef]
 
   def persist(meeting: Meeting) = dbConfig.db.run(meetings.insertOrUpdate(meeting))
+  def get(meetingId: String) = dbConfig.db.run(meetings.filter(_.id === meetingId).result.headOption)
 }

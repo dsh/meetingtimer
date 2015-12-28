@@ -10,8 +10,8 @@ import scala.concurrent.duration._
 
 
 object UserActor {
-  def props(meetingManagerRef: ActorRef, meetingId: String, userId: Option[String], out: ActorRef) =
-    Props(new UserActor(meetingManagerRef, meetingId, userId, out))
+  def props(meetingManagerRef: ActorRef, initialMeeting: Option[Meeting], userId: Option[String], out: ActorRef) =
+    Props(new UserActor(meetingManagerRef, initialMeeting, userId, out))
 
   // Messages we send to users.
   sealed trait UserMessage
@@ -53,19 +53,36 @@ object UserActor {
   }
 }
 
-class UserActor(meetingManagerRef: ActorRef, meetingId: String, userId: Option[String], out: ActorRef) extends Actor
+class UserActor(meetingManagerRef: ActorRef, initialMeeting: Option[Meeting], userId: Option[String], out: ActorRef)
+  extends Actor
   with ActorLogging
   with Stash {
   import actors.UserActor._
   import actors.MeetingActor._
   import actors.MeetingManagerActor.RegisterUser
 
-  override def preStart() = meetingManagerRef ! RegisterUser(meetingId, self)
 
   // @todo make the timeout configurable
   context.setReceiveTimeout(4 hours)
 
-  def receive = LoggingReceive {
+  val receive = initialMeeting match {
+    case None =>
+      Logger.info("No such meeting")
+      out ! Error(JoinMeeting(), "Valid meeting ID required.")
+      self ! PoisonPill
+      stopping
+    case Some(m) if m.stopTime.isDefined =>
+      Logger.info("Meeting is stopped")
+      out ! Stopped(m)
+      self ! PoisonPill
+      stopping
+    case Some(m) =>
+      Logger.info("Meeting in progress")
+      meetingManagerRef ! RegisterUser(m.id, self)
+      starting
+  }
+
+  def starting = LoggingReceive {
     case UserRegistered(meetingRef) => {
       context become normalReceive(meetingRef)
       unstashAll()
@@ -88,4 +105,11 @@ class UserActor(meetingManagerRef: ActorRef, meetingId: String, userId: Option[S
       }
     case ReceiveTimeout => self ! PoisonPill
   }
+
+  def stopping = LoggingReceive {
+    // We're stopping, do nothing.
+    case _ => ()
+  }
+
+
 }
