@@ -1,9 +1,10 @@
 import { combineReducers } from 'redux'
 import {reducer as formReducer} from 'redux-form'
-import {  handleActions } from 'redux-actions';
+import {  handleActions } from 'redux-actions'
 import { routeReducer } from 'redux-simple-router'
+import { copyToClipboardDefaultText } from './constants'
 import { START_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, STOP_MEETING, MEETING_TICK, ERROR,
-  CLEAR_ERROR, CLEAR_SUBMIT_ERROR } from './actions'
+  CLEAR_ERROR, CLEAR_SUBMIT_ERROR, COPY_TO_CLIPBOARD } from './actions'
 import timeElapsed from './lib/timeElapsed'
 const trim = require('lodash/string/trim');
 
@@ -43,7 +44,8 @@ const uiDefaultState = {
   joining: true,
   inProgress: false,
   stopping: false,
-  error: null
+  error: null,
+  copyToClipboardText: copyToClipboardDefaultText
 };
 const ui = handleActions({
   START_MEETING: (state, action) =>
@@ -60,7 +62,6 @@ const ui = handleActions({
   STOPPED_MEETING: (state, action) =>
     ({...state, starting: false, joining: false, stopping: false, inProgress: false, error: null}),
   ERROR: (state, action) => {
-    console.log(action);
     const { actionType, message } = action.payload;
     function actionTypeToUiState(at) {
       switch (at) {
@@ -74,7 +75,8 @@ const ui = handleActions({
     }
     return {...state, ...actionTypeToUiState(actionType), error: message};
   },
-  CLEAR_ERROR: (state, action) => ({...state, error: null})
+  CLEAR_ERROR: (state, action) => ({...state, error: null}),
+  COPY_TO_CLIPBOARD: (state, action) => ({...state, copyToClipboardText: action.payload})
 }, uiDefaultState);
 
 const form = formReducer.normalize({

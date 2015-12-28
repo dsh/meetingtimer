@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { stopMeeting } from '../actions'
+import { stopMeeting, copyToClipboard } from '../actions'
 import MeetingSocket from './MeetingSocket'
 import TimeTicker from './TimeTicker'
 import MeetingView from '../components/MeetingView'
@@ -11,26 +11,24 @@ class Meeting extends Component {
 
 
   render() {
-    const { meeting, ui } = this.props;
+    const { meeting, ui, params: {meetingId}, handleStopMeeting, handleCopyToClipboard } = this.props;
     return (
       <div>
-        { !meeting.stopTime && <MeetingSocket meetingId={this.props.params.meetingId} stopping={ui.stopping} /> }
+        { !meeting.stopTime && <MeetingSocket meetingId={meetingId} stopping={ui.stopping} /> }
         { meeting.startTime && !meeting.stopTime && !ui.stopping && <TimeTicker startTime={meeting.startTime} /> }
         { ui.joining && <MeetingStatusMessage message="Joining meeting..." showStartNew={true} /> }
-        { !ui.joining && <MeetingView onStopMeeting={this.props.handleStopMeeting} meeting={meeting} ui={ui} /> }
+        { !ui.joining &&
+          <MeetingView onStopMeeting={handleStopMeeting} onCopyToClipboard={handleCopyToClipboard}
+                       meeting={meeting} ui={ui} /> }
       </div>
     );
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    meeting: state.meeting,
-    ui: state.ui
-  };
-}
+const mapStateToProps = (state) => ({meeting: state.meeting, ui: state.ui});
 const mapDispatchToProps = {
-  handleStopMeeting: stopMeeting
+  handleStopMeeting: stopMeeting,
+  handleCopyToClipboard: copyToClipboard
 };
 const MeetingContainer = connect(mapStateToProps, mapDispatchToProps)(Meeting);
 export default MeetingContainer;

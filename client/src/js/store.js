@@ -14,9 +14,21 @@ const debounceFormErrors = store => next => action => {
   return next(action);
 };
 
+const delayedActionDispatcher = store => next => action => {
+  if (action.meta && action.meta.delayedDispatch) {
+    const dd = action.meta.delayedDispatch;
+    setTimeout(
+      () => store.dispatch(dd.action),
+      dd.delay
+    );
+  }
+  return next(action);
+};
+
 const createStoreWithMiddleware = applyMiddleware(
   thunkMiddleware,
-  debounceFormErrors
+  debounceFormErrors,
+  delayedActionDispatcher
 )(createStore);
 
 const store = createStoreWithMiddleware(rootReducer, {})

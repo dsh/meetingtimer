@@ -19,12 +19,46 @@
   margin-top: 50px;
   padding-right: 20px;
   text-align: right;
+  .copy-to-clipboard-tooltip {
+    background-color: #000;
+    border-radius: 5px;
+    color: #eee;
+    font-size: 12px;
+    opacity: 0.8;
+    padding: 5px 10px;
+    position: absolute;
+    right: -10px;
+    text-align: center;
+    top: 30px;
+    visibility: hidden;
+    white-space: nowrap;
+    z-index: 999;
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 100%;
+      right: 13px;
+      margin-left: -8px;
+      width: 0; height: 0;
+      border-bottom: 8px solid #000000;
+      border-right: 8px solid transparent;
+      border-left: 8px solid transparent;
+    }
+  }
   .copy-to-clipboard {
     background-color: #eee;
-    border: 2px solid #ddd;
+    border: 1px solid #bbb;
     border-radius: 2px;
     cursor: pointer;
+    display: inline;
     font-size: 20px;
     padding: 0 2px;
+    position: relative;
+    &:hover {
+      background-color: #ccc;
+    }
+    &:hover .copy-to-clipboard-tooltip {
+      visibility: visible;
+    }
   }
 }

@@ -3,6 +3,7 @@ import fetch from 'isomorphic-fetch'
 import { updatePath } from 'redux-simple-router'
 import { validTimeFormats } from './constants'
 import normalizeMeeting from './lib/normalizeMeeting'
+import { copyToClipboardDefaultText } from './constants'
 const trim = require('lodash/string/trim');
 const moment = require('moment');
 require('frozen-moment');
@@ -17,6 +18,7 @@ export const START_MEETING_REQUEST = "START_MEETING_REQUEST";
 export const ERROR = "ERROR";
 export const CLEAR_ERROR = "CLEAR_ERROR";
 export const CLEAR_SUBMIT_ERROR = "CLEAR_SUBMIT_ERROR";
+export const COPY_TO_CLIPBOARD = "COPY_TO_CLIPBOARD";
 
 
 export const joinedMeeting = createAction(JOINED_MEETING, meeting => meeting );
@@ -27,6 +29,18 @@ export const meetingTick = createAction(MEETING_TICK, timeElapsed => timeElapsed
 export const errorAction  = createAction(ERROR, (message, actionType) => ({actionType: actionType, message: message}));
 export const clearErrorAction  = createAction(CLEAR_ERROR);
 export const clearSubmitError = createAction(CLEAR_SUBMIT_ERROR);
+// Changes the copy to clipboard text to "Copied!" for two seconds before returning it to it's original text.
+export const copyToClipboard = createAction(
+  COPY_TO_CLIPBOARD,
+  () => "Copied!",
+  () => ({
+    // A few seconds after showing copied, change message copy tooltip back to the default.
+    delayedDispatch: {
+      delay: 2000,
+      action: createAction(COPY_TO_CLIPBOARD)(copyToClipboardDefaultText)
+    }
+  })
+);
 
 
 export function navigateToMeeting(meetingId) {

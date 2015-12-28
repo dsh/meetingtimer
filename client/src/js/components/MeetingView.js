@@ -57,8 +57,8 @@ export default class MeetingView extends Component {
         <div className="share-meeting">
           Meeting ID: <span className="meeting-id">{meeting.id}</span><br />
           <Link className="meeting-link" to={meetingPath}>{meetingUrl}</Link>&nbsp;
-          <CopyToClipboard text={meetingUrl}>
-            <span className="copy-to-clipboard">&#x279f;</span>
+          <CopyToClipboard text={meetingUrl} onCopy={this.props.onCopyToClipboard}>
+            <span className="copy-to-clipboard">&#x279f;<span className="copy-to-clipboard-tooltip">{ui.copyToClipboardText}</span></span>
           </CopyToClipboard>
         </div>
       </div>
@@ -69,6 +69,7 @@ export default class MeetingView extends Component {
 MeetingView.propTypes =  {
   meeting: PropTypes.object.isRequired,
   ui: PropTypes.object.isRequired,
-  onStopMeeting: PropTypes.func.isRequired
+  onStopMeeting: PropTypes.func.isRequired,
+  onCopyToClipboard: PropTypes.func.isRequired
 };
 
