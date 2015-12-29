@@ -75,7 +75,7 @@ const ui = handleActions({
       // Unknown error cause. Reset everything.
       return uiDefaultState;
     }
-    return {...state, ...actionTypeToUiState(actionType), error: isString(message) ? message : "Unknown error object."};
+    return {...state, ...actionTypeToUiState(actionType), error: isString(message) ? message : "Unknown error."};
   },
   CLEAR_ERROR: (state, action) => ({...state, error: null}),
   COPY_TO_CLIPBOARD: (state, action) => ({...state, copyToClipboardText: action.payload})

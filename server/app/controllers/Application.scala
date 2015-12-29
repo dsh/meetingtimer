@@ -1,10 +1,11 @@
 package controllers
 
 import java.util.UUID
+
 import actors.MeetingActor._
 import actors.MeetingManagerActor.CreateMeeting
 import actors.UserActor.{UserMessage, UserMessageJsonFormat}
-import actors.{MeetingManagerActor, UserActor}
+import actors.{MeetingManagerActor, StartPersistedMeetings, UserActor}
 import akka.actor.{ActorRef, ActorSystem}
 import com.google.inject.Inject
 import models.{Meeting, Meetings}
@@ -15,16 +16,20 @@ import play.api.data._
 import play.api.data.format.Formats._
 import play.api.data.validation.Constraints._
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
 import play.api.mvc.WebSocket.FrameFormatter
 import play.api.mvc._
-import views.formdata.MeetingFormData
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.concurrent.Future
+import views.formdata.MeetingFormData
 
 
-class Application @Inject() (val messagesApi: MessagesApi) (system: ActorSystem)
+
+class Application @Inject() (val messagesApi: MessagesApi, val startMeetings: StartPersistedMeetings)
+                            (system: ActorSystem)
   extends Controller with I18nSupport {
+
+  startMeetings.start(system)
 
   val meetingForm = Form(
     mapping(

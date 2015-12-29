@@ -64,9 +64,10 @@ class MeetingTableDef(tag: Tag) extends Table[Meeting](tag, "meetings") {
 
 object Meetings {
 
-  val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+  val db = DatabaseConfigProvider.get[JdbcProfile](Play.current).db
   val meetings = TableQuery[MeetingTableDef]
 
-  def persist(meeting: Meeting) = dbConfig.db.run(meetings.insertOrUpdate(meeting))
-  def get(meetingId: String) = dbConfig.db.run(meetings.filter(_.id === meetingId).result.headOption)
+  def persist(meeting: Meeting) = db.run(meetings.insertOrUpdate(meeting))
+  def get(meetingId: String) = db.run(meetings.filter(_.id === meetingId).result.headOption)
+  def listInProgress = db.stream(meetings.filter(_.stopTime.isEmpty).result)
 }
