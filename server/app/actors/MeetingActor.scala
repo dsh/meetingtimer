@@ -76,7 +76,6 @@ class MeetingActor(bus: MeetingEventBus, meeting: Meeting) extends Actor with Ac
 
 
   def receive = LoggingReceive {
-    case m: UserMessage => Logger.debug(s"MeetingActor: Received User Message: $m")
     case joinMeeting: JoinMeeting =>
       Logger.debug("MeetingActor: Join Meeting")
       publishToUser(joinMeeting.userId, Joined(meeting))
