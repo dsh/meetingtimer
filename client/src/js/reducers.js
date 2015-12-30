@@ -16,7 +16,7 @@ const startOrJoinMeeting = (state, action) => ({
 });
 const meeting = handleActions({
   START_MEETING: (state, action) =>
-    ({...state, ...action.payload, timeElapsed: timeElapsed(action.payload.startTime), isOwner: false}),
+    ({...state, ...action.payload, timeElapsed: timeElapsed(action.payload.startTime), stopTime: null, isOwner: false}),
   JOINED_MEETING: (state, action) => {
     function isOwner(owner) {
       const userId = document.cookie.replace(/.*userId=([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/, "$1");

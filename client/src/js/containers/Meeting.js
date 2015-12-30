@@ -8,8 +8,6 @@ import MeetingStatusMessage from '../components/MeetingStatusMessage'
 
 
 class Meeting extends Component {
-
-
   render() {
     const { meeting, ui, params: {meetingId}, handleStopMeeting, handleCopyToClipboard } = this.props;
     return (
