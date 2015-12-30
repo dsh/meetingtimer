@@ -2,24 +2,29 @@ package actors
 
 import akka.actor._
 import akka.event.LoggingReceive
-import models.{Meetings, Meeting}
+import models.{Meeting, Meetings}
 import play.api.Logger
 import play.api.libs.json._
-import scala.concurrent.duration._
+
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
 
 object MeetingActor {
-  def props(meeting: Meeting): Props = Props(classOf[MeetingActor], meeting)
+  def props(bus: MeetingEventBus, meeting: Meeting): Props = Props(classOf[MeetingActor], bus, meeting)
 
-  sealed class MeetingMessage {
-    // Add a user id to the meeting message. Needed for authorizing the stop action.
-    def withUserId(userId: Option[String]) = this
+  sealed trait MeetingMessage extends Message {
+    def userId: Option[String]
+    def withUserId(newUserId: String): MeetingMessage
   }
-  case class JoinMeeting() extends MeetingMessage
+  case class JoinMeeting(userId: Option[String] = None) extends MeetingMessage {
+    def withUserId(newUserId: String) = this.copy(userId = Option(newUserId))
+  }
   case class StopMeeting(userId: Option[String] = None) extends MeetingMessage {
-    override def withUserId(newUserId: Option[String]) = this.copy(userId = newUserId)
+    override def withUserId(newUserId: String) = this.copy(userId = Option(newUserId))
   }
-  case class Heartbeat() extends MeetingMessage
+  case class Heartbeat(userId: Option[String] = None) extends MeetingMessage {
+    override def withUserId(newUserId: String) = this.copy(userId = Option(newUserId))
+  }
 
   val JoinMeetingActionType = "JOIN_MEETING"
   val StopMeetingActionType = "STOP_MEETING"
@@ -38,46 +43,62 @@ object MeetingActor {
     }
   }
 }
-class MeetingActor(initialMeeting: Meeting) extends Actor with ActorLogging {
-
+class MeetingActor(bus: MeetingEventBus, meeting: Meeting) extends Actor with ActorLogging {
   import actors.MeetingActor._
   import actors.UserActor._
-  import scala.util.{Success, Failure}
 
-  def sendStopped(m: Meeting, us: Set[ActorRef]) = us foreach { _ ! Stopped(m) }
+  import scala.util.{Failure, Success}
 
   context.setReceiveTimeout(4 hours)
 
-  def started(meeting: Meeting, users: Set[ActorRef]): Receive = LoggingReceive {
-    case JoinMeeting() =>
-      Logger.info("Join Meeting")
-      context watch sender
-      sender ! Joined(meeting)
-      context become started(meeting, users + sender)
-    case Terminated(user) =>
-      context become started(meeting, users - user)
+  def broadcast(msg: UserMessage) = {
+    val topic = MeetingBroadcastTopic(meeting.id)
+    Logger.debug(s"MeetingActor: broadcast $msg to $topic")
+    bus.publish(MeetingEvent(topic, msg))
+  }
+
+  override def preStart() {
+    val topic = MeetingTopic(meeting.id)
+    Logger.debug(s"MeetingActor: subscribing to $topic")
+    bus.subscribe(self, topic)
+    // If we have a stop time, send a meeting stopped message out. Otherwise send out the joined meeting.
+    broadcast(meeting.stopTime.fold[UserMessage](Joined(meeting))(_ => Stopped(meeting)))
+  }
+
+  def publishToUser(userId: Option[String], msg: UserMessage) = {
+    Logger.debug("MeetingActor: publishToUser")
+    userId foreach { uid =>
+      val topic = UserTopic(meeting.id, uid)
+      Logger.debug(s"MeetingActor: publish $msg to $topic")
+      bus.publish(MeetingEvent(topic, msg))
+    }
+  }
+
+
+  def receive = LoggingReceive {
+    case m: UserMessage => Logger.debug(s"MeetingActor: Received User Message: $m")
+    case joinMeeting: JoinMeeting =>
+      Logger.debug("MeetingActor: Join Meeting")
+      publishToUser(joinMeeting.userId, Joined(meeting))
     case stopMeeting: StopMeeting =>
-      Logger.info(s"Stop Meeting requested by ${stopMeeting.userId}")
+      Logger.debug(s"MeetingActor: Stop Meeting requested by ${stopMeeting.userId}")
       if (stopMeeting.userId.contains(meeting.owner)) {
         val stoppedMeeting = meeting.stop
-        val origin = sender // sender will be gone when future below returns
         Meetings.persist(stoppedMeeting) onComplete {
           case Success(_) =>
-            sendStopped(stoppedMeeting, users)
+            broadcast(Stopped(stoppedMeeting))
             self ! PoisonPill
           case Failure(ex) =>
-            origin ! Error(stopMeeting, ex.getMessage)
+            publishToUser(stopMeeting.userId, Error(stopMeeting, ex.getMessage))
         }
       } else {
         // return error to user .. can't stop someone else's meeting
-        sender ! Error(stopMeeting, "You do not have permission to stop this meeting.")
+        publishToUser(stopMeeting.userId, Error(stopMeeting, "You do not have permission to stop this meeting."))
       }
     case ReceiveTimeout =>
       val stoppedMeeting = meeting.stop
       Meetings.persist(stoppedMeeting)
-      sendStopped(stoppedMeeting, users)
+      broadcast(Stopped(stoppedMeeting))
       self ! PoisonPill
   }
-
-  def receive = started(initialMeeting, Set.empty)
 }

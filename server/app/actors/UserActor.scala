@@ -6,17 +6,19 @@ import akka.event.LoggingReceive
 import models.Meeting
 import play.api.Logger
 import play.api.libs.json._
+
 import scala.concurrent.duration._
 
 
 object UserActor {
-  def props(meetingManagerRef: ActorRef, initialMeeting: Option[Meeting], userId: Option[String], out: ActorRef) =
-    Props(new UserActor(meetingManagerRef, initialMeeting, userId, out))
+  def props(bus: MeetingEventBus, initialMeeting: Option[Meeting], userId: String, out: ActorRef) =
+    Props(new UserActor(bus, initialMeeting, userId, out))
 
   // Messages we send to users.
-  sealed trait UserMessage
+  sealed trait UserMessage extends Message
   case class Joined(meeting: Meeting) extends UserMessage
   case class Stopped(meeting: Meeting) extends UserMessage
+  // Error.meetingMessage is the message that triggered the error.
   case class Error(meetingMessage: MeetingMessage, message: String) extends UserMessage
 
   case class UserRegistered(meetingActorRef: ActorRef)
@@ -40,7 +42,7 @@ object UserActor {
       case Stopped(meeting) => fsa(StoppedMeetingActionType, Json.toJson(meeting))
       case e: Error => fsa(ErrorActionType, Json.obj(
         "actionType" -> (e.meetingMessage match {
-          case JoinMeeting() => JoinMeetingActionType
+          case JoinMeeting(_) => JoinMeetingActionType
           case StopMeeting(_) => StopMeetingActionType
           case _ => JsNull
         }),
@@ -53,63 +55,51 @@ object UserActor {
   }
 }
 
-class UserActor(meetingManagerRef: ActorRef, initialMeeting: Option[Meeting], userId: Option[String], out: ActorRef)
-  extends Actor
-  with ActorLogging
-  with Stash {
-  import actors.UserActor._
+class UserActor(bus: MeetingEventBus, initialMeeting: Option[Meeting], userId: String, out: ActorRef)
+  extends Actor with ActorLogging {
   import actors.MeetingActor._
-  import actors.MeetingManagerActor.RegisterUser
-
+  import actors.UserActor._
 
   // @todo make the timeout configurable
   context.setReceiveTimeout(4 hours)
 
   val receive = initialMeeting match {
     case None =>
-      Logger.info("No such meeting")
+      Logger.debug("UserActor: start - No such meeting")
       out ! Error(JoinMeeting(), "Valid meeting ID required.")
       self ! PoisonPill
       stopping
-    case Some(m) if m.stopTime.isDefined =>
-      Logger.info("Meeting is stopped")
-      out ! Stopped(m)
+    case Some(meeting) if meeting.stopTime.isDefined =>
+      Logger.debug("UserActor: start - Meeting is stopped")
+      out ! Stopped(meeting)
       self ! PoisonPill
       stopping
-    case Some(m) =>
-      Logger.info("Meeting in progress")
-      meetingManagerRef ! RegisterUser(m.id, self)
-      starting
+    case Some(meeting) =>
+      Logger.debug("UserActor: start - Meeting in progress")
+      bus.subscribe(self, UserTopic(meeting.id, userId))
+      normalReceive(meeting)
   }
 
-  def starting = LoggingReceive {
-    case UserRegistered(meetingRef) => {
-      context become normalReceive(meetingRef)
-      unstashAll()
+
+  def normalReceive(meeting: Meeting) = {
+    LoggingReceive {
+      case msg: MeetingMessage =>
+        // Logger.debug(s"User meeting message $msg")
+        // Events come from the user without the userId attached. Here we attach them so the meeting
+        // knows who to send responses back to.
+        Logger.debug(s"UserActor: Received meeting message $msg")
+        bus.publish(MeetingEvent(MeetingTopic(meeting.id), msg.withUserId(userId)))
+      case msg: UserMessage =>
+        Logger.debug(s"UserActor: Forwarding message to user $msg")
+        out ! msg
+        msg match {
+          case Stopped(_) => self ! PoisonPill
+          case _ => ()
+        }
+      case ReceiveTimeout => self ! PoisonPill
     }
-    case ReceiveTimeout => self ! PoisonPill
-    case _ => stash()
   }
 
-
-  def normalReceive(meetingRef: ActorRef) = LoggingReceive {
-    case msg: MeetingMessage => {
-      Logger.info(s"User meeting message $msg")
-      meetingRef ! msg.withUserId(userId)
-    }
-    case msg: UserMessage =>
-      out ! msg
-      msg match {
-        case Stopped(_) => self ! PoisonPill
-        case _ => ()
-      }
-    case ReceiveTimeout => self ! PoisonPill
-  }
-
-  def stopping = LoggingReceive {
-    // We're stopping, do nothing.
-    case _ => ()
-  }
-
+  def stopping = Actor.emptyBehavior
 
 }

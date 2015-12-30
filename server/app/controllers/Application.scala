@@ -3,9 +3,8 @@ package controllers
 import java.util.UUID
 
 import actors.MeetingActor._
-import actors.MeetingManagerActor.CreateMeeting
 import actors.UserActor.{UserMessage, UserMessageJsonFormat}
-import actors.{MeetingManagerActor, StartPersistedMeetings, UserActor}
+import actors.{MeetingEventBus, MeetingActor, StartPersistedMeetings, UserActor}
 import akka.actor.{ActorRef, ActorSystem}
 import com.google.inject.Inject
 import models.{Meeting, Meetings}
@@ -25,8 +24,8 @@ import views.formdata.MeetingFormData
 
 
 
-class Application @Inject() (val messagesApi: MessagesApi, val startMeetings: StartPersistedMeetings)
-                            (system: ActorSystem)
+class Application @Inject() (val messagesApi: MessagesApi, val startMeetings: StartPersistedMeetings,
+                            val bus: MeetingEventBus)(system: ActorSystem)
   extends Controller with I18nSupport {
 
   startMeetings.start(system)
@@ -39,8 +38,6 @@ class Application @Inject() (val messagesApi: MessagesApi, val startMeetings: St
       "hourlyRate" -> bigDecimal
     )(MeetingFormData.apply)(MeetingFormData.unapply)
   )
-
-  val meetingManager = system.actorOf(MeetingManagerActor.props())
 
   /**
     * Get the user's id from the session, or create one if none exists.
@@ -74,10 +71,10 @@ class Application @Inject() (val messagesApi: MessagesApi, val startMeetings: St
       },
       meetingFormData => {
         val meeting = Meeting.fromFormData(meetingFormData, request.userId)
-        Logger.info(s"Starting MeetingActor for meeting $meeting")
+        Logger.debug(s"start: Starting MeetingActor for meeting $meeting")
         Meetings.persist(meeting).map(_ => {
           if (meeting.stopTime.isEmpty) {
-            meetingManager ! CreateMeeting(meeting)
+            system.actorOf(MeetingActor.props(bus, meeting))
           }
           Ok(Json.toJson(meeting))
         }).recover {
@@ -95,8 +92,8 @@ class Application @Inject() (val messagesApi: MessagesApi, val startMeetings: St
   def meetingSocket(meetingId: String) = WebSocket.tryAcceptWithActor[MeetingMessage, UserMessage] { request =>
     Meetings.get(meetingId) map { meeting =>
       Right((out: ActorRef) => {
-        Logger.info(s"Starting UserActor for meeting $meetingId")
-        UserActor.props(meetingManager, meeting, request.session.get("userId"), out)
+        Logger.debug(s"meetingSocket: Starting UserActor for meeting $meetingId")
+        UserActor.props(bus, meeting, getUserId(request.session), out)
       })
     }
   }
