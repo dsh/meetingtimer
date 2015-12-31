@@ -15,5 +15,5 @@ dist
 .settings
 node_modules
 npm-debug.log
-all.js
-all.js.map
+server/lib
+client/public/js

@@ -3,14 +3,13 @@ See <http://meetingtimer.io/about>
 Motivation:
 
 * Track the abusrdity of all the meetings I must participate in now.
-* Portfolio peice for resume.
+* Portfolio peice for my resume.
 * Practice:
 ** ReactJS + Redux
 ** Scala, Akka and Play
 ** Functional programming
 ** TypeScript (coming soon)
 ** Reactive Programming (coming soon)
-** Hadoop + Spark (coming soon)
 
 Things to do:
 

@@ -1,14 +1,12 @@
-@(title: String, scripts: Html = Html(""))(content: Html)
+@(title: String = "meetingtimer.io")(content: Html)
 
 <!DOCTYPE html>
 
 <html>
     <head>
         <title>@title</title>
-        @scripts
     </head>
     <body>
-        <div id="application">@content</div>
+        @content
     </body>
-    <script src="/assets/js/all.js"></script>
 </html>

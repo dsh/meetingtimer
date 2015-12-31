@@ -9,7 +9,7 @@ export default class About extends Component {
       <p>
         My job is becoming increasingly bureaucratic and "corporate."
         We now spend countless hours in meetings instead of getting real work done.
-        There were meeting timers out there that show you how much time and money are being wasted,
+        There are meeting timers out there that show you how much time and money are being wasted,
           but none where I could share a link with like minded colleagues.
       </p>
 
@@ -29,7 +29,6 @@ export default class About extends Component {
         <li>Functional programming</li>
         <li>TypeScript (coming soon)</li>
         <li>Reactive Programming (coming soon)</li>
-        <li>Hadoop + Spark (coming soon)</li>
       </ul>
 
       <p>

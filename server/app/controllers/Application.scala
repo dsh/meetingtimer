@@ -63,6 +63,12 @@ class Application @Inject() (val messagesApi: MessagesApi, val startMeetings: St
     }
   }
 
+
+  def index(path: String) = Action {
+    Ok(views.html.index())
+  }
+
+
   /**
     * Start a new meeting.
     *
