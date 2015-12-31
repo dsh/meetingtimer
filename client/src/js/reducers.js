@@ -104,7 +104,6 @@ const form = formReducer.normalize({
 });
 
 
-// @todo move these each to their own file, do an import of the entier reducers directory
 const rootReducer = combineReducers({
   meeting,
   ui,

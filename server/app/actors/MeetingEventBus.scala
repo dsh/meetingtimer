@@ -2,7 +2,7 @@ package actors
 
 import akka.event.{ActorEventBus, SubchannelClassification}
 import akka.util.Subclassification
-import com.google.inject.{AbstractModule, Provider}
+import com.google.inject.AbstractModule
 import play.api.Logger
 
 trait Message
@@ -14,15 +14,16 @@ case class MeetingTopic(meetingId: String) extends Topic
 case class MeetingBroadcastTopic(meetingId: String) extends Topic
 case class MeetingEvent(topic: Topic, payload: Message)
 
-// @ImplementedBy(classOf[MeetingEventBusImpl])
 trait MeetingEventBus extends ActorEventBus with SubchannelClassification {
   type Event = MeetingEvent
   type Classifier = Topic
 }
 
-class MeetingEventBusImpl extends MeetingEventBus {
 
-  Logger.debug("starting an event bus")
+/**
+  * Meeting bus for meetings and users to communicate over.
+  */
+class MeetingEventBusImpl extends MeetingEventBus {
 
   override protected def classify(event: Event): Classifier = event.topic
 
@@ -48,19 +49,11 @@ class MeetingEventBusImpl extends MeetingEventBus {
   }
 }
 
-class MeetingEventBusProvider extends Provider[MeetingEventBus] {
-  val bus = new MeetingEventBusImpl
-  override def get = {
-    Logger.debug("Provider - get")
-    bus
-  }
-}
-
 class MeetingEventBusModule extends AbstractModule {
   def configure() = {
     bind(classOf[MeetingEventBus])
       .to(classOf[MeetingEventBusImpl])
-      // .toProvider(new MeetingEventBusProvider)
+      // We only want one MeetingBus, and we want it right away.
       .asEagerSingleton()
   }
 }

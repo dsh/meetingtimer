@@ -5,9 +5,8 @@ import akka.event.LoggingReceive
 import models.{Meeting, Meetings}
 import play.api.Logger
 import play.api.libs.json._
-
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object MeetingActor {
   def props(bus: MeetingEventBus, meeting: Meeting): Props = Props(classOf[MeetingActor], bus, meeting)
@@ -51,12 +50,23 @@ class MeetingActor(bus: MeetingEventBus, meeting: Meeting) extends Actor with Ac
 
   context.setReceiveTimeout(4 hours)
 
+  /**
+    * Broadcast a message to all users listening to this event.
+    *
+    * @param msg
+    */
   def broadcast(msg: UserMessage) = {
     val topic = MeetingBroadcastTopic(meeting.id)
     Logger.debug(s"MeetingActor: broadcast $msg to $topic")
     bus.publish(MeetingEvent(topic, msg))
   }
 
+  /**
+    * Subscribe and listen to events for me on the event bus.
+    *
+    * When we first join broadcast a Joined or Stopped message. Any users who got connected before the
+    * meeting got started will get the details on the meeting.
+    */
   override def preStart() {
     val topic = MeetingTopic(meeting.id)
     Logger.debug(s"MeetingActor: subscribing to $topic")
@@ -65,6 +75,14 @@ class MeetingActor(bus: MeetingEventBus, meeting: Meeting) extends Actor with Ac
     broadcast(meeting.stopTime.fold[UserMessage](Joined(meeting))(_ => Stopped(meeting)))
   }
 
+  /**
+    * Send a response to a specific user.
+    *
+    * If one user joins, we only send the Joined response back to that user.
+    *
+    * @param userId
+    * @param msg
+    */
   def publishToUser(userId: Option[String], msg: UserMessage) = {
     Logger.debug("MeetingActor: publishToUser")
     userId foreach { uid =>
@@ -81,8 +99,10 @@ class MeetingActor(bus: MeetingEventBus, meeting: Meeting) extends Actor with Ac
       publishToUser(joinMeeting.userId, Joined(meeting))
     case stopMeeting: StopMeeting =>
       Logger.debug(s"MeetingActor: Stop Meeting requested by ${stopMeeting.userId}")
+      // We only allow the owner of the meeting to stop it.
       if (stopMeeting.userId.contains(meeting.owner)) {
         val stoppedMeeting = meeting.stop
+        // Save to the data store that we've stopped the meeting.
         Meetings.persist(stoppedMeeting) onComplete {
           case Success(_) =>
             broadcast(Stopped(stoppedMeeting))

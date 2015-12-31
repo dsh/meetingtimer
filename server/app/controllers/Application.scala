@@ -1,12 +1,11 @@
 package controllers
 
-import java.util.UUID
-
 import actors.MeetingActor._
 import actors.UserActor.{UserMessage, UserMessageJsonFormat}
 import actors.{MeetingEventBus, MeetingActor, StartPersistedMeetings, UserActor}
 import akka.actor.{ActorRef, ActorSystem}
 import com.google.inject.Inject
+import java.util.UUID
 import models.{Meeting, Meetings}
 import play.api.Logger
 import play.api.Play.current
@@ -21,7 +20,6 @@ import play.api.mvc.WebSocket.FrameFormatter
 import play.api.mvc._
 import scala.concurrent.Future
 import views.formdata.MeetingFormData
-
 
 
 class Application @Inject() (val messagesApi: MessagesApi, val startMeetings: StartPersistedMeetings,
@@ -59,14 +57,22 @@ class Application @Inject() (val messagesApi: MessagesApi, val startMeetings: St
   object UserIdAction extends ActionBuilder[UserIdRequest]  {
     def invokeBlock[A](request: Request[A], block: (UserIdRequest[A]) => Future[Result]) = {
       val userId = getUserId(request.session)
+      // We add a userId to the session. This identifies each user and allows primitive access control so they can
+      // stop their own meetings.
       block(new UserIdRequest[A](userId, request)).map(_.withSession("userId" -> userId))
     }
   }
 
+  /**
+    * Start a new meeting.
+    *
+    * Reads data from the start form and starts a new meeting actor.
+    *
+    * @return Future[Response]
+    */
   def start = UserIdAction.async { implicit request =>
     meetingForm.bindFromRequest.fold(
       formWithErrors => {
-        // @todo Return actionable error messages, not just this generic message.
         Future.successful(BadRequest("Invalid meeting data."))
       },
       meetingFormData => {
@@ -86,9 +92,16 @@ class Application @Inject() (val messagesApi: MessagesApi, val startMeetings: St
     )
   }
 
+  // Convert in/out data to/from json/meeting messages. Used for WebSocket below
   implicit val inEventFrameFormatter = FrameFormatter.jsonFrame[MeetingMessage]
   implicit val outEventFrameFormatter = FrameFormatter.jsonFrame[UserMessage]
 
+  /**
+    * Communicates meeting details to/from the user client.
+    *
+    * Clients send MeetingMessages to the meeting - operations such as Join and Stop.
+    * The meeting will respond with UserMessages, such as Joined and Stopped, which contain details about the meeting.
+    */
   def meetingSocket(meetingId: String) = WebSocket.tryAcceptWithActor[MeetingMessage, UserMessage] { request =>
     Meetings.get(meetingId) map { meeting =>
       Right((out: ActorRef) => {

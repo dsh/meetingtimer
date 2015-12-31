@@ -60,21 +60,26 @@ class UserActor(bus: MeetingEventBus, initialMeeting: Option[Meeting], userId: S
   import actors.MeetingActor._
   import actors.UserActor._
 
-  // @todo make the timeout configurable
   context.setReceiveTimeout(4 hours)
 
+  /**
+    * When we start up the actor, determine how we want to respond.
+    */
   val receive = initialMeeting match {
     case None =>
+      // If the meeting id is invalid then return an error and close the websocket.
       Logger.debug("UserActor: start - No such meeting")
       out ! Error(JoinMeeting(), "Valid meeting ID required.")
       self ! PoisonPill
       stopping
     case Some(meeting) if meeting.stopTime.isDefined =>
+      // If the meeting has already stopped, returned the Stopped message to the user and close the websocket.
       Logger.debug("UserActor: start - Meeting is stopped")
       out ! Stopped(meeting)
       self ! PoisonPill
       stopping
     case Some(meeting) =>
+      // Meeting is in progress. Start listening.
       Logger.debug("UserActor: start - Meeting in progress")
       bus.subscribe(self, UserTopic(meeting.id, userId))
       normalReceive(meeting)
@@ -84,15 +89,16 @@ class UserActor(bus: MeetingEventBus, initialMeeting: Option[Meeting], userId: S
   def normalReceive(meeting: Meeting) = {
     LoggingReceive {
       case msg: MeetingMessage =>
-        // Logger.debug(s"User meeting message $msg")
         // Events come from the user without the userId attached. Here we attach them so the meeting
         // knows who to send responses back to.
         Logger.debug(s"UserActor: Received meeting message $msg")
         bus.publish(MeetingEvent(MeetingTopic(meeting.id), msg.withUserId(userId)))
       case msg: UserMessage =>
+        // User meetings are sent directly to the client over the websocket.
         Logger.debug(s"UserActor: Forwarding message to user $msg")
         out ! msg
         msg match {
+          // If the meeting was stopped, close up the websocket.
           case Stopped(_) => self ! PoisonPill
           case _ => ()
         }

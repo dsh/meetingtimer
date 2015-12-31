@@ -4,6 +4,7 @@ import play.api.Play
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import scala.concurrent.duration._
 import slick.driver.JdbcProfile
 import slick.driver.MySQLDriver.api._
 import views.formdata.MeetingFormData
@@ -67,7 +68,17 @@ object Meetings {
   val db = DatabaseConfigProvider.get[JdbcProfile](Play.current).db
   val meetings = TableQuery[MeetingTableDef]
 
+  val meetingThreshold = 4 hours
+  def oldMeetingThresholdSeconds: Double = System.currentTimeMillis / 1000 - meetingThreshold.toSeconds
+
   def persist(meeting: Meeting) = db.run(meetings.insertOrUpdate(meeting))
   def get(meetingId: String) = db.run(meetings.filter(_.id === meetingId).result.headOption)
-  def listInProgress = db.stream(meetings.filter(_.stopTime.isEmpty).result)
+  def listInProgress = {
+    val q = meetings
+      // only meetings that are not stopped
+      .filter(_.stopTime.isEmpty)
+      // only meetings that are not older than our meeting threshold
+      .filter(_.startTime > oldMeetingThresholdSeconds)
+    db.stream(q.result)
+  }
 }
