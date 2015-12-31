@@ -18,8 +18,8 @@ class JoinMeeting extends Component {
         <form onSubmit={handleSubmit}>
           <input className="meeting-id" placeholder="meeting id" type="text" {...meetingId} />
           <button onClick={handleSubmit}>Join</button>
-          { submitFailed && meetingId.invalid && <AlertBox type="error" message={meetingId.error} /> }
         </form>
+        { submitFailed && meetingId.invalid && <AlertBox type="error" message={meetingId.error} /> }
       </div>
 
     )
