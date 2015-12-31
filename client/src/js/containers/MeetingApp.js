@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import JoinMeeting from '../components/JoinMeeting'
-import {navigateToMeeting} from '../actions'
+import {joinMeeting} from '../actions'
 import { Link } from 'react-router'
 import AlertBox from '../components/AlertBox'
 import {clearErrorAction} from '../actions'
@@ -11,7 +11,7 @@ require('./MeetingApp.less');
 
 class MeetingAppComponent extends Component {
 
-  handleJoinMeeting = formData => this.props.dispatch(navigateToMeeting(formData.meetingId));
+  handleJoinMeeting = formData => this.props.dispatch(joinMeeting(formData.meetingId));
 
   handleCloseError = () => this.props.dispatch(clearErrorAction());
 

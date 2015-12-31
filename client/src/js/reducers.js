@@ -3,7 +3,7 @@ import {reducer as formReducer} from 'redux-form'
 import {  handleActions } from 'redux-actions'
 import { routeReducer } from 'redux-simple-router'
 import { copyToClipboardDefaultText } from './constants'
-import { START_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, STOP_MEETING, MEETING_TICK, ERROR,
+import { CLEAR_MEETING, START_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, STOP_MEETING, MEETING_TICK, ERROR,
   CLEAR_ERROR, CLEAR_SUBMIT_ERROR, COPY_TO_CLIPBOARD } from './actions'
 import timeElapsed from './lib/timeElapsed'
 const trim = require('lodash/string/trim');
@@ -14,7 +14,18 @@ const startOrJoinMeeting = (state, action) => ({
   ...action.payload,
   timeElapsed: timeElapsed(action.payload.startTime)
 });
+const meetingDefaultState = {
+  id: null,
+  name: null,
+  startTime: null,
+  participants: null,
+  hourlyRate: null,
+  stopTime: null,
+  timeElapsed: 0,
+  isOwner: false
+};
 const meeting = handleActions({
+  CLEAR_MEETING: (state, action) => meetingDefaultState,
   START_MEETING: (state, action) =>
     ({...state, ...action.payload, timeElapsed: timeElapsed(action.payload.startTime), stopTime: null, isOwner: false}),
   JOINED_MEETING: (state, action) => {
@@ -30,16 +41,7 @@ const meeting = handleActions({
     ...action.payload,
     timeElapsed: Math.max(0, action.payload.stopTime - action.payload.startTime)
   })
-}, {
-  id: null,
-  name: null,
-  startTime: null,
-  participants: null,
-  hourlyRate: null,
-  stopTime: null,
-  timeElapsed: 0,
-  isOwner: false
-});
+}, meetingDefaultState);
 
 const uiDefaultState = {
   starting: false,

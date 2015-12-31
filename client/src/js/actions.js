@@ -13,6 +13,7 @@ export const STOPPED_MEETING = "STOPPED_MEETING";
 export const JOIN_MEETING = "JOIN_MEETING";
 export const STOP_MEETING = "STOP_MEETING";
 export const MEETING_TICK = "MEETING_TICK";
+export const CLEAR_MEETING = "CLEAR_MEETING";
 export const START_MEETING = "START_MEETING";
 export const START_MEETING_REQUEST = "START_MEETING_REQUEST";
 export const ERROR = "ERROR";
@@ -20,10 +21,9 @@ export const CLEAR_ERROR = "CLEAR_ERROR";
 export const CLEAR_SUBMIT_ERROR = "CLEAR_SUBMIT_ERROR";
 export const COPY_TO_CLIPBOARD = "COPY_TO_CLIPBOARD";
 
-
+export const clearMeeting = createAction(CLEAR_MEETING);
 export const joinedMeeting = createAction(JOINED_MEETING, meeting => meeting );
 export const stoppedMeeting = createAction(STOPPED_MEETING, meeting => meeting);
-export const joinMeeting = createAction(JOIN_MEETING);
 export const stopMeeting = createAction(STOP_MEETING);
 export const meetingTick = createAction(MEETING_TICK, timeElapsed => timeElapsed);
 export function errorAction(message, actionType) {
@@ -52,14 +52,23 @@ export const copyToClipboard = createAction(
 );
 
 
-export function navigateToMeeting(meetingId) {
+
+export function joinMeeting(meetingId)  {
+  console.log("joinMeeting " + meetingId)
   return dispatch => {
-    dispatch(joinMeeting());
+    dispatch(clearMeeting()); // clear out any existing meeting
+    dispatch(navigateToMeeting(meetingId));
+  }
+}
+
+function navigateToMeeting(meetingId) {
+  console.log("navigateToMeeting " + meetingId);
+  return dispatch => {
+    dispatch(createAction(JOIN_MEETING)());
     dispatch(updatePath("/m/" + trim(meetingId).toUpperCase()));
   }
 }
 
-const start = createAction(START_MEETING, meeting => meeting);
 function startMeetingRequest(meeting) {
   return dispatch => {
     // from https://github.com/github/fetch
@@ -76,7 +85,8 @@ function startMeetingRequest(meeting) {
       }
     }
 
-    dispatch(start(meeting));
+    dispatch(clearMeeting()); // clear out any existing meeting
+    dispatch(createAction(START_MEETING)(meeting));
     return fetch(location.origin + '/start', {
       method: 'post',
       headers: {

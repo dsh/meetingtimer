@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { createAction } from 'redux-actions'
 import { heartbeatIntervalMs } from '../constants'
 import { STOP_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, ERROR,
-  joinedMeeting, joinMeeting, stoppedMeeting, errorAction } from '../actions'
+  joinedMeeting, stoppedMeeting, errorAction } from '../actions'
 import ReconnectingWebSocket from '../lib/reconnecting-websocket'
 const HEARTBEAT = 'HEARTBEAT';
 
@@ -53,7 +53,6 @@ class MeetingSocketComponent extends Component {
     this.ws.onmessage = this.handleMessage;
     this.ws.onopen = () => {
       this.send(JOIN_MEETING);
-      this.props.dispatch(joinMeeting());
       this.startHeartbeat();
     };
     this.ws.onclose = this.stopHeartbeat;
