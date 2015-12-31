@@ -54,7 +54,6 @@ export const copyToClipboard = createAction(
 
 
 export function joinMeeting(meetingId)  {
-  console.log("joinMeeting " + meetingId)
   return dispatch => {
     dispatch(clearMeeting()); // clear out any existing meeting
     dispatch(navigateToMeeting(meetingId));
@@ -62,7 +61,6 @@ export function joinMeeting(meetingId)  {
 }
 
 function navigateToMeeting(meetingId) {
-  console.log("navigateToMeeting " + meetingId);
   return dispatch => {
     dispatch(createAction(JOIN_MEETING)());
     dispatch(updatePath("/m/" + trim(meetingId).toUpperCase()));
