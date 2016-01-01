@@ -35,16 +35,20 @@ class StartMeeting extends Component {
             <input id="meeting_name" placeholder="Daily Status Report" type="text" maxLength="150" {...name} />
           </div>
           <div className="start-meeting-details">
-            <span>starting at</span>
-            <MeetingTime id="meeting_startTime" startTime={startTime} />
-            <span>with</span>
-            <input id="meeting_participants" placeholder="6" type="number" {...participants} />
-            <span>people at</span>
-            <div className="hourly-rate-wrapper">
-              <span className="currencySymbol">$</span>
-              <input id="meeting_hourlyRate" placeholder="50" type="number" {...hourlyRate} />
+            <div className="meeting-input-wrapper start-time-wrapper">
+              <span>starting at</span>
+              <MeetingTime id="meeting_startTime" startTime={startTime} />
             </div>
-            <span>per hour.</span>
+            <div className="meeting-input-wrapper participants-wrapper">
+              <span>with</span>
+              <input id="meeting_participants" placeholder="6" type="number" {...participants} />
+              <span>people</span>
+            </div>
+            <div className="meeting-input-wrapper hourly-rate-wrapper">
+              <span>at $</span>
+              <input id="meeting_hourlyRate" placeholder="50" type="number" {...hourlyRate} />
+              <span>per hour.</span>
+            </div>
           </div>
           { errors && <div className="start-meeting-errors">{errors}</div> }
           <div className="start-meeting-button">
