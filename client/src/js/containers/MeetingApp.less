@@ -30,7 +30,6 @@ button, .btn, a.btn {
 }
 button:hover, a.btn:hover, a.btn:focus, button:focus  {
   background: #3fca70;
-  outline: 0;
 }
 .nav-bar {
   background-color: #f8f8f8;
@@ -65,6 +64,24 @@ button:hover, a.btn:hover, a.btn:focus, button:focus  {
 }
 .meeting-id {
   font-family: "Lucida Console","Lucida Sans Typewriter",monaco,"Bitstream Vera Sans Mono",monospace
+}
+
+@media (max-width: 850px) {
+  .nav-join-meeting .join-text {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  /* tablets and desktop */
+}
+
+@media only screen and (max-width: 767px) {
+  /* phones */
+}
+
+@media only screen and (max-width: 767px) and (orientation: portrait) {
+  /* portrait phones */
 }
 
 

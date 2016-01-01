@@ -32,15 +32,18 @@ class StartMeeting extends Component {
         </div>
         <form onSubmit={handleSubmit}>
           <div className="start-meeting-name">
-            <input id="meeting_name" placeholder="Daily Status Report" type="text" {...name} />
+            <input id="meeting_name" placeholder="Daily Status Report" type="text" maxLength="150" {...name} />
           </div>
           <div className="start-meeting-details">
             <span>starting at</span>
             <MeetingTime id="meeting_startTime" startTime={startTime} />
             <span>with</span>
             <input id="meeting_participants" placeholder="6" type="number" {...participants} />
-            <span>people at $</span>
-            <input id="meeting_hourlyRate" placeholder="50" type="number" {...hourlyRate} />
+            <span>people at</span>
+            <div className="hourly-rate-wrapper">
+              <span className="currencySymbol">$</span>
+              <input id="meeting_hourlyRate" placeholder="50" type="number" {...hourlyRate} />
+            </div>
             <span>per hour.</span>
           </div>
           { errors && <div className="start-meeting-errors">{errors}</div> }

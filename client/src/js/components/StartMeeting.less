@@ -12,20 +12,19 @@ input[type=number] {
 
 
 .start-meeting {
-  div[class^="start-meeting-"] {
-    margin-top: 15px;
-  }
   input {
     border: 1px solid #ccc;
     border-radius: 5px;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin: 7px 5px;
     padding: 10px;
     text-align: center;
   }
   .alert-box {
     width: 400px;
     margin: 5px auto;
+  }
+  .start-meeting-button {
+    margin-top: 15px;
   }
 }
 .start-meeting-header {
@@ -42,7 +41,11 @@ input[type=number] {
 #meeting_participants {
   width: 50px;
 }
-#meeting_hourlyRate {
-  margin-left: 2px;
-  width: 50px;
+.hourly-rate-wrapper {
+  display: inline-block;
+  margin-left: 5px;
+  input {
+    margin-left: 2px;
+    width: 50px;
+  }
 }
