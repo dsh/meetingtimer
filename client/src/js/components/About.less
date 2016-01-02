@@ -1,8 +1,23 @@
 .about {
   max-width: 800px;
   margin: 20px auto;
-  p, ul {
+  .hire-me {
+    font-size: 25px;
+    font-weight: bold;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+  }
+  .hire-me, .see-at-github {
+    text-align: center;
+  }
+  p, ul, h1 {
     margin-top: 10px;
+    padding: 0 10px;
+    // stupid react eating stupid spaces
+  }
+  h1 {
+    font-size: 20px;
+    font-weight: bold;
   }
   li {
     list-style-type: disc;

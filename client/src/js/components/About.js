@@ -6,21 +6,27 @@ require('./About.less');
 export default class About extends Component {
   render = () => (
     <div className="about">
-      <p>
-        My job is becoming increasingly bureaucratic and "corporate."
-        We now spend countless hours in meetings instead of getting real work done.
-        There are meeting timers out there that show you how much time and money are being wasted,
-          but none where I could share a link with like minded colleagues.
+      <div className="hire-me">
+        <a target="_blank" href="https://www.linkedin.com/in/dshennen">Hire Me!</a>
+      </div>
+      <p className="see-at-github">
+        See this project at <a target="_blank" href="https://github.com/dsh/meetingtimer">GitHub</a>.
       </p>
-
+      <h1>About</h1>
       <p>
-        <Link to="/">meetingtimer.io</Link> fills this need, providing a distributed way of seeing the waste
-        from unnecessary meetings.
+        I have always been adverse to meetings without purpose and the waste they cause.
+        Recent changes in my job have led to a large increase in meetings.
+      </p>
+      <p>
+          There are meeting timers out there that show you how much time and money are being wasted,
+          but none where I could share a link with like minded colleagues.&nbsp;
+          <a href="/">meetingtimer.io</a> fills this need, providing a distributed way of seeing the waste
+          from unnecessary meetings.
       </p>
 
       <p>
         At the same time, I am looking to get out of PHP and old school JavaScript.
-        This project gives me the chance to train myself in the technologies I want to work in.
+        This project gave me the chance to train myself in the technologies I want to work in.
       </p>
 
       <ul>
