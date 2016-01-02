@@ -2,12 +2,13 @@ package models
 
 import play.api.Play
 import play.api.db.slick.DatabaseConfigProvider
-import play.api.libs.json._
 import play.api.libs.functional.syntax._
-import scala.concurrent.duration._
+import play.api.libs.json._
 import slick.driver.JdbcProfile
 import slick.driver.MySQLDriver.api._
 import views.formdata.MeetingFormData
+
+import scala.concurrent.duration._
 
 
 case class Meeting(
@@ -17,14 +18,17 @@ case class Meeting(
   participants: Int,
   hourlyRate: BigDecimal,
   stopTime: Option[Double] = None,
-  owner: String
+  owner: String,
+  lastTouched: Option[Double]
 ) {
+  def currentTime = System.currentTimeMillis / 1000d
   def stop = {
     // If meeting was scheduled for the future and we stop before the meeting actually started,
     // set the stop time to the start time.
-    val newStopTime = startTime max (System.currentTimeMillis / 1000d)
-    this.copy(stopTime = Some(newStopTime))
+    val newStopTime = startTime max currentTime
+    this.copy(stopTime = Option(newStopTime))
   }
+  def touch = this.copy(lastTouched = Option(currentTime))
 }
 
 object Meeting {
@@ -33,7 +37,7 @@ object Meeting {
   val SkipChars = "abcdefghijklmnopqrstuvwxyz0O1LI".toSet
   def genMeetingId = scala.util.Random.alphanumeric.filter( !SkipChars.contains(_) ).take(8).mkString
   def fromFormData(d: MeetingFormData, owner: String) =
-    apply(genMeetingId, d.name, d.startTime, d.participants, d.hourlyRate, None, owner)
+    apply(genMeetingId, d.name, d.startTime, d.participants, d.hourlyRate, None, owner, None)
   implicit val meetingWrites: Writes[Meeting] = (
     (JsPath \ "id").write[String] and
     (JsPath \ "name").write[String] and
@@ -41,7 +45,8 @@ object Meeting {
     (JsPath \ "participants").write[Int] and
     (JsPath \ "hourlyRate").write[BigDecimal] and
     (JsPath \ "stopTime").write[Option[Double]] and
-    (JsPath \ "owner").write[String]
+    (JsPath \ "owner").write[String] and
+    (JsPath \ "lastTouched").write[Option[Double]]
     )(unlift(Meeting.unapply))
 }
 
@@ -56,9 +61,10 @@ class MeetingTableDef(tag: Tag) extends Table[Meeting](tag, "meetings") {
   def hourlyRate = column[BigDecimal]("hourlyRate")
   def stopTime = column[Option[Double]]("stopTime")
   def owner = column[String]("owner")
+  def lastTouched = column[Option[Double]]("lastTouched")
 
   override def * =
-    (id, name, startTime, participants, hourlyRate, stopTime, owner) <> ((Meeting.apply _).tupled, Meeting.unapply)
+    (id, name, startTime, participants, hourlyRate, stopTime, owner, lastTouched) <> ((Meeting.apply _).tupled, Meeting.unapply)
 }
 
 

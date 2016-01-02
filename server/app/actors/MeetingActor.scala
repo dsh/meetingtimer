@@ -5,8 +5,9 @@ import akka.event.LoggingReceive
 import models.{Meeting, Meetings}
 import play.api.Logger
 import play.api.libs.json._
-import scala.concurrent.duration._
+
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
 
 object MeetingActor {
   def props(bus: MeetingEventBus, meeting: Meeting): Props = Props(classOf[MeetingActor], bus, meeting)
@@ -42,7 +43,7 @@ object MeetingActor {
     }
   }
 }
-class MeetingActor(bus: MeetingEventBus, meeting: Meeting) extends Actor with ActorLogging {
+class MeetingActor(bus: MeetingEventBus, initialMeeting: Meeting) extends Actor with ActorLogging {
   import actors.MeetingActor._
   import actors.UserActor._
 
@@ -56,7 +57,7 @@ class MeetingActor(bus: MeetingEventBus, meeting: Meeting) extends Actor with Ac
     * @param msg
     */
   def broadcast(msg: UserMessage) = {
-    val topic = MeetingBroadcastTopic(meeting.id)
+    val topic = MeetingBroadcastTopic(initialMeeting.id)
     Logger.debug(s"MeetingActor: broadcast $msg to $topic")
     bus.publish(MeetingEvent(topic, msg))
   }
@@ -68,11 +69,11 @@ class MeetingActor(bus: MeetingEventBus, meeting: Meeting) extends Actor with Ac
     * meeting got started will get the details on the meeting.
     */
   override def preStart() {
-    val topic = MeetingTopic(meeting.id)
+    val topic = MeetingTopic(initialMeeting.id)
     Logger.debug(s"MeetingActor: subscribing to $topic")
     bus.subscribe(self, topic)
     // If we have a stop time, send a meeting stopped message out. Otherwise send out the joined meeting.
-    broadcast(meeting.stopTime.fold[UserMessage](Joined(meeting))(_ => Stopped(meeting)))
+    broadcast(initialMeeting.stopTime.fold[UserMessage](Joined(initialMeeting))(_ => Stopped(initialMeeting)))
   }
 
   /**
@@ -86,14 +87,20 @@ class MeetingActor(bus: MeetingEventBus, meeting: Meeting) extends Actor with Ac
   def publishToUser(userId: Option[String], msg: UserMessage) = {
     Logger.debug("MeetingActor: publishToUser")
     userId foreach { uid =>
-      val topic = UserTopic(meeting.id, uid)
+      val topic = UserTopic(initialMeeting.id, uid)
       Logger.debug(s"MeetingActor: publish $msg to $topic")
       bus.publish(MeetingEvent(topic, msg))
     }
   }
 
 
-  def receive = LoggingReceive {
+  def receive = receiving(initialMeeting)
+
+  def receiving(meeting: Meeting): Receive = LoggingReceive {
+    case heartbeat: Heartbeat =>
+      val touchedMeeting = meeting.touch
+      Meetings.persist(touchedMeeting)
+      context become receiving(touchedMeeting)
     case joinMeeting: JoinMeeting =>
       Logger.debug("MeetingActor: Join Meeting")
       publishToUser(joinMeeting.userId, Joined(meeting))

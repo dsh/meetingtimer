@@ -11,4 +11,4 @@ CREATE TABLE meetings (
 );
 
 # --- !Downs
-DROP TABLE meetingtmer;
+DROP TABLE meetings;
