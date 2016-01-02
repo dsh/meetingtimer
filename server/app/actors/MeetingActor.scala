@@ -98,9 +98,12 @@ class MeetingActor(bus: MeetingEventBus, initialMeeting: Meeting) extends Actor 
 
   def receiving(meeting: Meeting): Receive = LoggingReceive {
     case heartbeat: Heartbeat =>
-      val touchedMeeting = meeting.touch
-      Meetings.persist(touchedMeeting)
-      context become receiving(touchedMeeting)
+      Logger.debug("MeetingActor: Heartbeat")
+      if (heartbeat.userId.contains(meeting.owner)) {
+        val touchedMeeting = meeting.touch
+        Meetings.persist(touchedMeeting)
+        context become receiving(touchedMeeting)
+      }
     case joinMeeting: JoinMeeting =>
       Logger.debug("MeetingActor: Join Meeting")
       publishToUser(joinMeeting.userId, Joined(meeting))
