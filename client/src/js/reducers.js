@@ -103,7 +103,6 @@ const form = formReducer.normalize({
         };
       case STOPPED_MEETING:
       case JOINED_MEETING:
-        console.log(state);
         return {
           ...state,
           meetingId: {
