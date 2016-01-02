@@ -20,7 +20,7 @@ export default class About extends Component {
       <p>
           There are meeting timers out there that show you how much time and money are being wasted,
           but none where I could share a link with like minded colleagues.&nbsp;
-          <a href="/">meetingtimer.io</a> fills this need, providing a distributed way of seeing the waste
+          <Link to="/">meetingtimer.io</Link> fills this need, providing a distributed way of seeing the waste
           from unnecessary meetings.
       </p>
 
