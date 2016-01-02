@@ -56,7 +56,7 @@ export default class MeetingView extends Component {
         </div>
         <div className="share-meeting">
           Meeting ID: <span className="meeting-id">{meeting.id}</span><br />
-          <Link className="meeting-link" to={meetingPath}>{meetingUrl}</Link>&nbsp;
+          <Link className="meeting-link" to={meetingPath}>{meetingUrl}</Link>
           <CopyToClipboard text={meetingUrl} onCopy={this.props.onCopyToClipboard}>
             <span className="copy-to-clipboard">&#x279f;<span className="copy-to-clipboard-tooltip">{ui.copyToClipboardText}</span></span>
           </CopyToClipboard>

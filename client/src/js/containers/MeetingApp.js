@@ -12,9 +12,7 @@ require('./MeetingApp.less');
 class MeetingAppComponent extends Component {
 
   handleJoinMeeting = formData => this.props.dispatch(joinMeeting(formData.meetingId));
-
   handleCloseError = () => this.props.dispatch(clearErrorAction());
-
   handleToggleMenu = (newState) => this.props.dispatch(toggleMenu(newState));
 
   render() {

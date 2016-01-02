@@ -1,6 +1,5 @@
 .meeting-info {
   text-align: center;
-
   .meeting-name {
     font-family: "Arial Black","Arial Bold",Gadget,sans-serif;
     font-size: 35px;
@@ -52,6 +51,7 @@
     cursor: pointer;
     display: inline;
     font-size: 20px;
+    margin-left: 4px;
     padding: 0 2px;
     position: relative;
     &:hover {
@@ -61,4 +61,26 @@
       visibility: visible;
     }
   }
+}
+
+@media only screen and (max-width: 767px) {
+  .meeting-info {
+    .meeting-name {
+      font-size: 20px;
+      padding: 15px 5px;
+    }
+    .meeting-time {
+      font-size: 12px;
+      padding-bottom: 10px;
+    }
+  }
+  .share-meeting {
+    font-size: 12px;
+  }
+  .share-meeting {
+    .copy-to-clipboard {
+      display:none;
+    }
+  }
+
 }
