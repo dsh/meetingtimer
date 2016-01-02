@@ -100,6 +100,13 @@ class Application @Inject() (val messagesApi: MessagesApi, val meetingManager: M
     )
   }
 
+  def getMyMeetings = UserIdAction.async { implicit request =>
+    Meetings.myMeetings(request.userId).map { meetings => {
+      val meetingsJson = Json.toJson(meetings map { Json.toJson(_) })
+      Ok(meetingsJson)
+    }}
+  }
+
   // Convert in/out data to/from json/meeting messages. Used for WebSocket below
   implicit val inEventFrameFormatter = FrameFormatter.jsonFrame[MeetingMessage]
   implicit val outEventFrameFormatter = FrameFormatter.jsonFrame[UserMessage]

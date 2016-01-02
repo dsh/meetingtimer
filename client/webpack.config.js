@@ -34,7 +34,8 @@ module.exports = {
   devServer: {
     host: "0.0.0.0",
     proxy: {
-      '/start': 'http://test.meetingtimer.io:9000'
+      '/start': 'http://test.meetingtimer.io:9000',
+      '/get-my-meetings': 'http://test.meetingtimer.io:9000'
     }
   }
 };
