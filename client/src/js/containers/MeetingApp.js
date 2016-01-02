@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import JoinMeeting from '../components/JoinMeeting'
-import {joinMeeting} from '../actions'
-import { Link } from 'react-router'
+import {joinMeeting, toggleMenu, clearErrorAction} from '../actions'
 import AlertBox from '../components/AlertBox'
-import {clearErrorAction} from '../actions'
+import Navigation from '../components/Navigation'
 require('../../stylesheets/reset.css');
 require('./MeetingApp.less');
+
 
 
 class MeetingAppComponent extends Component {
@@ -15,16 +15,14 @@ class MeetingAppComponent extends Component {
 
   handleCloseError = () => this.props.dispatch(clearErrorAction());
 
+  handleToggleMenu = (newState) => this.props.dispatch(toggleMenu(newState));
+
   render() {
     const { ui } = this.props;
     return (
       <div>
         <div className="nav-bar">
-          <div className="nav-link-list">
-            <Link className="nav-site-name" to="/">meetingtimer.io</Link>
-            <Link className="nav-link" to="/about">about</Link>
-            <a className="nav-link" target="_blank" href="https://github.com/dsh/meetingtimer">github</a>
-          </div>
+          <Navigation menuOpen={ui.menuOpen} onToggleMenu={this.handleToggleMenu} />
           <div className="nav-join-meeting">
             <div className="join-text">Join a meeting in progress</div>
             <JoinMeeting onSubmit={this.handleJoinMeeting} />

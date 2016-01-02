@@ -1,3 +1,5 @@
+@nav-height: 42px;
+
 div {
   font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
 }
@@ -23,8 +25,8 @@ button, .btn, a.btn {
   color: #ffffff;
   display: inline-block;
   font-size: 18px;
-  height: 42px;
-  line-height: 42px;
+  height: @nav-height;
+  line-height: @nav-height;
   padding: 0 20px;
   text-decoration: none;
 }
@@ -38,18 +40,7 @@ button:hover, a.btn:hover, a.btn:focus, button:focus  {
   height: 70px;
   padding: 10pt 20pt;
 }
-.nav-link-list {
-  float: left;
-  a {
-    margin-right: 15px;
-  }
-}
-.nav-site-name {
-  font-family: "Trebuchet MS","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Tahoma,sans-serif;
-  font-size: 24px;
-  font-style: italic;
-  margin-right: 30px !important;
-}
+
 
 .nav-join-meeting {
   float: right;
@@ -59,12 +50,13 @@ button:hover, a.btn:hover, a.btn:focus, button:focus  {
     margin-left: 10px;
   }
   .join-text {
-    line-height: 42px;
+    line-height: @nav-height;
   }
 }
 .meeting-id {
   font-family: "Lucida Console","Lucida Sans Typewriter",monaco,"Bitstream Vera Sans Mono",monospace
 }
+
 
 @media (max-width: 850px) {
   .nav-join-meeting .join-text {
@@ -77,7 +69,6 @@ button:hover, a.btn:hover, a.btn:focus, button:focus  {
 }
 
 @media only screen and (max-width: 767px) {
-  /* phones */
 }
 
 @media only screen and (max-width: 767px) and (orientation: portrait) {

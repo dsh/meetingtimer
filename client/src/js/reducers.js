@@ -4,7 +4,7 @@ import {  handleActions } from 'redux-actions'
 import { routeReducer } from 'redux-simple-router'
 import { copyToClipboardDefaultText } from './constants'
 import { CLEAR_MEETING, START_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, STOP_MEETING, MEETING_TICK, ERROR,
-  CLEAR_ERROR, CLEAR_SUBMIT_ERROR, COPY_TO_CLIPBOARD } from './actions'
+  CLEAR_ERROR, CLEAR_SUBMIT_ERROR, COPY_TO_CLIPBOARD, TOGGLE_MENU } from './actions'
 import timeElapsed from './lib/timeElapsed'
 const trim = require('lodash/string/trim');
 const isString = require('lodash/lang/isString');
@@ -49,7 +49,8 @@ const uiDefaultState = {
   inProgress: false,
   stopping: false,
   error: null,
-  copyToClipboardText: copyToClipboardDefaultText
+  copyToClipboardText: copyToClipboardDefaultText,
+  menuOpen: false
 };
 const ui = handleActions({
   START_MEETING: (state, action) =>
@@ -80,7 +81,8 @@ const ui = handleActions({
     return {...state, ...actionTypeToUiState(actionType), error: isString(message) ? message : "Unknown error."};
   },
   CLEAR_ERROR: (state, action) => ({...state, error: null}),
-  COPY_TO_CLIPBOARD: (state, action) => ({...state, copyToClipboardText: action.payload})
+  COPY_TO_CLIPBOARD: (state, action) => ({...state, copyToClipboardText: action.payload}),
+  TOGGLE_MENU: (state, action) => ({...state, menuOpen: action.payload})
 }, uiDefaultState);
 
 const form = formReducer.normalize({

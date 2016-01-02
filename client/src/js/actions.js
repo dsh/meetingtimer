@@ -20,7 +20,9 @@ export const ERROR = "ERROR";
 export const CLEAR_ERROR = "CLEAR_ERROR";
 export const CLEAR_SUBMIT_ERROR = "CLEAR_SUBMIT_ERROR";
 export const COPY_TO_CLIPBOARD = "COPY_TO_CLIPBOARD";
+export const TOGGLE_MENU = "TOGGLE_MENU";
 
+export const toggleMenu = createAction(TOGGLE_MENU, newState => newState);
 export const clearMeeting = createAction(CLEAR_MEETING);
 export const joinedMeeting = createAction(JOINED_MEETING, meeting => meeting );
 export const stoppedMeeting = createAction(STOPPED_MEETING, meeting => meeting);
