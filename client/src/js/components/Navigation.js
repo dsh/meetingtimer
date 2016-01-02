@@ -25,7 +25,7 @@ export default class Navigation extends Component {
         <div onClick={handleClose} className="mobile-nav-link-list">
           {navList}
         </div>
-        <div className="screen-mask" onClick={handleClose}></div>
+        { menuOpen && <div className="screen-mask" onClick={handleClose}></div> }
       </div>
     )
   }

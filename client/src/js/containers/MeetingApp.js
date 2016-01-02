@@ -26,8 +26,8 @@ class MeetingAppComponent extends Component {
             <JoinMeeting onSubmit={this.handleJoinMeeting} />
           </div>
         </div>
-        {ui.error && <AlertBox type="error" message={ui.error} onClose={this.handleCloseError} />}
         <div className="content">
+          {ui.error && <AlertBox type="error" message={ui.error} onClose={this.handleCloseError} />}
           {this.props.children}
         </div>
       </div>
