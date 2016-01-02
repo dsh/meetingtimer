@@ -101,6 +101,19 @@ const form = formReducer.normalize({
           ...state,
           _submitFailed: false
         };
+      case STOPPED_MEETING:
+      case JOINED_MEETING:
+        console.log(state);
+        return {
+          ...state,
+          meetingId: {
+            ...state.meetingId,
+            touched: false,
+            value: "",
+            visited: false
+          }
+        };
+        return state;
       default:
         return state;
     }
