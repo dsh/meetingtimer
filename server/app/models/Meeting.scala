@@ -75,7 +75,7 @@ object Meetings {
   val meetings = TableQuery[MeetingTableDef]
 
   val meetingThreshold = 4 hours
-  def oldMeetingThresholdSeconds: Double = System.currentTimeMillis / 1000 - meetingThreshold.toSeconds
+  def oldMeetingThresholdSeconds: Double = System.currentTimeMillis / 1000d - meetingThreshold.toSeconds
 
   def persist(meeting: Meeting) = db.run(meetings.insertOrUpdate(meeting))
   def get(meetingId: String) = db.run(meetings.filter(_.id === meetingId).result.headOption)
@@ -84,7 +84,19 @@ object Meetings {
       // only meetings that are not stopped
       .filter(_.stopTime.isEmpty)
       // only meetings that are not older than our meeting threshold
-      .filter(_.startTime > oldMeetingThresholdSeconds)
+      .filter(m => m.lastTouched.isEmpty || m.lastTouched > oldMeetingThresholdSeconds)
+    db.stream(q.result)
+  }
+  def needToStop = {
+    val threshold = oldMeetingThresholdSeconds
+    val now = System.currentTimeMillis / 1000d
+    val q = meetings
+      // only meetings that are not stopped
+      .filter(_.stopTime.isEmpty)
+      // only meetings that ARE older than our meeting threshold
+      .filter(m =>
+        (m.lastTouched.isDefined && m.lastTouched <= oldMeetingThresholdSeconds) ||
+        (m.lastTouched.isEmpty && m.startTime <= oldMeetingThresholdSeconds))
     db.stream(q.result)
   }
 }
