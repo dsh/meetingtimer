@@ -1,18 +1,13 @@
 import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
-import { createAction } from 'redux-actions';
-import { meetingTick } from '../actions'
-import { tickIntervalMs } from '../constants'
-import timeElapsed from '../lib/timeElapsed'
 
-class TimeTickerComponent extends Component {
+export default class TimeTicker extends Component {
 
   tick = () => {
-    this.props.dispatch(meetingTick(timeElapsed(this.props.startTime)));
+    this.props.onTick(new Date().getTime());
   };
 
   componentWillMount() {
-    this.interval = setInterval(this.tick, tickIntervalMs);
+    this.interval = setInterval(this.tick, this.props.tickIntervalMs);
   }
 
   componentWillUnmount() {
@@ -24,10 +19,9 @@ class TimeTickerComponent extends Component {
   render = () => <div></div>;
 }
 
-TimeTickerComponent.propTypes =  {
-  startTime: PropTypes.number.isRequired
+
+TimeTicker.propTypes = {
+  onTick: PropTypes.func.isRequired,
+  tickIntervalMs: PropTypes.number.isRequired
 };
 
-
-const TimeTicker = connect()(TimeTickerComponent);
-export default TimeTicker;

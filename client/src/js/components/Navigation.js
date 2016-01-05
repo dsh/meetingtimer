@@ -11,9 +11,10 @@ export default class Navigation extends Component {
     const handleClose = () => onToggleMenu(false);
 
     const navList = [
-      <Link key="1" className="nav-site-name nav-link" to="/">meetingtimer.io</Link>,
-      <Link key="2" className="nav-link" to="/about">about</Link>,
-      <a key="3" className="nav-link" target="_blank" href="https://github.com/dsh/meetingtimer">github</a>
+      <Link key="start" className="nav-site-name nav-link" to="/">meetingtimer.io</Link>,
+      <Link key="my-meetings" className="nav-link" to="/my-meetings">my meetings</Link>,
+      <Link key="about" className="nav-link" to="/about">about</Link>,
+      <a key="github" className="nav-link" target="_blank" href="https://github.com/dsh/meetingtimer">github</a>
     ];
     // I had to dupe the menu list because I was getting weird CSS transitions when re-sizing the browser window.
     return (

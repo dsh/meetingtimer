@@ -36,7 +36,7 @@ const meeting = handleActions({
     const meeting = action.payload;
     return {...state, ...meeting, timeElapsed: timeElapsed(meeting.startTime), isOwner: isOwner(meeting.owner)};
   },
-  MEETING_TICK: (state, action) => ({...state, timeElapsed: action.payload}),
+  MEETING_TICK: (state, action) => ({...state, timeElapsed: timeElapsed(state.startTime, action.payload)}),
   STOPPED_MEETING: (state, action) => ({
     ...action.payload,
     timeElapsed: Math.max(0, action.payload.stopTime - action.payload.startTime)

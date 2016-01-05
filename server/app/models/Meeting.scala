@@ -111,7 +111,7 @@ object Meetings {
 
   def persist(meeting: Meeting) = db.run(meetings.insertOrUpdate(meeting))
   def get(meetingId: String) = db.run(meetings.filter(_.id === meetingId).result.headOption)
-  def myMeetings(owner: String) = db.run(meetings.filter(_.owner === owner).sortBy(_.startTime).result)
+  def myMeetings(owner: String) = db.run(meetings.filter(_.owner === owner).sortBy(_.startTime.desc).result)
   def listInProgress = {
     val q = meetings
       // only meetings that are not stopped
