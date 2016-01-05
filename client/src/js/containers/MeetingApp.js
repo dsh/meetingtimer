@@ -22,7 +22,7 @@ class MeetingAppComponent extends Component {
         <div className="nav-bar">
           <Navigation menuOpen={ui.menuOpen} onToggleMenu={this.handleToggleMenu} />
           <div className="nav-join-meeting">
-            <div className="join-text">Join a meeting in progress</div>
+            <div className="join-text">Join a meeting</div>
             <JoinMeeting onSubmit={this.handleJoinMeeting} />
           </div>
         </div>

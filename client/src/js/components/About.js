@@ -48,6 +48,12 @@ export default class About extends Component {
         Feature requests will probably be ignored unless I think it is a really cool idea.
       </p>
 
+      <h1>Thanks to</h1>
+
+
+      <ul>
+        <li><a href="https://github.com/xogeny">Michael Tiller</a> for an exhaustive JavaScript code review (that I have not had time to act on yet).</li>
+      </ul>
     </div>
   )
 }

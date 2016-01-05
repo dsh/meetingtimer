@@ -17,7 +17,7 @@ class NewMeeting extends Component {
     return (
       <div className="new-meeting">
         <div className="tag-line">
-          Witty Tagline Goes Here
+          <span>When meetings suck...</span> <span>Share the pain!</span>
         </div>
         <StartMeeting onSubmit={this.handleStartMeeting} />
       </div>
