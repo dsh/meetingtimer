@@ -1,14 +1,29 @@
 package models
 
-import play.api.Play
+import com.google.inject.name.{Names, Named}
+import com.google.inject.{AbstractModule, Inject}
+import play.api.{Environment, Configuration, Play}
 import play.api.db.slick.DatabaseConfigProvider
-import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import slick.driver.JdbcProfile
 import slick.driver.MySQLDriver.api._
 import views.formdata.MeetingFormData
 
 import scala.concurrent.duration._
+
+
+class MeetingModule(environment: Environment, configuration: Configuration) extends AbstractModule {
+  def configure() = {
+    val config = configuration.getConfig("meetingtimer").getOrElse(Configuration.empty)
+    bind(classOf[String])
+      .annotatedWith(Names.named("host"))
+      .toInstance(config.getString("host").getOrElse(""))
+    bind(classOf[String])
+      .annotatedWith(Names.named("socketHost"))
+      .toInstance(config.getString("socketHost").getOrElse("ws://"))
+    bind(classOf[MeetingInjector]).toInstance(Meeting)
+  }
+}
 
 
 case class Meeting(
@@ -21,6 +36,8 @@ case class Meeting(
   owner: String,
   lastTouched: Option[Double]
 ) {
+  lazy val linkToView = Meeting.host + "/m/" + id
+  lazy val linkToOpen = Meeting.socketHost + "/meeting-socket/" + id
   def currentTime = System.currentTimeMillis / 1000d
   def stop = {
     // If meeting was scheduled for the future and we stop before the meeting actually started,
@@ -31,23 +48,38 @@ case class Meeting(
   def touch = this.copy(lastTouched = Option(currentTime))
 }
 
-object Meeting {
+trait MeetingInjector {
+  @Inject @Named("host") val host: String = ""
+  @Inject @Named("socketHost") val socketHost: String = ""
+}
+
+object Meeting extends MeetingInjector {
+
   // We only want lower case characters, and we want to exclude characters that can be confused for each other
   // like the digit 1 and lower case L
   val SkipChars = "abcdefghijklmnopqrstuvwxyz0O1LI".toSet
-  def genMeetingId = scala.util.Random.alphanumeric.filter( !SkipChars.contains(_) ).take(8).mkString
+
+  def genMeetingId = scala.util.Random.alphanumeric.filter(!SkipChars.contains(_)).take(8).mkString
+
   def fromFormData(d: MeetingFormData, owner: String) =
     apply(genMeetingId, d.name, d.startTime, d.participants, d.hourlyRate, None, owner, None)
-  implicit val meetingWrites: Writes[Meeting] = (
-    (JsPath \ "id").write[String] and
-    (JsPath \ "name").write[String] and
-    (JsPath \ "startTime").write[Double] and
-    (JsPath \ "participants").write[Int] and
-    (JsPath \ "hourlyRate").write[BigDecimal] and
-    (JsPath \ "stopTime").write[Option[Double]] and
-    (JsPath \ "owner").write[String] and
-    (JsPath \ "lastTouched").write[Option[Double]]
-    )(unlift(Meeting.unapply))
+
+  implicit object MeetingWrites extends Writes[Meeting] {
+    def writes(m: Meeting) = Json.obj(
+      "id" -> m.id,
+      "name" -> m.name,
+      "startTime" -> m.startTime,
+      "participants" -> m.participants,
+      "hourlyRate" -> m.hourlyRate,
+      "stopTime" -> m.stopTime,
+      "owner" -> m.owner,
+      "lastTouched" -> m.lastTouched,
+      "_links" -> Json.obj(
+        "view" -> m.linkToView,
+        "open" -> m.linkToOpen
+      )
+    )
+  }
 }
 
 
