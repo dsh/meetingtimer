@@ -2,6 +2,8 @@ import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import rootReducer from './reducers'
 import { clearSubmitError } from './actions'
+// import createLogger from 'redux-logger';
+
 
 // Only show the join a meeting error message for a few seconds
 const debounceFormErrors = store => next => action => {
@@ -26,6 +28,7 @@ const delayedActionDispatcher = store => next => action => {
 };
 
 const createStoreWithMiddleware = applyMiddleware(
+  // createLogger(),
   thunkMiddleware,
   debounceFormErrors,
   delayedActionDispatcher

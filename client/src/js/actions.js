@@ -21,6 +21,11 @@ export const CLEAR_ERROR = "CLEAR_ERROR";
 export const CLEAR_SUBMIT_ERROR = "CLEAR_SUBMIT_ERROR";
 export const COPY_TO_CLIPBOARD = "COPY_TO_CLIPBOARD";
 export const TOGGLE_MENU = "TOGGLE_MENU";
+export const MY_MEETINGS_LOADED = "MY_MEETINGS_LOADED";
+export const MY_MEETINGS_TICK = "MY_MEETINGS_TICK";
+
+export const myMeetingsLoaded = createAction(MY_MEETINGS_LOADED, meetings => meetings);
+export const myMeetingsTick = createAction(MY_MEETINGS_TICK, now => now);
 
 export const toggleMenu = createAction(TOGGLE_MENU, newState => newState);
 export const clearMeeting = createAction(CLEAR_MEETING);
@@ -69,22 +74,22 @@ function navigateToMeeting(meetingId) {
   }
 }
 
+// from https://github.com/github/fetch
+function checkStatus(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return response;
+  } else {
+    return response.text()
+      .then(errorMessage => {
+        var error = new Error(errorMessage ? errorMessage : response.statusText);
+        error.response = response;
+        throw error;
+      });
+  }
+}
+
 function startMeetingRequest(meeting) {
   return dispatch => {
-    // from https://github.com/github/fetch
-    function checkStatus(response) {
-      if (response.status >= 200 && response.status < 300) {
-        return response;
-      } else {
-        return response.text()
-          .then(errorMessage => {
-            var error = new Error(errorMessage ? errorMessage : response.statusText);
-            error.response = response;
-            throw error;
-          });
-      }
-    }
-
     dispatch(clearMeeting()); // clear out any existing meeting
     dispatch(createAction(START_MEETING)(meeting));
     return fetch(location.origin + '/start', {
@@ -100,6 +105,23 @@ function startMeetingRequest(meeting) {
       .then(checkStatus)
       .then(req => req.json())
       .then(meeting => dispatch(navigateToMeeting(meeting.id)))
+      .catch(error => dispatch(errorAction(error, START_MEETING)));
+  }
+}
+
+export function loadMyMeetingsReequest() {
+  return dispatch => {
+    return fetch(location.origin + '/get-my-meetings', {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      // need credentials because start will set the userId cookie for us
+      credentials: 'same-origin'
+    })
+      .then(checkStatus)
+      .then(req => req.json())
+      .then(meetings => dispatch(myMeetingsLoaded(meetings)))
       .catch(error => dispatch(errorAction(error, START_MEETING)));
   }
 }

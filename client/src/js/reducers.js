@@ -4,16 +4,12 @@ import {  handleActions } from 'redux-actions'
 import { routeReducer } from 'redux-simple-router'
 import { copyToClipboardDefaultText } from './constants'
 import { CLEAR_MEETING, START_MEETING, JOIN_MEETING, JOINED_MEETING, STOPPED_MEETING, STOP_MEETING, MEETING_TICK, ERROR,
-  CLEAR_ERROR, CLEAR_SUBMIT_ERROR, COPY_TO_CLIPBOARD, TOGGLE_MENU } from './actions'
+  CLEAR_ERROR, CLEAR_SUBMIT_ERROR, COPY_TO_CLIPBOARD, TOGGLE_MENU, MY_MEETINGS_LOADED, MY_MEETINGS_TICK } from './actions'
 import timeElapsed from './lib/timeElapsed'
 const trim = require('lodash/string/trim');
 const isString = require('lodash/lang/isString');
 
 
-const startOrJoinMeeting = (state, action) => ({
-  ...action.payload,
-  timeElapsed: timeElapsed(action.payload.startTime)
-});
 const meetingDefaultState = {
   id: null,
   name: null,
@@ -42,6 +38,14 @@ const meeting = handleActions({
     timeElapsed: Math.max(0, action.payload.stopTime - action.payload.startTime)
   })
 }, meetingDefaultState);
+
+const myMeetings = handleActions({
+  MY_MEETINGS_LOADED: (state, action) => ({...state, meetings: action.payload}),
+  MY_MEETINGS_TICK: (state, action) => ({...state, now: action.payload})
+}, {
+  now: new Date().getTime(),
+  meetings: []
+});
 
 const uiDefaultState = {
   starting: false,
@@ -120,8 +124,10 @@ const form = formReducer.normalize({
 });
 
 
+
 const rootReducer = combineReducers({
   meeting,
+  myMeetings,
   ui,
   form: form,
   routing: routeReducer

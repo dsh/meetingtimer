@@ -2,12 +2,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { stopMeeting, copyToClipboard, meetingTick } from '../actions'
 import MeetingSocket from './MeetingSocket'
-import TimeTicker from './TimeTicker'
+import TimeTicker from './../components/TimeTicker'
 import MeetingView from '../components/MeetingView'
 import MeetingStatusMessage from '../components/MeetingStatusMessage'
 import { tickIntervalMs } from '../constants'
-import timeElapsed from '../lib/timeElapsed'
-
 
 
 class Meeting extends Component {

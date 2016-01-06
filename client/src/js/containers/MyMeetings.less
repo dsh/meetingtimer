@@ -1,0 +1,77 @@
+.my-meetings {
+  box-sizing: border-box;
+  margin: 20px auto;
+  width: 740px;
+}
+.no-meetings {
+  text-align: center;
+}
+.meeting-summary {
+  box-sizing: border-box;
+  display: table;
+  &:nth-of-type(odd) {
+    background-color: #eee;
+  }
+  div[class^="ms-"] {
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    display: table-cell;
+    padding: 3px 5px;
+    vertical-align: top;
+  }
+  .ms-id {
+    width: 95px;
+  }
+  .ms-name {
+    width: 285px;
+  }
+  .ms-start-time {
+    text-align: right;
+    width: 185px;
+    .date {
+      float: left;
+      width: 95px;
+    }
+    .time {
+      float: right;
+      width: 75px;
+    }
+  }
+  .ms-time-elapsed {
+    text-align: center;
+    width: 75px;
+  }
+  .ms-cost {
+    width: 95px;
+    div.currency-symbol {
+      float: left;
+    }
+    div.cost {
+      float: right;
+      text-align: right;
+    }
+  }
+}
+.meeting-summary-header {
+  background-color: #ccc;
+  font-weight: bold;
+  text-align: center;
+  div[class^="ms-"] {
+    border-bottom: none;
+  }
+    .ms-id {
+    border-left: none;
+  }
+  .ms-name {
+    text-align: left;
+  }
+  .ms-start-time {
+    text-align: center;
+  }
+  .ms-cost {
+    border-right: none;
+  }
+}
+.start-meeting-link {
+  text-align: center;
+}
