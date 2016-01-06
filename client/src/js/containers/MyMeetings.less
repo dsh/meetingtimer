@@ -1,77 +1,129 @@
-.my-meetings {
-  box-sizing: border-box;
-  margin: 20px auto;
-  width: 740px;
-}
-.no-meetings {
+.start-meeting-link, .no-meetings  {
+  clear: both;
   text-align: center;
 }
-.meeting-summary {
-  box-sizing: border-box;
-  display: table;
-  &:nth-of-type(odd) {
-    background-color: #eee;
-  }
-  div[class^="ms-"] {
-    border: 1px solid #ddd;
+
+
+@media (min-width: 768px) {
+  .my-meetings {
     box-sizing: border-box;
-    display: table-cell;
-    padding: 3px 5px;
-    vertical-align: top;
+    margin: 20px auto;
+    width: 740px;
   }
-  .ms-id {
-    width: 95px;
-  }
-  .ms-name {
-    width: 285px;
-  }
-  .ms-start-time {
-    text-align: right;
-    width: 185px;
-    .date {
-      float: left;
+  .meeting-summary {
+    box-sizing: border-box;
+    display: table;
+    &:nth-of-type(odd) {
+      background-color: #eee;
+    }
+    div[class^="ms-"] {
+      border: 1px solid #ddd;
+      box-sizing: border-box;
+      display: table-cell;
+      padding: 3px 5px;
+      vertical-align: top;
+    }
+    div.ms-id {
       width: 95px;
     }
-    .time {
-      float: right;
+    div.ms-name {
+      width: 285px;
+    }
+    div.ms-start-time {
+      text-align: right;
+      width: 185px;
+      .date {
+        float: left;
+        width: 95px;
+      }
+      .time {
+        float: right;
+        width: 75px;
+      }
+    }
+    div.ms-time-elapsed {
+      text-align: center;
       width: 75px;
     }
+    div.ms-cost {
+      width: 95px;
+      div.currency-symbol {
+        float: left;
+      }
+      div.cost {
+        float: right;
+        text-align: right;
+      }
+    }
   }
-  .ms-time-elapsed {
+  .meeting-summary-header {
+    background-color: #ccc;
+    font-weight: bold;
     text-align: center;
-    width: 75px;
+    div[class^="ms-"] {
+      border-bottom: none;
+    }
+    div.ms-id {
+      border-left: none;
+    }
+    div.ms-name {
+      text-align: left;
+    }
+    div.ms-start-time {
+      text-align: center;
+    }
+    div.ms-cost {
+      border-right: none;
+    }
   }
-  .ms-cost {
-    width: 95px;
-    div.currency-symbol {
+}
+
+
+@media (max-width: 767px) {
+  .meeting-summary-header {
+    display: none;
+  }
+  .meeting-summary {
+    clear: both;
+    padding: 10px 5px 0 5px;
+    width: 320px;
+    margin: 0 auto;
+  }
+  div[class^="ms-"] {
+    float: left;
+    font-size: 14px;
+    //border: 1px solid #efefef;
+    box-sizing: border-box;
+  }
+  div.ms-id {
+    height: 20px;
+    padding-top: 4px;
+    width: 80px;
+  }
+  div.ms-name {
+    float: right;
+    font-size: 16px;
+    font-weight: bold;
+    width: 230px;
+  }
+  div.ms-start-time {
+    clear: both;
+    margin-right: 5px;
+    text-align: right;
+    width: 160px;
+    .date, .time {
+      float: left;
+      margin-right: 5px;
+    }
+  }
+  div.ms-cost {
+    float: right;
+    text-align: right;
+    .currency-symbol, .cost {
       float: left;
     }
-    div.cost {
-      float: right;
-      text-align: right;
-    }
   }
-}
-.meeting-summary-header {
-  background-color: #ccc;
-  font-weight: bold;
-  text-align: center;
-  div[class^="ms-"] {
-    border-bottom: none;
+  .start-meeting-link {
+    padding-top: 20px;
   }
-    .ms-id {
-    border-left: none;
-  }
-  .ms-name {
-    text-align: left;
-  }
-  .ms-start-time {
-    text-align: center;
-  }
-  .ms-cost {
-    border-right: none;
-  }
-}
-.start-meeting-link {
-  text-align: center;
 }
