@@ -57,6 +57,7 @@ const uiDefaultState = {
   menuOpen: false
 };
 const ui = handleActions({
+  CLEAR_MEETING: (state, action) => ({...state, starting: false, joining: true, inProgress: false, stopping: false}),
   START_MEETING: (state, action) =>
     ({...state, starting: true, joining: true,  stopping: false, inProgress: false, error: null}),
   JOIN_MEETING: (state, action) =>

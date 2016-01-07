@@ -12,6 +12,8 @@ import MeetingContainer from './containers/Meeting'
 import MyMeetingsContainer from './containers/MyMeetings'
 import About from './components/About'
 import store from './store'
+import {clearMeeting} from './actions'
+const startsWith = require('lodash/string/startsWith');
 
 
 const history = createBrowserHistory();
@@ -38,3 +40,30 @@ else {
 }
 
 ReactDOM.render(app, document.getElementById("application"));
+
+
+// borrowed from https://github.com/rackt/redux/issues/303#issuecomment-125184409
+function observeRouteChange(store, onRouteChange) {
+  function select(store) {
+    return store.routing.path;
+  }
+  let currentPath;
+  function handleChange() {
+    let prevPath = currentPath;
+    let nextPath = select(store.getState());
+    if (nextPath !== currentPath) {
+      currentPath = nextPath;
+      onRouteChange(prevPath, nextPath);
+    }
+  }
+
+  let unsubscribe = store.subscribe(handleChange);
+  handleChange();
+  return unsubscribe;
+}
+
+observeRouteChange(store, (prevPath, nextPath) => {
+  if (startsWith(prevPath, '/m/')) {
+    store.dispatch(clearMeeting())
+  }
+});

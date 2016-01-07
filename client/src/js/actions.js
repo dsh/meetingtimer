@@ -62,7 +62,6 @@ export const copyToClipboard = createAction(
 
 export function joinMeeting(meetingId)  {
   return dispatch => {
-    dispatch(clearMeeting()); // clear out any existing meeting
     dispatch(navigateToMeeting(meetingId));
   }
 }
@@ -90,7 +89,6 @@ function checkStatus(response) {
 
 function startMeetingRequest(meeting) {
   return dispatch => {
-    dispatch(clearMeeting()); // clear out any existing meeting
     dispatch(createAction(START_MEETING)(meeting));
     return fetch(location.origin + '/start', {
       method: 'post',

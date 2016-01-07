@@ -34,5 +34,7 @@ const createStoreWithMiddleware = applyMiddleware(
   delayedActionDispatcher
 )(createStore);
 
-const store = createStoreWithMiddleware(rootReducer, {})
-export default store
+const store = createStoreWithMiddleware(rootReducer, {});
+export default store;
+
+
