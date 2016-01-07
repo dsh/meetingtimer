@@ -18,17 +18,23 @@ const history = createBrowserHistory();
 
 syncReduxAndRouter(history, store);
 
-ReactDOM.render(
-  <Provider store={store}>
+const isIE = navigator.userAgent.indexOf('MSIE')!==-1 || navigator.appVersion.indexOf('Trident/') > 0;
+
+var app;
+if (isIE) {
+  app = <p style={{padding:"20px"}}>Sorry. Internet Explorer is not supported.</p>
+}
+else {
+  app = <Provider store={store}>
     <Router history={history}>
       <Route component={MeetingApp}>
         <Route path="/" component={NewMeetingContainer} />
         <Route path="/m/:meetingId" component={MeetingContainer} />
         <Route path="/my-meetings" component={MyMeetingsContainer} />
         <Route path="/about" component={About} />
-
       </Route>
     </Router>
-  </Provider>,
-  document.getElementById("application")
-);
+  </Provider>;
+}
+
+ReactDOM.render(app, document.getElementById("application"));

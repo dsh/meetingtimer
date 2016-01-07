@@ -4,7 +4,12 @@
     <meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
 </head>
 <body>
-    <div id="application">Loading...</div>
-    <script type="text/javascript" src="/js/all.js"></script>
+    <![if !IE]>
+        <div id="application">Loading...</div>
+        <script type="text/javascript" src="/js/all.js"></script>
+    <![endif]>
+    <!--[if IE]>
+        Sorry. Internet Explorer is not supported.
+    <![endif]-->
 </body>
 </html>
