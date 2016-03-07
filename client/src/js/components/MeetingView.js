@@ -4,6 +4,7 @@ import TimeElapsed from './TimeElapsed'
 import StartNewMeetingLink from './StartNewMeetingLink'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { Link } from 'react-router'
+import formatCost from '../lib/formatCost'
 const moment = require('moment');
 require('./MeetingView.less');
 
@@ -37,6 +38,9 @@ export default class MeetingView extends Component {
         meetingTime = "Meeting starting at " + startTimeFormatted + ".";
       }
     }
+    const participantsText =
+      meeting.participants + " " + (meeting.participants == 1 ? "person" : "people") +
+      " at $" + formatCost(meeting.hourlyRate) + " per hour.";
     var controls;
     if (ui.inProgress && !ui.stopping && meeting.isOwner) {
       controls = <button onClick={this.props.onStopMeeting}>Stop</button>;
@@ -47,12 +51,12 @@ export default class MeetingView extends Component {
       <div className="meeting-wrapper">
         <div className="meeting-info">
           <div className="meeting-name">{meeting.name}</div>
-          <div className="meeting-time">{meetingTime}</div>
+          <div className="meeting-time">{meetingTime} {participantsText}</div>
           <TimeElapsed seconds={meeting.timeElapsed}/>
           <Cost cost={cost}/>
           <div className="meeting-controls">
             {controls}
-          </div>
+          </div>/**/
         </div>
         <div className="share-meeting">
           <div className="share-meeting-text">

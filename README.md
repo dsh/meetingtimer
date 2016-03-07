@@ -6,10 +6,8 @@ Motivation:
 * Portfolio peice for my resume.
 * Practice:
   * ReactJS + Redux
-  * Scala, Akka and Play
+  * Scala, Akka, Play and Guice
   * Functional programming
-  * TypeScript (coming soon)
-  * Reactive Programming (coming soon)
 
 Things to do:
 

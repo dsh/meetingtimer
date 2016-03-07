@@ -2,7 +2,7 @@ import com.typesafe.sbt.packager.archetypes.ServerLoader
 
 name := "meetingtimer"
 
-version := "0.3.6"
+version := "0.3.8"
 
 lazy val `meetingtimer` = (project in file(".")).enablePlugins(PlayScala, JDebPackaging)
 

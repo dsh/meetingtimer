@@ -6,16 +6,14 @@ require('./About.less');
 export default class About extends Component {
   render = () => (
     <div className="about">
-      <div className="hire-me">
-        <a target="_blank" href="https://www.linkedin.com/in/dshennen">Hire Me!</a>
-      </div>
       <p className="see-at-github">
         See this project at <a target="_blank" href="https://github.com/dsh/meetingtimer">GitHub</a>.
       </p>
       <h1>About</h1>
       <p>
         I have always been adverse to meetings without purpose and the waste they cause.
-        Recent changes in my job have led to a large increase in meetings.
+        As my last job became more and more bureaucratic we had more and more meetings
+        that never led anywhere. All of this overhead resulted in a marked decrease in productivity.
       </p>
       <p>
           There are meeting timers out there that show you how much time and money are being wasted,
@@ -25,26 +23,23 @@ export default class About extends Component {
       </p>
 
       <p>
-        At the same time, I am looking to get out of PHP and old school JavaScript.
-        This project gave me the chance to train myself in the technologies I want to work in.
+        When I wrote this, I was looking to get out of PHP and old school JavaScript.
+        This project gave me the chance to train myself in technologies I found interesting
+        and create some code for my portfolio to show off what I can do.
       </p>
 
       <ul>
         <li>ReactJS + Redux</li>
-        <li>Scala, Akka and Play</li>
+        <li>Scala, Akka, Play and Guice</li>
         <li>Functional programming</li>
-        <li>TypeScript (coming soon)</li>
-        <li>Reactive Programming (coming soon)</li>
       </ul>
 
       <p>
-        If you'd like to hire a hard working, bright, self-starter in any of the above or related areas, feel free
-        to reach out to
-          me <a target="_blank" href="https://www.linkedin.com/in/dshennen">LinkedIn</a> or <a href="mailto:dennis@28studios.com">dennis@28studios.com</a>.
+        Find out more about me at <a target="_blank" href="https://www.linkedin.com/in/dshennen">LinkedIn</a> or contact me at <a href="mailto:dennis@28studios.com">dennis@28studios.com</a>.
       </p>
 
       <p>
-        I'm also open to bug reports and code reviews.
+        I'm open to bug reports and code reviews.
         Feature requests will probably be ignored unless I think it is a really cool idea.
       </p>
 
@@ -53,6 +48,7 @@ export default class About extends Component {
 
       <ul>
         <li><a href="https://github.com/xogeny">Michael Tiller</a> for an exhaustive JavaScript code review (that I have not had time to act on yet).</li>
+        <li>Many friends for comprehensively testing the site and identifying many bugs.</li>
       </ul>
     </div>
   )
