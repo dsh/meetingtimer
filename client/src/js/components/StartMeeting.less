@@ -1,0 +1,65 @@
+/* Disable the spinners for numbers and time */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button,
+input[type=time]::-webkit-outer-spin-button,
+input[type=time]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance:textfield;
+}
+
+
+.start-meeting {
+  margin: 5px;
+  input {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 7px 5px;
+    padding: 10px;
+    text-align: center;
+  }
+  .alert-box {
+    width: 400px;
+    margin: 5px auto;
+  }
+  .start-meeting-button {
+    margin-top: 15px;
+  }
+}
+.start-meeting-header {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+#meeting_name {
+  width: 300px;
+}
+.meeting-input-wrapper {
+  display: inline-block;
+  margin-left: 5px;
+  &.start-time-wrapper input {
+    width: 120px;
+  }
+  &.participants-wrapper input {
+    width: 50px;
+  }
+  &.hourly-rate-wrapper input {
+    margin-left: 2px;
+    width: 50px;
+  }
+}
+
+// phones
+@media only screen and (max-width: 767px) {
+  .start-meeting-header {
+    font-size: 20px;
+    margin-bottom: 5px;
+  }
+  .start-meeting {
+    .alert-box {
+      width: 310px;
+    }
+  }
+}
